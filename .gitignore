@@ -1,0 +1,15 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.deps
+mid_report
+.venv-lg
+mcp_assignment_build
+.env_glm
+.env_groq
+.env_openrouter
+.env_qwen
