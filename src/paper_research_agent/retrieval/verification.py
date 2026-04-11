@@ -5,8 +5,8 @@ from io import BytesIO
 from pathlib import Path
 from typing import Any, Callable
 
-from .normalization import normalize_text
-from .retrieval_utils import normalize_pdf_url
+from ..core.normalization import normalize_text
+from .utils import normalize_pdf_url
 
 
 class PaperVerificationEngine:

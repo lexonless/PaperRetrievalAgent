@@ -7,26 +7,26 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
-from .config import Settings
-from .llm import build_chat_model, build_rerank_chat_model, coerce_model, invoke_structured_output
-from .models import RetrievalOutput
-from .models import ResearchNoteOutput
-from .models import ReviewOutput
-from .models import TaskInterpretation
-from .models import TimeRangeResolution
-from .models import TraceEvent
-from .normalization import normalize_string_list, normalize_text
-from .project_store import append_run_record
-from .project_store import build_timestamped_filename
-from .project_store import discover_local_pdfs
-from .project_store import ensure_project_paths
-from .project_store import load_manifest
-from .project_store import merge_manifest_sources
-from .project_store import persist_manifest
-from .project_store import write_json
-from .reporting import build_trace_payload, render_research_note_markdown, summarize_manifest_sources
-from .state import ResearchProjectState
-from .toolkit import PaperSearchToolkit
+from ..core.config import Settings
+from ..core.llm import build_chat_model, build_rerank_chat_model, coerce_model, invoke_structured_output
+from ..core.models import RetrievalOutput
+from ..core.models import ResearchNoteOutput
+from ..core.models import ReviewOutput
+from ..core.models import TaskInterpretation
+from ..core.models import TimeRangeResolution
+from ..core.models import TraceEvent
+from ..core.normalization import normalize_string_list, normalize_text
+from ..core.state import ResearchProjectState
+from ..project.reporting import build_trace_payload, render_research_note_markdown, summarize_manifest_sources
+from ..project.store import append_run_record
+from ..project.store import build_timestamped_filename
+from ..project.store import discover_local_pdfs
+from ..project.store import ensure_project_paths
+from ..project.store import load_manifest
+from ..project.store import merge_manifest_sources
+from ..project.store import persist_manifest
+from ..project.store import write_json
+from ..retrieval.toolkit import PaperSearchToolkit
 
 
 RELATIVE_YEAR_PATTERN = re.compile(r"\b(?:last|past)\s+(?P<count>\d{1,2})\s+years?\b", re.IGNORECASE)

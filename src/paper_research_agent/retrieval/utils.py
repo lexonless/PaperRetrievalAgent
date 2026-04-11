@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from .normalization import normalize_text
+from ..core.normalization import normalize_text
 
 
 DEFAULT_SOURCE_ORDER = ("arXiv", "Crossref", "OpenAlex")

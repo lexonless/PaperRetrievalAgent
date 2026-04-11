@@ -3,8 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from .models import ResearchNoteOutput
-from .normalization import normalize_string_list, normalize_text
+from ..core.models import ResearchNoteOutput
+from ..core.normalization import normalize_string_list, normalize_text
 
 
 def render_research_note_markdown(note: ResearchNoteOutput, *, project_slug: str, query: str) -> str:

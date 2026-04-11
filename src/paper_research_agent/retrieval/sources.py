@@ -5,10 +5,10 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
 
-from .config import Settings
-from .models import PaperRecord
-from .normalization import normalize_string_list, normalize_text
-from .retrieval_utils import DEFAULT_SOURCE_ORDER, TOPIC_FALLBACK_STAGE, extract_year, normalize_pdf_url
+from ..core.config import Settings
+from ..core.models import PaperRecord
+from ..core.normalization import normalize_string_list, normalize_text
+from .utils import DEFAULT_SOURCE_ORDER, TOPIC_FALLBACK_STAGE, extract_year, normalize_pdf_url
 
 
 class PaperSourceCollector:

@@ -5,10 +5,10 @@ from typing import Any
 
 import httpx
 
-from .config import Settings
-from .retrieval_ranking import PaperRankingEngine
-from .retrieval_sources import PaperSourceCollector
-from .retrieval_verification import PaperVerificationEngine
+from ..core.config import Settings
+from .ranking import PaperRankingEngine
+from .sources import PaperSourceCollector
+from .verification import PaperVerificationEngine
 
 
 class PaperSearchToolkit:

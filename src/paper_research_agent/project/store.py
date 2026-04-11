@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from .models import ManifestRunRecord, ProjectSourceItem, ProjectSourceManifest
-from .normalization import normalize_text
+from ..core.models import ManifestRunRecord, ProjectSourceItem, ProjectSourceManifest
+from ..core.normalization import normalize_text
 
 
 @dataclass(slots=True)

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from .config import Settings
+from .core.config import Settings
+from .core.state import create_initial_state
 from .graph import build_research_assistant_graph, create_resources
-from .state import create_initial_state
 
 
 class ResearchAssistantApplication:

@@ -113,20 +113,24 @@ Current high-level execution flow:
 ```text
 src/paper_research_agent/
   app.py
-  config.py
-  graph.py
-  llm.py
   main.py
-  models.py
-  normalization.py
-  project_store.py
-  reporting.py
-  retrieval_ranking.py
-  retrieval_sources.py
-  retrieval_utils.py
-  retrieval_verification.py
-  state.py
-  toolkit.py
+  core/
+    config.py
+    llm.py
+    models.py
+    normalization.py
+    state.py
+  graph/
+    builder.py
+  project/
+    reporting.py
+    store.py
+  retrieval/
+    ranking.py
+    sources.py
+    toolkit.py
+    utils.py
+    verification.py
 
 projects/
   <project_slug>/
@@ -138,6 +142,14 @@ projects/
       manifest.json
 ```
 
+Module roles:
+
+- `core/`: shared settings, schemas, normalization, state, and LLM helpers
+- `graph/`: LangGraph construction and node orchestration
+- `retrieval/`: source collection, ranking, rerank support, PDF verification, and retrieval toolkit
+- `project/`: artifact storage, manifest management, and note/trace rendering
+- `app.py` / `main.py`: application wrapper and CLI entrypoint
+
 ## Output Artifacts
 
 Each run writes reusable project materials:
@@ -146,6 +158,13 @@ Each run writes reusable project materials:
 - `retrieval/*.json`: structured retrieval and review outputs
 - `traces/*.json`: execution traces
 - `sources/manifest.json`: accumulated project source and run metadata
+
+When local PDFs are enabled, `retrieval/*.json` also records `local_library_debug`, including:
+
+- how many local PDFs were scanned
+- how many produced readable text
+- how many matched the interpreted query
+- how many were retained in final retrieval results
 
 ## CLI Options
 

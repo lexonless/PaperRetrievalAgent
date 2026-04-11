@@ -4,7 +4,7 @@ import argparse
 import asyncio
 from pathlib import Path
 
-from .config import Settings
+from .core.config import Settings
 
 
 def parse_args() -> argparse.Namespace:
