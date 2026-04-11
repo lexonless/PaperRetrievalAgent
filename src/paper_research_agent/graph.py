@@ -324,6 +324,15 @@ def _make_retrieval_node(resources: GraphResources):
                         "tool_calls": tool_call_payloads,
                         "paper_count": len(retrieval_output.papers),
                         "source_count": len(retrieval_output.sources_used),
+                        "local_library_debug": {
+                            "scanned_count": retrieval_output.local_library_debug.scanned_count,
+                            "missing_count": retrieval_output.local_library_debug.missing_count,
+                            "read_error_count": retrieval_output.local_library_debug.read_error_count,
+                            "empty_text_count": retrieval_output.local_library_debug.empty_text_count,
+                            "token_miss_count": retrieval_output.local_library_debug.token_miss_count,
+                            "candidate_count": retrieval_output.local_library_debug.candidate_count,
+                            "retained_count": retrieval_output.local_library_debug.retained_count,
+                        },
                         "rerank_trace": {
                             "attempted": retrieval_output.rerank_trace.attempted,
                             "skipped_reason": retrieval_output.rerank_trace.skipped_reason,

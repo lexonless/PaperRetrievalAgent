@@ -104,7 +104,7 @@ class PaperSearchToolkit:
                 break
 
         context = self._ranking.build_retrieval_context(task_interpretation, executed_query_specs)
-        local_records, local_errors = await self._sources.collect_local_pdf_records(
+        local_records, local_errors, local_library_debug = await self._sources.collect_local_pdf_records(
             task_interpretation=task_interpretation,
             context=context,
         )
@@ -128,5 +128,6 @@ class PaperSearchToolkit:
             retrieval_duplicate_count=retrieval_duplicate_count,
             source_errors=all_source_errors,
             executed_query_specs=executed_query_specs,
+            local_library_debug=local_library_debug,
         )
         return json.dumps(payload, ensure_ascii=False, indent=2)

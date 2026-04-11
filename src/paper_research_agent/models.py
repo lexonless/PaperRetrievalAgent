@@ -97,6 +97,32 @@ class RerankTrace(BaseModel):
     batches: list[RerankBatchTrace] = Field(default_factory=list)
 
 
+class LocalPdfDebugEntry(BaseModel):
+    path: str
+    title: str = ""
+    status: Literal["missing_file", "read_error", "empty_text", "token_miss", "candidate_added"]
+    extracted_chars: int = 0
+    matched_token_count: int = 0
+    matched_tokens: list[str] = Field(default_factory=list)
+    error: str = ""
+    retained_in_final: bool = False
+    final_rank: int | None = None
+    eligible: bool | None = None
+    eligibility_score: int | None = None
+    verification_status: str = ""
+
+
+class LocalLibraryDebug(BaseModel):
+    scanned_count: int = 0
+    missing_count: int = 0
+    read_error_count: int = 0
+    empty_text_count: int = 0
+    token_miss_count: int = 0
+    candidate_count: int = 0
+    retained_count: int = 0
+    entries: list[LocalPdfDebugEntry] = Field(default_factory=list)
+
+
 class RetrievalOutput(BaseModel):
     sources_used: list[str] = Field(default_factory=list)
     queries_executed: list[QueryExecution] = Field(default_factory=list)
@@ -106,6 +132,7 @@ class RetrievalOutput(BaseModel):
     coverage_gaps: list[str] = Field(default_factory=list)
     source_errors: list[dict[str, str]] = Field(default_factory=list)
     rerank_trace: RerankTrace = Field(default_factory=RerankTrace)
+    local_library_debug: LocalLibraryDebug = Field(default_factory=LocalLibraryDebug)
 
 
 class ReviewRequirement(BaseModel):

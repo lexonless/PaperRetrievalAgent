@@ -1,20 +1,18 @@
 # Paper Retrieval Agent
 
-A LangGraph-based research assistant for project-centered literature analysis.
+A LangGraph-based research agent prototype for project-centered literature retrieval.
 
-It turns natural-language research tasks into structured retrieval workflows, searches across multiple academic sources, reviews and revises candidate sets, and produces project-scoped research notes with traceable artifacts.
+This repository contains the current mid-stage implementation of a research workflow that can interpret a literature task, retrieve papers from multiple sources, run a review-and-revise loop, and write project-scoped research notes with structured artifacts.
 
-## Highlights
+## Current Progress
 
-- project-centered literature retrieval instead of one-off search results
-- task interpretation from natural-language research prompts
+At the current stage, the repository already includes:
+
+- a LangGraph workflow for task interpretation, retrieval, review, note generation, and artifact persistence
 - multi-source retrieval from `arXiv`, `Crossref`, and `OpenAlex`
-- optional local PDF discovery and integration
-- ranking, deduplication, and eligibility filtering for candidates
-- reviewer-guided revision loop for low-quality retrieval results
-- PDF-based evidence verification for promising papers
-- structured research note generation
-- persistent project artifacts: notes, retrieval JSON, traces, and manifests
+- optional local PDF integration
+- reviewer-guided revision when retrieval quality is insufficient
+- project-scoped outputs including notes, retrieval JSON, traces, and manifests
 
 ## Quick Start
 
@@ -72,7 +70,7 @@ python -m paper_research_agent.main --project brep-reconstruct --query-file quer
 Use a local PDF directory:
 
 ```bash
-python -m paper_research_agent.main --project multimodal-imaging --query "foundation models for medical segmentation" --pdf-dir D:\papers
+python -m paper_research_agent.main --project multimodal-imaging --query "foundation models for medical segmentation" --pdf-dir E:\Search\参考\B-Rep
 ```
 
 You can also use the installed script entrypoint:
@@ -81,7 +79,7 @@ You can also use the installed script entrypoint:
 paper-agent --help
 ```
 
-## How It Works
+## Workflow
 
 The workflow is organized as a top-level LangGraph graph plus a retrieval subgraph.
 
@@ -99,7 +97,7 @@ Retrieval subgraph:
 3. `reviewer_node`
 4. `validate_review_gate_node`
 
-High-level execution flow:
+Current high-level execution flow:
 
 1. interpret the task into a structured intent and query plan
 2. retrieve candidates from academic sources
@@ -160,28 +158,15 @@ Each run writes reusable project materials:
 
 ## Current Scope
 
-This repository currently focuses on:
+This repository should currently be viewed as the groundwork for a larger research agent, not as a full end-to-end research platform.
 
-- project-scoped retrieval workflows
-- traceable intermediate artifacts
-- reviewer-driven quality control
-- research note generation from retrieved and verified candidates
+The current implementation focuses on:
 
-It does **not** currently focus on:
+- building the retrieval workflow itself
+- making intermediate outputs traceable
+- producing reusable project-scoped artifacts
 
+It does **not** yet focus on:
+
+- long-term memory
 - vector database indexing
-- long-term conversational memory
-- citation manager integration
-- advanced downstream workflows such as paper comparison tables or experiment extraction
-
-## Development Notes
-
-- package metadata is defined in `pyproject.toml`
-- the main CLI entrypoint is `paper_research_agent.main`
-- the application wrapper lives in `paper_research_agent.app`
-- artifact persistence is handled in `paper_research_agent.project_store`
-- note and trace rendering lives in `paper_research_agent.reporting`
-
-## Repository Description
-
-> A LangGraph-based research assistant that transforms natural-language research tasks into structured paper retrieval workflows, searches across multiple academic sources, reviews and refines results through an iterative quality loop, and produces project-scoped research notes with traceable artifacts for continuous literature analysis.

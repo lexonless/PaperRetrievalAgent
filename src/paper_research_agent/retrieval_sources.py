@@ -114,30 +114,85 @@ class PaperSourceCollector:
         *,
         task_interpretation: dict[str, Any],
         context: dict[str, Any],
-    ) -> tuple[list[PaperRecord], list[dict[str, str]]]:
+    ) -> tuple[list[PaperRecord], list[dict[str, str]], dict[str, Any]]:
         if not self._local_pdf_paths:
-            return [], []
+            return [], [], {"scanned_count": 0, "missing_count": 0, "read_error_count": 0, "empty_text_count": 0, "token_miss_count": 0, "candidate_count": 0, "retained_count": 0, "entries": []}
 
         query_tokens = set(context.get("query_tokens", []))
         records: list[PaperRecord] = []
         source_errors: list[dict[str, str]] = []
+        debug_entries: list[dict[str, Any]] = []
+        debug_summary = {
+            "scanned_count": 0,
+            "missing_count": 0,
+            "read_error_count": 0,
+            "empty_text_count": 0,
+            "token_miss_count": 0,
+            "candidate_count": 0,
+            "retained_count": 0,
+            "entries": debug_entries,
+        }
 
         intent = task_interpretation.get("intent", {}) if isinstance(task_interpretation, dict) else {}
         topic = normalize_text(intent.get("topic", ""))
         for rank, pdf_path in enumerate(self._local_pdf_paths[:20], start=1):
+            debug_summary["scanned_count"] += 1
             path = Path(pdf_path)
+            title = normalize_text(path.stem.replace("_", " ").replace("-", " "))
             if not path.exists():
                 source_errors.append({"source": "LocalLibrary", "error": f"Missing local PDF: {pdf_path}", "query": topic})
+                debug_summary["missing_count"] += 1
+                debug_entries.append(
+                    {
+                        "path": str(path),
+                        "title": title or path.name,
+                        "status": "missing_file",
+                        "error": f"Missing local PDF: {pdf_path}",
+                    }
+                )
                 continue
             try:
                 snippet = await asyncio.to_thread(self._read_local_pdf_text, path, 2400)
             except Exception as exc:
                 source_errors.append({"source": "LocalLibrary", "error": str(exc), "query": topic})
+                debug_summary["read_error_count"] += 1
+                debug_entries.append(
+                    {
+                        "path": str(path.resolve()),
+                        "title": title or path.name,
+                        "status": "read_error",
+                        "error": str(exc),
+                    }
+                )
                 continue
 
-            title = normalize_text(path.stem.replace("_", " ").replace("-", " "))
+            extracted_chars = len(snippet)
+            if extracted_chars == 0:
+                debug_summary["empty_text_count"] += 1
+                debug_entries.append(
+                    {
+                        "path": str(path.resolve()),
+                        "title": title or path.name,
+                        "status": "empty_text",
+                        "extracted_chars": 0,
+                    }
+                )
+                continue
+
             combined_match = normalize_text(f"{title} {snippet[:1200]}", for_matching=True)
-            if query_tokens and not query_tokens.intersection(set(combined_match.split())):
+            matched_tokens = sorted(query_tokens.intersection(set(combined_match.split())))
+            if query_tokens and not matched_tokens:
+                debug_summary["token_miss_count"] += 1
+                debug_entries.append(
+                    {
+                        "path": str(path.resolve()),
+                        "title": title or path.name,
+                        "status": "token_miss",
+                        "extracted_chars": extracted_chars,
+                        "matched_token_count": 0,
+                        "matched_tokens": [],
+                    }
+                )
                 continue
 
             published = ""
@@ -159,7 +214,18 @@ class PaperSourceCollector:
                     query_stage="local_library",
                 )
             )
-        return records, source_errors
+            debug_summary["candidate_count"] += 1
+            debug_entries.append(
+                {
+                    "path": str(path.resolve()),
+                    "title": title or path.name,
+                    "status": "candidate_added",
+                    "extracted_chars": extracted_chars,
+                    "matched_token_count": len(matched_tokens),
+                    "matched_tokens": matched_tokens,
+                }
+            )
+        return records, source_errors, debug_summary
 
     async def search_arxiv_records(self, query: str, max_results: int | None = None) -> list[PaperRecord]:
         limit = self._resolve_limit(max_results)

@@ -231,9 +231,10 @@ class PaperRankingEngine:
     def get_last_rerank_trace(self) -> dict[str, Any]:
         return self._last_rerank_trace.model_dump()
 
-    def build_retrieval_payload(self, papers: list[dict[str, Any]], raw_source_families: set[str], retrieval_duplicate_count: int, source_errors: list[dict[str, str]] | None, executed_query_specs: list[dict[str, Any]]) -> dict[str, Any]:
+    def build_retrieval_payload(self, papers: list[dict[str, Any]], raw_source_families: set[str], retrieval_duplicate_count: int, source_errors: list[dict[str, str]] | None, executed_query_specs: list[dict[str, Any]], local_library_debug: dict[str, Any] | None = None) -> dict[str, Any]:
         coverage_gaps: list[str] = []
         normalized_source_errors = source_errors if isinstance(source_errors, list) else []
+        normalized_local_library_debug = self._finalize_local_library_debug(local_library_debug, papers)
         for item in normalized_source_errors:
             if isinstance(item, dict) and normalize_text(item.get("source", "")):
                 coverage_gaps.append(f"{normalize_text(item.get('source', ''))} retrieval failed: {normalize_text(item.get('error', ''))}")
@@ -264,7 +265,46 @@ class PaperRankingEngine:
             "coverage_gaps": coverage_gaps,
             "source_errors": normalized_source_errors,
             "rerank_trace": self.get_last_rerank_trace(),
+            "local_library_debug": normalized_local_library_debug,
         }
+
+    def _finalize_local_library_debug(self, local_library_debug: dict[str, Any] | None, papers: list[dict[str, Any]]) -> dict[str, Any]:
+        debug = dict(local_library_debug or {})
+        entries = [dict(item) for item in debug.get("entries", []) if isinstance(item, dict)]
+        final_local_papers: dict[str, dict[str, Any]] = {}
+        for index, paper in enumerate(papers, start=1):
+            if normalize_text(paper.get("source", "")).lower() != "locallibrary":
+                continue
+            path = normalize_text(paper.get("url", ""))
+            if not path:
+                continue
+            final_local_papers[path] = {
+                "retained_in_final": True,
+                "final_rank": index,
+                "eligible": bool(paper.get("eligible")),
+                "eligibility_score": int(paper.get("eligibility_score", 0)),
+                "verification_status": normalize_text(paper.get("verification_status", "")),
+            }
+
+        retained_count = 0
+        for entry in entries:
+            path = normalize_text(entry.get("path", ""))
+            final_info = final_local_papers.get(path)
+            if final_info is None:
+                entry["retained_in_final"] = False
+                continue
+            retained_count += 1
+            entry.update(final_info)
+
+        debug["entries"] = entries
+        debug["scanned_count"] = int(debug.get("scanned_count", 0))
+        debug["missing_count"] = int(debug.get("missing_count", 0))
+        debug["read_error_count"] = int(debug.get("read_error_count", 0))
+        debug["empty_text_count"] = int(debug.get("empty_text_count", 0))
+        debug["token_miss_count"] = int(debug.get("token_miss_count", 0))
+        debug["candidate_count"] = int(debug.get("candidate_count", 0))
+        debug["retained_count"] = retained_count
+        return debug
 
     def finalize_ranked_papers(self, papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
         for paper in papers:
