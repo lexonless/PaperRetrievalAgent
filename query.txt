@@ -3,8 +3,8 @@ Act as an expert 3D computer vision and geometric deep learning researcher. Your
 
 **Primary Focus (What to INCLUDE):**
 * **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).
-* **Target Input:** Unstructured Point Clouds or 3D scans are the highest priority. Multimodal or sketch/image inputs are acceptable only if the method is a major breakthrough in B-Rep generation.
-* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, or end-to-end direct neural generation of continuous B-Rep geometry and topology.
+* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.
+* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.
 
 **CRITICAL EXCLUSIONS (What to strictly AVOID):**
 You MUST STRICTLY EXCLUDE any paper that falls into these categories:
@@ -19,10 +19,10 @@ For each of the 8-10 selected papers, provide:
 * **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)
 * **Link:**
 * **Core Contribution:** (1-2 sentences on their specific technical breakthrough)
-* **Relevance Note:** (Explain exactly how it tackles direct B-Rep generation from point clouds, and confirm it does not rely on step-by-step operation sequences).
+* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).
 
 **Synthesis Report:**
 After listing the papers, provide a concise summary covering:
 1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)
 2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)
-3.  **Open Challenges:** (Specific bottlenecks in point-cloud-to-B-Rep tasks)
+3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)

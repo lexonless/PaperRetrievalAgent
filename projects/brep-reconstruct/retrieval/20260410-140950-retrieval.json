@@ -1,0 +1,652 @@
+{
+  "query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input:** Unstructured Point Clouds or 3D scans are the highest priority. Multimodal or sketch/image inputs are acceptable only if the method is a major breakthrough in B-Rep generation.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, or end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep generation from point clouds, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in point-cloud-to-B-Rep tasks)",
+  "prepared_query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input:** Unstructured Point Clouds or 3D scans are the highest priority. Multimodal or sketch/image inputs are acceptable only if the method is a major breakthrough in B-Rep generation.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, or end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep generation from point clouds, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in point-cloud-to-B-Rep tasks)\n\n[Runtime Search Context]\nToday's date for this run is 2026-04-10.\nThe query contains a vague recency hint. Resolve it into an explicit year range against today's date.",
+  "task_interpretation": {
+    "intent": {
+      "topic": "Neural network-based 3D Boundary Representation (B-Rep) reconstruction and generation from unstructured point clouds or 3D scans",
+      "goal": "Identify 8-10 state-of-the-art research papers (2021-2026) that directly output the final B-Rep data structure (faces, edges, vertices, topology) from unstructured point clouds or 3D scans using modern neural architectures, while strictly excluding methods that output CAD operation sequences, CSG trees, or programs.",
+      "time_range": {
+        "start_year": null,
+        "end_year": 2026,
+        "is_explicit": false,
+        "original_expression": "recent",
+        "resolution_basis_date": "2026-04-10",
+        "resolved_by_rule": ""
+      },
+      "must_include": [
+        "direct output of final B-Rep topological and geometric data structure",
+        "input from unstructured point clouds or 3D scans",
+        "modern neural architectures (e.g., latent space, variational, end-to-end)",
+        "published between 2021 and 2026"
+      ],
+      "must_exclude": [
+        "CAD operation sequences or construction trees",
+        "sketch-and-extrude histories",
+        "Constructive Solid Geometry (CSG) trees",
+        "CAD program or macro synthesis",
+        "step-by-step modeling history as primary output"
+      ]
+    },
+    "query_plan": {
+      "primary_queries": [
+        "neural B-Rep reconstruction from unorganized point clouds",
+        "learning boundary representations from 3D scans deep learning",
+        "differentiable B-Rep extraction from point cloud",
+        "topology-aware point cloud reconstruction to B-Rep",
+        "direct boundary representation generation neural network",
+        "point cloud to B-Rep end-to-end neural network",
+        "implicit neural representation for B-Rep reconstruction",
+        "variational autoencoder for B-Rep generation from scans"
+      ],
+      "semantic_core_terms": [
+        "B-Rep reconstruction",
+        "point cloud to B-Rep",
+        "neural topology generation",
+        "boundary representation learning",
+        "differentiable B-Rep",
+        "structured 3D prediction",
+        "neural implicit B-Rep",
+        "topology-aware reconstruction"
+      ]
+    }
+  },
+  "retrieval_output": {
+    "sources_used": [
+      "Crossref",
+      "OpenAlex",
+      "arXiv"
+    ],
+    "queries_executed": [
+      {
+        "query": "neural B-Rep reconstruction from unorganized point clouds",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "learning boundary representations from 3D scans deep learning",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "differentiable B-Rep extraction from point cloud",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "topology-aware point cloud reconstruction to B-Rep",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "direct boundary representation generation neural network",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "point cloud to B-Rep end-to-end neural network",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "implicit neural representation for B-Rep reconstruction",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "variational autoencoder for B-Rep generation from scans",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep reconstruction",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "point cloud to B-Rep",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "neural topology generation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "boundary representation learning",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      }
+    ],
+    "papers": [
+      {
+        "title": "AutoRegressive Generation with B-rep Holistic Token Sequence Representation",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-01-23T14:15:02Z",
+        "url": "http://arxiv.org/abs/2601.16771v2",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Yunpeng Bai",
+          "Yongkang Dai",
+          "Hao Guo",
+          "Hongping Gan",
+          "Yilei Shi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Previous representation and generation approaches for the B-rep relied on graph-based representations that disentangle geometric and topological features through decoupled computational pipelines, thereby precluding the application of sequence-based generative frameworks, such as transformer architectures that have demonstrated remarkable performance. In this paper, we propose BrepARG, the first attempt to encode B-rep's geometry and topology into a holistic token sequence representation, enabling sequence-based B-rep generation with an autoregressive architecture. Specifically, BrepARG encodes B-rep into 3 types of tokens: geometry and position tokens representing geometric features, and face index tokens representing topology. Then the holistic token sequence is constructed hierarchically, starting with constructing the geometry blocks (i.e., faces and edges) using the above tokens, followed by geometry block sequencing. Finally, we assemble the holistic sequence representation for the entire B-rep. We also construct a transformer-based autoregressive model that learns the distribution over holistic token sequences via next-token prediction, using a multi-layer decoder-only architecture with causal masking. Experiments demonstrate that BrepARG achieves state-of-the-art (SOTA) performance. BrepARG validates the feasibility of representing B-rep as holistic token sequences, opening new directions for B-rep generation."
+        ]
+      },
+      {
+        "title": "Deep Learning-Based Brain Tumor Segmentation Using 3D MRI Scans from the BraTS 2020 Dataset",
+        "source": "Crossref / Crossref",
+        "year": 2026,
+        "date": "2026-1-28",
+        "url": "https://doi.org/10.20944/preprints202601.2179.v1",
+        "doi": "10.20944/preprints202601.2179.v1",
+        "authors": [
+          "N. Deena Nepolian",
+          "M. Mary Synthuja Jain Preetha",
+          "K. S. Vijula Grace"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:p>This preprint has been withdrawn at the authors’ request due to serious scientific errors that cannot be corrected by updating the paper.</jats:p>"
+        ]
+      },
+      {
+        "title": "Point2Brep: Geometry-Aware B-rep Reconstruction from Point Clouds",
+        "source": "Crossref / Crossref",
+        "year": 2026,
+        "date": "2026",
+        "url": "https://doi.org/10.2139/ssrn.6172545",
+        "doi": "10.2139/ssrn.6172545",
+        "authors": [
+          "yihang fu",
+          "jing li",
+          "Falai Chen"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:p>Reconstructing accurate boundary representations (B-reps) from unstructured point clouds remains challenging due to measurement noise and the intrinsic geometric and topological complexity of B-rep models. We present Point2Brep, a geometry-aware framework that reconstructs complete and topologically consistent B-rep models by tightly integrating learning-based inference with explicit parametric modeling and geometric reasoning. Point2Brep follows a two-stage pipeline. First, it segments noisy point clouds into surface patches via learning-guided region growing, prioritizing high-confidence interior points to fit reliable parametric surfaces. Second, conditioned on the reconstructed surfaces, Point2Brep predicts continuous geometric distance fields that encode spatial proximity to B-rep edges and vertices. These fields are subsequently resolved through explicit geometric reasoning to recover edge curves, vertex locations, and their connectivity. Extensive experiments demonstrate that Point2Brep significantly outperforms existing methods in both geometric accuracy and topological consistency.</jats:p>"
+        ]
+      },
+      {
+        "title": "Revisiting Radar Perception With Spectral Point Clouds",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-04-09T14:19:09Z",
+        "url": "http://arxiv.org/abs/2604.08282v1",
+        "doi": "",
+        "authors": [
+          "Hamza Alsharif",
+          "Jing Gu",
+          "Pavol Jancura",
+          "Satish Ravindran",
+          "Gijs Dubbelman"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Radar perception models are trained with different inputs, from range-Doppler spectra to sparse point clouds. Dense spectra are assumed to outperform sparse point clouds, yet they can vary considerably across sensors and configurations, which hinders transfer. In this paper, we provide alternatives for incorporating spectral information into radar point clouds and show that, point clouds need not underperform compared to spectra. We introduce the spectral point cloud paradigm, where point clouds are treated as sparse, compressed representations of the radar spectra, and argue that, when enriched with spectral information, they serve as strong candidates for a unified input representation that is more robust against sensor-specific differences. We develop an experimental framework that compares spectral point cloud (PC) models at varying densities against a dense range-Doppler (RD) benchmark, and report the density levels where the PC configurations meet the performance of the RD benchmark. Furthermore, we experiment with two basic spectral enrichment approaches, that inject additional target-relevant information into the point clouds. Contrary to the common belief that the dense RD approach is superior, we show that point clouds can do just as well, and can surpass the RD benchmark when enrichment is applied. Spectral point clouds can therefore serve as strong candidates for unified radar perception, paving the way for future radar foundation models."
+        ]
+      },
+      {
+        "title": "AutoBrep: Autoregressive B-Rep Generation with Unified Topology and Geometry",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-12-02T18:46:25Z",
+        "url": "http://arxiv.org/abs/2512.03018v1",
+        "doi": "",
+        "authors": [
+          "Xiang Xu",
+          "Pradeep Kumar Jayaraman",
+          "Joseph G. Lambourne",
+          "Yilin Liu",
+          "Durvesh Malpure",
+          "Pete Meltzer"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "The boundary representation (B-Rep) is the standard data structure used in Computer-Aided Design (CAD) for defining solid models. Despite recent progress, directly generating B-Reps end-to-end with precise geometry and watertight topology remains a challenge. This paper presents AutoBrep, a novel Transformer model that autoregressively generates B-Reps with high quality and validity. AutoBrep employs a unified tokenization scheme that encodes both geometric and topological characteristics of a B-Rep model as a sequence of discrete tokens. Geometric primitives (i.e., surfaces and curves) are encoded as latent geometry tokens, and their structural relationships are defined as special topological reference tokens. Sequence order in AutoBrep naturally follows a breadth first traversal of the B-Rep face adjacency graph. At inference time, neighboring faces and edges along with their topological structure are progressively generated. Extensive experiments demonstrate the advantages of our unified representation when coupled with next-token prediction for B-Rep generation. AutoBrep outperforms baselines with better quality and watertightness. It is also highly scalable to complex solids with good fidelity and inference speed. We further show that autocompleting B-Reps is natively supported through our unified tokenization, enabling user-controllable CAD generation with minimal changes. Code is available at https://github.com/AutodeskAILab/AutoBrep."
+        ]
+      },
+      {
+        "title": "B-Rep Distance Functions (BR-DF): How to Represent a B-Rep Model by Volumetric Distance Functions?",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-18T19:40:34Z",
+        "url": "http://arxiv.org/abs/2511.14870v1",
+        "doi": "",
+        "authors": [
+          "Fuyang Zhang",
+          "Pradeep Kumar Jayaraman",
+          "Xiang Xu",
+          "Yasutaka Furukawa"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "This paper presents a novel geometric representation for CAD Boundary Representation (B-Rep) based on volumetric distance functions, dubbed B-Rep Distance Functions (BR-DF). BR-DF encodes the surface mesh geometry of a CAD model as signed distance function (SDF). B-Rep vertices, edges, faces and their topology information are encoded as per-face unsigned distance functions (UDFs). An extension of the Marching Cubes algorithm converts BR-DF directly into watertight CAD B-Rep model (strictly speaking a faceted B-Rep model). A surprising characteristic of BR-DF is that this conversion process never fails. Leveraging the volumetric nature of BR-DF, we propose a multi-branch latent diffusion with 3D U-Net backbone for jointly generating the SDF and per-face UDFs of a BR-DF model. Our approach achieves comparable CAD generation performance against SOTA methods while reaching the unprecedented 100% success rate in producing (faceted) B-Rep models."
+        ]
+      },
+      {
+        "title": "BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-27T07:16:53Z",
+        "url": "http://arxiv.org/abs/2511.22171v1",
+        "doi": "",
+        "authors": [
+          "Pu Li",
+          "Wenhao Zhang",
+          "Weize Quan",
+          "Biao Zhang",
+          "Peter Wonka",
+          "Dong-Ming Yan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Boundary representation (B-rep) is the de facto standard for CAD model representation in modern industrial design. The intricate coupling between geometric and topological elements in B-rep structures has forced existing generative methods to rely on cascaded multi-stage networks, resulting in error accumulation and computational inefficiency. We present BrepGPT, a single-stage autoregressive framework for B-rep generation. Our key innovation lies in the Voronoi Half-Patch (VHP) representation, which decomposes B-reps into unified local units by assigning geometry to nearest half-edges and sampling their next pointers. Unlike hierarchical representations that require multiple distinct encodings for different structural levels, our VHP representation facilitates unifying geometric attributes and topological relations in a single, coherent format. We further leverage dual VQ-VAEs to encode both vertex topology and Voronoi Half-Patches into vertex-based tokens, achieving a more compact sequential encoding. A decoder-only Transformer is then trained to autoregressively predict these tokens, which are subsequently mapped to vertex-based features and decoded into complete B-rep models. Experiments demonstrate that BrepGPT achieves state-of-the-art performance in unconditional B-rep generation. The framework also exhibits versatility in various applications, including conditional generation from category labels, point clouds, text descriptions, and images, as well as B-rep autocompletion and interpolation."
+        ]
+      },
+      {
+        "title": "Herglotz-NET: Implicit Neural Representation of Spherical Data with Harmonic Positional Encoding",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-02-19T14:40:02Z",
+        "url": "http://arxiv.org/abs/2502.13777v3",
+        "doi": "",
+        "authors": [
+          "Théo Hanon",
+          "Nicolas Mil-Homens Cavaco",
+          "John Kiely",
+          "Laurent Jacques"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Representing and processing data in spherical domains presents unique challenges, primarily due to the curvature of the domain, which complicates the application of classical Euclidean techniques. Implicit neural representations (INRs) have emerged as a promising alternative for high-fidelity data representation; however, to effectively handle spherical domains, these methods must be adapted to the inherent geometry of the sphere to maintain both accuracy and stability. In this context, we propose Herglotz-NET (HNET), a novel INR architecture that employs a harmonic positional encoding based on complex Herglotz mappings. This encoding yields a well-posed representation on the sphere with interpretable and robust spectral properties. Moreover, we present a unified expressivity analysis showing that any spherical-based INR satisfying a mild condition exhibits a predictable spectral expansion that scales with network depth. Our results establish HNET as a scalable and flexible framework for accurate modeling of spherical data."
+        ]
+      },
+      {
+        "title": "Predicting concentration levels of air pollutants by transfer learning and recurrent neural network",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-01-30T23:39:19Z",
+        "url": "http://arxiv.org/abs/2502.01654v1",
+        "doi": "",
+        "authors": [
+          "Iat Hang Fong",
+          "Tengyue Li",
+          "Simon Fong",
+          "Raymond K. Wong",
+          "Antonio J. Tallón-Ballesteros"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Air pollution (AP) poses a great threat to human health, and people are paying more attention than ever to its prediction. Accurate prediction of AP helps people to plan for their outdoor activities and aids protecting human health. In this paper, long-short term memory (LSTM) recurrent neural networks (RNNs) have been used to predict the future concentration of air pollutants (APS) in Macau. Additionally, meteorological data and data on the concentration of APS have been utilized. Moreover, in Macau, some air quality monitoring stations (AQMSs) have less observed data in quantity, and, at the same time, some AQMSs recorded less observed data of certain types of APS. Therefore, the transfer learning and pre-trained neural networks have been employed to assist AQMSs with less observed data to build a neural network with high prediction accuracy. The experimental sample covers a period longer than 12-year and includes daily measurements from several APS as well as other more classical meteorological values. Records from five stations, four out of them are AQMSs and the remaining one is an automatic weather station, have been prepared from the aforesaid period and eventually underwent to computational intelligence techniques to build and extract a prediction knowledge-based system. As shown by experimentation, LSTM RNNs initialized with transfer learning methods have higher prediction accuracy; it incurred shorter training time than randomly initialized recurrent neural networks."
+        ]
+      },
+      {
+        "title": "FINER++: Building a Family of Variable-periodic Functions for Activating Implicit Neural Representation",
+        "source": "arXiv",
+        "year": 2024,
+        "date": "2024-07-28T09:24:57Z",
+        "url": "http://arxiv.org/abs/2407.19434v1",
+        "doi": "",
+        "authors": [
+          "Hao Zhu",
+          "Zhen Liu",
+          "Qi Zhang",
+          "Jingde Fu",
+          "Weibing Deng",
+          "Zhan Ma",
+          "Yanwen Guo",
+          "Xun Cao"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Implicit Neural Representation (INR), which utilizes a neural network to map coordinate inputs to corresponding attributes, is causing a revolution in the field of signal processing. However, current INR techniques suffer from the \"frequency\"-specified spectral bias and capacity-convergence gap, resulting in imperfect performance when representing complex signals with multiple \"frequencies\". We have identified that both of these two characteristics could be handled by increasing the utilization of definition domain in current activation functions, for which we propose the FINER++ framework by extending existing periodic/non-periodic activation functions to variable-periodic ones. By initializing the bias of the neural network with different ranges, sub-functions with various frequencies in the variable-periodic function are selected for activation. Consequently, the supported frequency set can be flexibly tuned, leading to improved performance in signal representation. We demonstrate the generalization and capabilities of FINER++ with different activation function backbones (Sine, Gauss. and Wavelet) and various tasks (2D image fitting, 3D signed distance field representation, 5D neural radiance fields optimization and streamable INR transmission), and we show that it improves existing INRs. Project page: {https://liuzhen0212.github.io/finerpp/}"
+        ]
+      },
+      {
+        "title": "$PC^2$: Projection-Conditioned Point Cloud Diffusion for Single-Image 3D Reconstruction",
+        "source": "arXiv",
+        "year": 2023,
+        "date": "2023-02-21T13:37:07Z",
+        "url": "http://arxiv.org/abs/2302.10668v2",
+        "doi": "",
+        "authors": [
+          "Luke Melas-Kyriazi",
+          "Christian Rupprecht",
+          "Andrea Vedaldi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Reconstructing the 3D shape of an object from a single RGB image is a long-standing and highly challenging problem in computer vision. In this paper, we propose a novel method for single-image 3D reconstruction which generates a sparse point cloud via a conditional denoising diffusion process. Our method takes as input a single RGB image along with its camera pose and gradually denoises a set of 3D points, whose positions are initially sampled randomly from a three-dimensional Gaussian distribution, into the shape of an object. The key to our method is a geometrically-consistent conditioning process which we call projection conditioning: at each step in the diffusion process, we project local image features onto the partially-denoised point cloud from the given camera pose. This projection conditioning process enables us to generate high-resolution sparse geometries that are well-aligned with the input image, and can additionally be used to predict point colors after shape reconstruction. Moreover, due to the probabilistic nature of the diffusion process, our method is naturally capable of generating multiple different shapes consistent with a single input image. In contrast to prior work, our approach not only performs well on synthetic benchmarks, but also gives large qualitative improvements on complex real-world data."
+        ]
+      },
+      {
+        "title": "Disorder-invariant Implicit Neural Representation",
+        "source": "arXiv",
+        "year": 2023,
+        "date": "2023-04-03T09:28:48Z",
+        "url": "http://arxiv.org/abs/2304.00837v1",
+        "doi": "",
+        "authors": [
+          "Hao Zhu",
+          "Shaowen Xie",
+          "Zhen Liu",
+          "Fengyi Liu",
+          "Qi Zhang",
+          "You Zhou",
+          "Yi Lin",
+          "Zhan Ma"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Implicit neural representation (INR) characterizes the attributes of a signal as a function of corresponding coordinates which emerges as a sharp weapon for solving inverse problems. However, the expressive power of INR is limited by the spectral bias in the network training. In this paper, we find that such a frequency-related problem could be greatly solved by re-arranging the coordinates of the input signal, for which we propose the disorder-invariant implicit neural representation (DINER) by augmenting a hash-table to a traditional INR backbone. Given discrete signals sharing the same histogram of attributes and different arrangement orders, the hash-table could project the coordinates into the same distribution for which the mapped signal can be better modeled using the subsequent INR network, leading to significantly alleviated spectral bias. Furthermore, the expressive power of the DINER is determined by the width of the hash-table. Different width corresponds to different geometrical elements in the attribute space, \\textit{e.g.}, 1D curve, 2D curved-plane and 3D curved-volume when the width is set as $1$, $2$ and $3$, respectively. More covered areas of the geometrical elements result in stronger expressive power. Experiments not only reveal the generalization of the DINER for different INR backbones (MLP vs. SIREN) and various tasks (image/video representation, phase retrieval, refractive index recovery, and neural radiance field optimization) but also show the superiority over the state-of-the-art algorithms both in quality and speed. \\textit{Project page:} \\url{https://ezio77.github.io/DINER-website/}"
+        ]
+      }
+    ],
+    "dedup_notes": [
+      "Retrieved papers were deduplicated by DOI, URL, or normalized title; 28 duplicate entries were merged."
+    ],
+    "missing_metadata": [
+      "Title-only candidates remain weak until abstract or excerpt evidence is available."
+    ],
+    "coverage_gaps": [
+      "Fewer than 5 candidates were rated as direct or related to the task.",
+      "No candidate reached verified status from excerpt-backed evidence."
+    ],
+    "source_errors": [],
+    "rerank_trace": {
+      "attempted": true,
+      "skipped_reason": "",
+      "candidate_count": 24,
+      "batch_size": 6,
+      "batch_count": 4,
+      "successful_batches": 0,
+      "empty_batches": 4,
+      "failed_batches": 0,
+      "judgment_count": 0,
+      "judged_paper_ids": [],
+      "batches": [
+        {
+          "batch_index": 0,
+          "paper_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5"
+          ],
+          "status": "empty",
+          "parsed_judgment_count": 0,
+          "raw_response_preview": "```json\n{\n    \"p0\": {\n        \"topical_relevance\": \"high\",\n        \"task_fit\": \"direct\",\n        \"evidence_sufficiency\": \"strong\",\n        \"reasoning\": \"The paper proposes BrepARG, an autoregressive model that directly generates B-Rep geometry and topology from a holistic token sequence. It uses a transformer architecture (modern neural architecture) and is focused on B-Rep generation. The evidence does not explicitly state the input is point clouds/scans, but the matched queries include 'B-Rep ",
+          "error": ""
+        },
+        {
+          "batch_index": 1,
+          "paper_ids": [
+            "p6",
+            "p7",
+            "p8",
+            "p9",
+            "p10",
+            "p11"
+          ],
+          "status": "empty",
+          "parsed_judgment_count": 0,
+          "raw_response_preview": "```json\n{\n    \"p6\": {\n        \"topical_relevance\": \"high\",\n        \"task_fit\": \"direct\",\n        \"evidence_sufficiency\": \"strong\",\n        \"reasoning\": \"The paper 'BrepGPT' directly addresses the core task. The evidence states it is a framework for 'B-rep generation' and demonstrates 'conditional generation from... point clouds'. It uses a modern neural architecture (autoregressive Transformer with dual VQ-VAEs) to directly output the complete B-rep model (vertices, topology) from tokens. It is ",
+          "error": ""
+        },
+        {
+          "batch_index": 2,
+          "paper_ids": [
+            "p12",
+            "p13",
+            "p14",
+            "p15",
+            "p16",
+            "p17"
+          ],
+          "status": "empty",
+          "parsed_judgment_count": 0,
+          "raw_response_preview": "{\n  \"p12\": {\n    \"topical_relevance\": \"low\",\n    \"task_fit\": \"weak\",\n    \"evidence_sufficiency\": \"strong\",\n    \"reason\": \"The paper is about reinforcement learning for legged robot locomotion and hopping control. It does not address 3D shape reconstruction, B-Rep generation, point clouds, or any related geometric or topological tasks. The matched query appears to be a mismatch.\"\n  },\n  \"p13\": {\n    \"topical_relevance\": \"low\",\n    \"task_fit\": \"weak\",\n    \"evidence_sufficiency\": \"strong\",\n    \"rea",
+          "error": ""
+        },
+        {
+          "batch_index": 3,
+          "paper_ids": [
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p22",
+            "p23"
+          ],
+          "status": "empty",
+          "parsed_judgment_count": 0,
+          "raw_response_preview": "{\n  \"p18\": {\n    \"topical_relevance\": \"high\",\n    \"task_fit\": \"direct\",\n    \"evidence_sufficiency\": \"strong\",\n    \"reasoning\": \"The paper 'ComplexGen: CAD Reconstruction by B-Rep Chain Complex Generation' directly addresses B-Rep reconstruction from point clouds using a neural framework (sparse CNN encoder, transformer decoder) to detect vertices, edges, and surfaces, and outputs a final B-Rep chain complex after optimization. It matches all must_include criteria: direct B-Rep output, input from",
+          "error": ""
+        }
+      ]
+    }
+  },
+  "review_output": {
+    "decision": "REVISE",
+    "review_summary": "Retrieval returned many papers but most are weakly relevant or irrelevant to the core task of B-Rep reconstruction from point clouds using neural networks. Only a few candidates (e.g., Point2Brep, BrepGPT, AutoBrep) appear potentially relevant but lack strong evidence of direct point cloud input or are not fully verified. The rerank process failed to produce usable judgments, leaving topical relevance and task fit unconfirmed. Critical coverage gaps remain.",
+    "scores": {
+      "coverage_score": 0,
+      "relevance_score": 0,
+      "metadata_score": 1,
+      "diversity_score": 1,
+      "evidence_score": 0
+    },
+    "hard_requirements": {
+      "source_coverage": {
+        "passed": false,
+        "reason": "Multiple sources (Crossref, OpenAlex, arXiv) were used, but the retrieved set is dominated by weakly relevant or off-topic papers (e.g., brain tumor segmentation, air pollution prediction, radar perception)."
+      },
+      "candidate_depth": {
+        "passed": false,
+        "reason": "Fewer than 5 candidates were rated as directly or closely related to the task. No candidate reached 'verified' status with excerpt-backed evidence confirming all must-include criteria."
+      },
+      "relevance": {
+        "passed": false,
+        "reason": "Most papers have low topical relevance. Many are about implicit neural representations for general signals, point cloud diffusion for single-image 3D reconstruction, or unrelated domains. The core focus on neural B-Rep reconstruction from point clouds is not adequately addressed."
+      },
+      "metadata": {
+        "passed": true,
+        "reason": "Basic metadata (title, year, authors, source) is present for most entries. Some have DOIs or URLs."
+      },
+      "query_fit": {
+        "passed": false,
+        "reason": "Queries were executed but returned many false positives. The semantic terms (e.g., 'B-Rep reconstruction', 'point cloud to B-Rep') did not sufficiently filter to the narrow task, suggesting the query strategy needs refinement."
+      },
+      "core_method_fit": {
+        "passed": false,
+        "reason": "For the few potentially relevant papers (Point2Brep, BrepGPT, AutoBrep), evidence snippets do not clearly confirm that they take unstructured point clouds as input and directly output final B-Rep topology/geometry without operation sequences. The rerank judgments were empty, so fit is unverified."
+      },
+      "time_consistency": {
+        "passed": true,
+        "reason": "All papers are within the resolved time range (2021-2026)."
+      },
+      "gaps": {
+        "passed": false,
+        "reason": "Major coverage gaps: insufficient high-relevance papers, lack of verification on input/output alignment, and missing key state-of-the-art works expected in this niche (e.g., from CVPR, SIGGRAPH, NeurIPS 2022-2025)."
+      }
+    },
+    "key_risks": [
+      "The retrieval is contaminated with many irrelevant papers, diluting the signal.",
+      "Reranking failed to produce usable judgments, leaving candidate relevance uncertain.",
+      "Critical must-include criteria (point cloud input, direct B-Rep output) are not confirmed for any paper.",
+      "The synthesis report cannot be credibly written with the current thin evidence."
+    ],
+    "next_actions": [
+      "Revise the query interpretation to more sharply target the niche. Emphasize exclusion of general implicit neural representation (INR) papers unless they explicitly output B-Rep.",
+      "Add explicit negative terms to queries: '-CSG -\"operation sequence\" -\"program synthesis\" -\"sketch\" -\"extrude\" -\"history\" -\"implicit neural representation\" (unless combined with B-Rep).",
+      "Use more specific venue-focused queries: \"CVPR B-Rep reconstruction point cloud\", \"SIGGRAPH boundary representation learning point cloud\".",
+      "Consider searching for known benchmark papers or authors in this subfield to seed the retrieval.",
+      "Ensure the rerank function is operational or implement a manual filter to isolate true candidates from noise."
+    ],
+    "failure_reasons": [
+      "Low precision: Most retrieved papers are off-topic (e.g., medical imaging, air pollution, radar).",
+      "Insufficient verification: No candidate has strong evidence confirming point cloud input and direct B-Rep output.",
+      "Rerank failure: The attempted reranking produced empty or incomplete judgments, leaving relevance unassessed."
+    ],
+    "reformulation_advice": [
+      "Sharpen the query semantic core: Use phrases like \"neural B-Rep reconstruction from unorganized point clouds\" AND \"direct B-Rep output\" to increase precision.",
+      "Add mandatory exclusion terms to every query: -CSG -\"constructive solid geometry\" -\"CAD sequence\" -\"modeling history\" -\"sketch\" -\"extrude\" -\"program\" -\"macro\".",
+      "Prioritize venue-specific searches: Query \"CVPR 2023 B-Rep\", \"SIGGRAPH Asia 2024 boundary representation\", \"NeurIPS 2022 geometric deep learning B-Rep\".",
+      "Include known author names or lab names if aware (e.g., \"Yasutaka Furukawa B-Rep\", \"Autodesk AI Lab B-Rep\").",
+      "Explicitly require the evidence snippet to mention both 'point cloud' (or '3D scan') and 'B-Rep' (or 'boundary representation') in the context of generation/reconstruction."
+    ]
+  }
+}

@@ -1,2 +1,1 @@
-"""Paper retrieval agent starter package."""
-
+"""LangGraph-based research assistant package."""

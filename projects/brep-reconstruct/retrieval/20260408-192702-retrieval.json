@@ -1,0 +1,695 @@
+{
+  "query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input:** Unstructured Point Clouds or 3D scans are the highest priority. Multimodal or sketch/image inputs are acceptable only if the method is a major breakthrough in B-Rep generation.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, or end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep generation from point clouds, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in point-cloud-to-B-Rep tasks)",
+  "prepared_query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input:** Unstructured Point Clouds or 3D scans are the highest priority. Multimodal or sketch/image inputs are acceptable only if the method is a major breakthrough in B-Rep generation.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, or end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep generation from point clouds, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in point-cloud-to-B-Rep tasks)\n\n[Runtime Search Context]\nToday's date for this run is 2026-04-08.\nThe query contains a vague recency hint. Resolve it into an explicit year range against today's date.",
+  "planner_output": {
+    "topic": "3D Boundary Representation (B-Rep) reconstruction and generation from unstructured point clouds using neural architectures",
+    "user_intent": "Find 8-10 state-of-the-art research papers (2021-2026) that directly generate B-Rep data structures (faces, edges, vertices, topology) from point clouds or 3D scans using modern neural methods, excluding CAD operation sequences, CSG trees, and program synthesis approaches.",
+    "time_range": {
+      "start_year": 2021,
+      "end_year": 2026,
+      "is_explicit": true,
+      "original_expression": "published between 2021-2026",
+      "resolution_basis_date": "2026-04-08",
+      "resolved_by_rule": "Explicit range provided in query"
+    },
+    "focus_areas": [
+      "Direct B-Rep generation from point clouds",
+      "Neural architectures for B-Rep topology and geometry",
+      "End-to-end B-Rep reconstruction",
+      "Latent space representations for B-Reps",
+      "Variational approaches for B-Rep generation"
+    ],
+    "exclude_areas": [
+      "CAD operation sequences",
+      "Sketch-and-extrude histories",
+      "Construction tree reconstruction",
+      "CSG tree generation",
+      "CAD program synthesis",
+      "Step-by-step modeling history",
+      "B-Rep representation learning without generation",
+      "B-Rep-to-CSG conversion",
+      "Rotation-invariant learning on B-Reps",
+      "Medical imaging applications"
+    ],
+    "fallback_queries": [
+      "B-Rep reconstruction from 3D scan neural network",
+      "point cloud to boundary representation deep learning",
+      "neural B-Rep generation from unstructured input",
+      "topology-aware 3D reconstruction neural network"
+    ],
+    "queries": [
+      {
+        "query": "\"BRepNet\" \"CVPR 2021\" topological message passing solid models",
+        "reason": "Target the seminal BRepNet paper from CVPR 2021 as foundational work for neural B-Rep processing"
+      },
+      {
+        "query": "\"point cloud to B-Rep\" reconstruction neural network 2022 2023 2024",
+        "reason": "Direct search for point-cloud-to-B-Rep reconstruction methods in key years"
+      },
+      {
+        "query": "\"3D scan\" \"boundary representation\" reconstruction deep learning CVPR SIGGRAPH",
+        "reason": "Search for scan-to-B-Rep methods in top computer vision/graphics venues"
+      },
+      {
+        "query": "\"B-Rep generation\" \"diffusion model\" \"transformer\" 2023 2024 2025",
+        "reason": "Find modern generative approaches (diffusion, transformers) for B-Reps"
+      },
+      {
+        "query": "\"neural B-Rep\" \"direct generation\" \"topology\" -CSG -\"operation sequence\"",
+        "reason": "Search for neural methods that directly output B-Rep topology, excluding CSG and sequences"
+      },
+      {
+        "query": "\"B-Rep reconstruction\" ICCV ECCV NeurIPS 2022 2023",
+        "reason": "Target other major conferences for relevant papers in the time range"
+      },
+      {
+        "query": "citations to \"BRepNet: A topological message passing system for solid models\"",
+        "reason": "Find follow-up works citing the foundational BRepNet paper"
+      },
+      {
+        "query": "\"boundary representation\" \"generative model\" \"neural network\" 2021-2024",
+        "reason": "Broader search for generative neural approaches to boundary representations"
+      }
+    ],
+    "assumptions": [
+      "High-quality papers exist in CVPR, SIGGRAPH, ICCV, ECCV, and NeurIPS between 2021-2026",
+      "The field has evolved from BRepNet (2021) to more recent generative approaches",
+      "Point-cloud-to-B-Rep reconstruction is a distinct subfield within 3D vision",
+      "Peer-reviewed conference papers are preferred over arXiv preprints for credibility"
+    ],
+    "success_criteria": [
+      "At least 8 papers directly relevant to point-cloud-to-B-Rep reconstruction/generation",
+      "Coverage of both reconstruction (from scans) and generation (from latent space) approaches",
+      "Inclusion of foundational works (2021-2023) and recent advances (2024-2026)",
+      "Clear evidence that each paper outputs B-Rep data structures directly, not operation sequences",
+      "Papers from major computer vision/graphics conferences (CVPR, SIGGRAPH, etc.)"
+    ]
+  },
+  "retrieval_output": {
+    "sources_used": [
+      "Crossref",
+      "OpenAlex",
+      "arXiv"
+    ],
+    "queries_executed": [
+      {
+        "query": "\"B-Rep\" \"point cloud\" reconstruction neural network 2021 2022 2023 2024 2025",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "\"BRepNet\" \"CVPR 2021\" topological message passing solid models",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "\"point cloud to B-Rep\" reconstruction neural network 2022 2023 2024",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "\"3D scan\" \"boundary representation\" reconstruction deep learning CVPR SIGGRAPH",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "\"B-Rep generation\" \"diffusion model\" \"transformer\" 2023 2024 2025",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "\"neural B-Rep\" \"direct generation\" \"topology\" -CSG -\"operation sequence\"",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "\"B-Rep reconstruction\" ICCV ECCV NeurIPS 2022 2023",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "citations to \"BRepNet: A topological message passing system for solid models\"",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "\"boundary representation\" \"generative model\" \"neural network\" 2021-2024",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Planner query executed in the primary retrieval phase."
+      },
+      {
+        "query": "B-Rep reconstruction from 3D scan neural network",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Fallback query executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "point cloud to boundary representation deep learning",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Fallback query executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "neural B-Rep generation from unstructured input",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Fallback query executed because earlier retrieval remained sparse."
+      }
+    ],
+    "papers": [
+      {
+        "title": "<i>GraphBRep</i> : Explicit Graph Diffusion of B–Rep Topology for Efficient CAD Generation",
+        "source": "OpenAlex",
+        "year": 2025,
+        "date": "2025-12-15",
+        "url": "https://doi.org/10.1093/jcde/qwaf136",
+        "doi": "10.1093/jcde/qwaf136",
+        "authors": [
+          "Wei Kuang Lai",
+          "Tie Jun Xu",
+          "Ben Niu",
+          "Hu Wang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Directly addresses the task. Topically very close to the request. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Abstract Direct B-Rep generation is increasingly important in Computer-Aided Design (CAD) workflows, eliminating costly modeling sequence data and enabling the creation of complex features. A key challenge is modeling the joint distribution of the misaligned geometry and topology. Existing methods tend to implicitly embed topology into the geometric features of edges. Although this integration ensures feature alignment, it also causes edge geometry to carry more redundant structural information compared to the original B-Rep, leading to significantly higher computational cost. For efficient generation, GraphBRep, a B-Rep generation model that explicitly represents and learns compact topology, is proposed. Based on the original B-Rep structure, an undirected weighted graph is constructed to represent the surface topology. A graph diffusion model is employed to learn topology conditioned on surface features, serving as the basis for determining connectivity between primitive surfaces. The explicit representation ensures a compact data structure, effectively reducing computational cost during both training and inference. Experiments on two large-scale unconditional datasets and one category-conditional dataset demonstrate that the proposed method significantly reduces training and inference times (up to 30.82% and 56.3% for given datasets, respectively) while maintaining high-quality CAD generation compared with SOTA."
+        ]
+      },
+      {
+        "title": "Towards High-Fidelity CAD Generation via LLM-Driven Program Generation and Text-Based B-Rep Primitive Grounding",
+        "source": "OpenAlex",
+        "year": 2026,
+        "date": "2026-03-12",
+        "url": "http://arxiv.org/abs/2603.11831",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Qingwang Zhang",
+          "Qiuyu Chen",
+          "Guozhan Qiu",
+          "Yunzhong Lou",
+          "Xiangdong Zhou"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Meaningfully related to the task. Topically relevant to the request. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "The field of Computer-Aided Design (CAD) generation has made significant progress in recent years. Existing methods typically fall into two separate categorie: parametric CAD modeling and direct boundary representation (B-Rep) synthesis. In modern feature-based CAD systems, parametric modeling and B-Rep are inherently intertwined, as advanced parametric operations (e.g., fillet and chamfer) require explicit selection of B-Rep geometric primitives, and the B-Rep itself is derived from parametric operations. Consequently, this paradigm gap remains a critical factor limiting AI-driven CAD modeling for complex industrial product design. This paper present FutureCAD, a novel text-to-CAD framework that leverages large language models (LLMs) and a B-Rep grounding transformer (BRepGround) for high-fidelity CAD generation. Our method generates executable CadQuery scripts, and introduces a text-based query mechanism that enables the LLM to specify geometric selections via natural language, which BRepGround then grounds to the target primitives. To train our framework, we construct a new dataset comprising real-world CAD models. For the LLM, we apply supervised fine-tuning (SFT) to establish fundamental CAD generation capabilities, followed by reinforcement learning (RL) to improve generalization. Experiments show that FutureCAD achieves state-of-the-art CAD generation performance."
+        ]
+      },
+      {
+        "title": "AutoRegressive Generation with B-rep Holistic Token Sequence Representation",
+        "source": "OpenAlex",
+        "year": 2026,
+        "date": "2026-01-23",
+        "url": "http://arxiv.org/abs/2601.16771",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Yunpeng Bai",
+          "Yongkang Dai",
+          "Hao Guo",
+          "Hongping Gan",
+          "Yilei Shi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Previous representation and generation approaches for the B-rep relied on graph-based representations that disentangle geometric and topological features through decoupled computational pipelines, thereby precluding the application of sequence-based generative frameworks, such as transformer architectures that have demonstrated remarkable performance. In this paper, we propose BrepARG, the first attempt to encode B-rep's geometry and topology into a holistic token sequence representation, enabling sequence-based B-rep generation with an autoregressive architecture. Specifically, BrepARG encodes B-rep into 3 types of tokens: geometry and position tokens representing geometric features, and face index tokens representing topology. Then the holistic token sequence is constructed hierarchically, starting with constructing the geometry blocks (i.e., faces and edges) using the above tokens, followed by geometry block sequencing. Finally, we assemble the holistic sequence representation for the entire B-rep. We also construct a transformer-based autoregressive model that learns the distribution over holistic token sequences via next-token prediction, using a multi-layer decoder-only architecture with causal masking. Experiments demonstrate that BrepARG achieves state-of-the-art (SOTA) performance. BrepARG validates the feasibility of representing B-rep as holistic token sequences, opening new directions for B-rep generation."
+        ]
+      },
+      {
+        "title": "AutoRegressive Generation with B-rep Holistic Token Sequence Representation",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-01-23T14:15:02Z",
+        "url": "http://arxiv.org/abs/2601.16771v2",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Yunpeng Bai",
+          "Yongkang Dai",
+          "Hao Guo",
+          "Hongping Gan",
+          "Yilei Shi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Previous representation and generation approaches for the B-rep relied on graph-based representations that disentangle geometric and topological features through decoupled computational pipelines, thereby precluding the application of sequence-based generative frameworks, such as transformer architectures that have demonstrated remarkable performance. In this paper, we propose BrepARG, the first attempt to encode B-rep's geometry and topology into a holistic token sequence representation, enabling sequence-based B-rep generation with an autoregressive architecture. Specifically, BrepARG encodes B-rep into 3 types of tokens: geometry and position tokens representing geometric features, and face index tokens representing topology. Then the holistic token sequence is constructed hierarchically, starting with constructing the geometry blocks (i.e., faces and edges) using the above tokens, followed by geometry block sequencing. Finally, we assemble the holistic sequence representation for the entire B-rep. We also construct a transformer-based autoregressive model that learns the distribution over holistic token sequences via next-token prediction, using a multi-layer decoder-only architecture with causal masking. Experiments demonstrate that BrepARG achieves state-of-the-art (SOTA) performance. BrepARG validates the feasibility of representing B-rep as holistic token sequences, opening new directions for B-rep generation."
+        ]
+      },
+      {
+        "title": "FoV-Net: Rotation-Invariant CAD B-rep Learning via Field-of-View Ray Casting",
+        "source": "OpenAlex",
+        "year": 2026,
+        "date": "2026-02-27",
+        "url": "http://arxiv.org/abs/2602.24084",
+        "doi": "",
+        "authors": [
+          "Matteo Ballegeer",
+          "Dries Benoit"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Learning directly from boundary representations (B-reps) has significantly advanced 3D CAD analysis. However, state-of-the-art B-rep learning methods rely on absolute coordinates and normals to encode global context, making them highly sensitive to rotations. Our experiments reveal that models achieving over 95% accuracy on aligned benchmarks can collapse to as low as 10% under arbitrary $\\mathbf{SO}(3)$ rotations. To address this, we introduce FoV-Net, the first B-rep learning framework that captures both local surface geometry and global structural context in a rotation-invariant manner. Each face is represented by a Local Reference Frame (LRF) UV-grid that encodes its local surface geometry, and by Field-of-View (FoV) grids that capture the surrounding 3D context by casting rays and recording intersections with neighboring faces. Lightweight CNNs extract per-face features, which are propagated over the B-rep graph using a graph attention network. FoV-Net achieves state-of-the-art performance on B-rep classification and segmentation benchmarks, demonstrating robustness to arbitrary rotations while also requiring less training data to achieve strong results."
+        ]
+      },
+      {
+        "title": "GIFT: Bootstrapping Image-to-CAD Program Synthesis via Geometric Feedback",
+        "source": "OpenAlex",
+        "year": 2026,
+        "date": "2026-03-28",
+        "url": "http://arxiv.org/abs/2603.27448",
+        "doi": "",
+        "authors": [
+          "Giorgio Giannone",
+          "Anna Clare Doris",
+          "Amin Heyrani Nobari",
+          "Kai Xu",
+          "Akash Srivastava",
+          "Faez Ahmed"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Generating executable CAD programs from images requires alignment between visual geometry and symbolic program representations, a capability that current methods fail to learn reliably as design complexity increases. Existing fine-tuning approaches rely on either limited supervised datasets or expensive post-training pipelines, resulting in brittle systems that restrict progress in generative CAD design. We argue that the primary bottleneck lies not in model or algorithmic capacity, but in the scarcity of diverse training examples that align visual geometry with program syntax. This limitation is especially acute because the collection of diverse and verified engineering datasets is both expensive and difficult to scale, constraining the development of robust generative CAD models. We introduce Geometric Inference Feedback Tuning (GIFT), a data augmentation framework that leverages geometric feedback to turn test-time compute into a bootstrapped set of high-quality training samples. GIFT combines two mechanisms: Soft-Rejection Sampling (GIFT-REJECT), which retains diverse high-fidelity programs beyond exact ground-truth matches, and Failure-Driven Augmentation (GIFT-FAIL), which converts near-miss predictions into synthetic training examples that improve robustness on challenging geometries. By amortizing inference-time search into the model parameters, GIFT captures the benefits of test-time scaling while reducing inference compute by 80%. It improves mean IoU by 12% over a strong supervised baseline and remains competitive with more complex multimodal systems, without requiring additional human annotation or specialized architectures."
+        ]
+      },
+      {
+        "title": "Learning From Design Procedure To Generate CAD Programs for Data Augmentation",
+        "source": "OpenAlex",
+        "year": 2026,
+        "date": "2026-03-06",
+        "url": "http://arxiv.org/abs/2603.06894",
+        "doi": "",
+        "authors": [
+          "Yan-Ying Chen",
+          "Dule Shu",
+          "Matthew K. Hong",
+          "Andrew Taber",
+          "Jonathan Li",
+          "Matthew Klenk"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Large Language Models (LLMs) have demonstrated impressive capabilities in a wide range of code generation tasks. However, generating code for certain domains remains challenging. One such domain is Computer-Aided Design (CAD) program, where the goal is to produce scripted parametric models that define object geometry for precise design and manufacturing applications. A key challenge in LLM-based CAD program generation is the limited geometric complexity of generated shapes compared to those found in real-world industrial designs. This shortfall is in part due to the lack of diversity in the available CAD program training data. To address this, we propose a novel data augmentation paradigm that prompts an LLM to generate CAD programs conditioned on a reference surface program and a modeling procedure - an idea inspired by practices in industrial design. By varying the reference surface using a collection of organic shapes, our method enriches the geometric distribution of generated CAD models. In particular, it introduces edges and faces defined by spline-based curvature, which are typically missing or underrepresented in existing open-source CAD program datasets. Experiments show that our method produces CAD samples with significantly greater geometric diversity and a higher resemblance to industry-grade CAD designs in terms of the proportion of organic shape primitives. This enhancement makes our CAD data augmentation approach a useful tool for training LLMs and other deep learning models in CAD generation."
+        ]
+      },
+      {
+        "title": "Pointer-CAD: Unifying B-Rep and Command Sequences via Pointer-based Edges & Faces Selection",
+        "source": "OpenAlex",
+        "year": 2026,
+        "date": "2026-03-04",
+        "url": "http://arxiv.org/abs/2603.04337",
+        "doi": "",
+        "authors": [
+          "Dacheng Qi",
+          "Chenyu Wang",
+          "Jingwei Xu",
+          "Tianzhe Chu",
+          "Zibo Zhao",
+          "Wen Liu",
+          "Wenrui Ding",
+          "Yi Ma"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Constructing computer-aided design (CAD) models is labor-intensive but essential for engineering and manufacturing. Recent advances in Large Language Models (LLMs) have inspired the LLM-based CAD generation by representing CAD as command sequences. But these methods struggle in practical scenarios because command sequence representation does not support entity selection (e.g. faces or edges), limiting its ability to support complex editing operations such as chamfer or fillet. Further, the discretization of a continuous variable during sketch and extrude operations may result in topological errors. To address these limitations, we present Pointer-CAD, a novel LLM-based CAD generation framework that leverages a pointer-based command sequence representation to explicitly incorporate the geometric information of B-rep models into sequential modeling. In particular, Pointer-CAD decomposes CAD model generation into steps, conditioning the generation of each subsequent step on both the textual description and the B-rep generated from previous steps. Whenever an operation requires the selection of a specific geometric entity, the LLM predicts a Pointer that selects the most feature-consistent candidate from the available set. Such a selection operation also reduces the quantization error in the command sequence-based representation. To support the training of Pointer-CAD, we develop a data annotation pipeline that produces expert-level natural language descriptions and apply it to build a dataset of approximately 575K CAD models. Extensive experimental results demonstrate that Pointer-CAD effectively supports the generation of complex geometric structures and reduces segmentation error to an extremely low level, achieving a significant improvement over prior command sequence methods, thereby significantly mitigating the topological inaccuracies introduced by quantization error."
+        ]
+      },
+      {
+        "title": "ProtNHF: Neural Hamiltonian Flows for Controllable Protein Sequence Generation",
+        "source": "Crossref / Crossref",
+        "year": 2026,
+        "date": "2026-3-6",
+        "url": "https://doi.org/10.64898/2026.03.04.709305",
+        "doi": "10.64898/2026.03.04.709305",
+        "authors": [
+          "Bharath Raghavan",
+          "David M. Rogers"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:title>Abstract</jats:title> <jats:p>Controllable protein sequence generation remains a central challenge in computational protein design, as most existing approaches rely on retraining, classifier guidance, or architectural modification to impose conditioning. Here we introduce ProtNHF, a generative model that enables continuous, quantitative control over sequence-level properties through analytical bias functions applied exclusively at inference time. ProtNHF builds on neural Hamiltonian flows, where a lightweight Transformer-based potential energy function, inspired by ESM-2, is combined with an explicit kinetic term to define Hamiltonian dynamics in a continuous relaxation of protein sequence space. The model learns a symplectic transport map from a latent Gaussian distribution to protein sequence embeddings via deterministic leapfrog integration, enabling efficient and expressive sampling. In the unconditional setting, generated sequences achieve competitive quality as measured by ESM-2 pseudo-perplexity and AlphaFold2 pLDDT confidence scores. A key advantage of the Hamiltonian formulation is its additive energy structure, which permits external bias potentials to be incorporated directly into the Hamiltonian at inference time without modifying or retraining the learned model. This casts controllable generation in a classical molecular modeling paradigm, where desired properties are enforced by explicit energy shaping. We demonstrate smooth, predictable, and approximately monotonic control over amino acid composition and global properties such as net charge by introducing simple analytical bias terms, including residue-specific chemical potentials and harmonic constraints. The bias strength modulates the values of these properties in generated sequences continuously while preserving structural plausibility and diversity. ProtNHF thus provides a flexible base distribution that can be steered toward different compositional regimes using transparent, physically interpretable energy terms, establishing a general framework for inference-time programmable protein sequence generation.</jats:p>"
+        ]
+      },
+      {
+        "title": "3D Printing and AI: Exploring the Impact of Machine Learning on Additive Manufacturing",
+        "source": "OpenAlex",
+        "year": 2025,
+        "date": "2025-06-09",
+        "url": "https://doi.org/10.63623/sfv96y88",
+        "doi": "10.63623/sfv96y88",
+        "authors": [
+          "Asheesh Tiwari"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Additive Manufacturing (AM) revolutionizes the industrial sector by producing complex, customized parts. With Industry 4.0, machine learning (ML) has become a vital tool for enhancing 3D printing processes. This paper investigates the integration of ML in various stages of additive manufacturing, including design optimization, material property prediction, and cloud-based solutions. The research aims to improve efficiency and quality, and reduce production costs by integrating ML in design optimization, material property prediction, and cloud-based manufacturing solutions. Key methodologies include supervised and unsupervised learning algorithms for defect detection, generative design, and process parameter optimization. ML-driven approaches have led to significant advancements in predictive maintenance and adaptive manufacturing. However, challenges like data scarcity, model interpretability, and computational complexity persist. The paper talks about possible solutions and future research directions for machine learning in additive manufacturing. It emphasises how it could change 3D printing technologies and industrial uses. This paper reviews the role of ML in 3D printing with a focus on process optimization, quality control, and cloud-based services. Key challenges, including data limitations, real-time monitoring, and model accuracy, are examined to provide insights into future research directions."
+        ]
+      },
+      {
+        "title": "AI Wizards at CheckThat! 2025: Enhancing Transformer-Based Embeddings with Sentiment for Subjectivity Detection in News Articles",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-07-15T22:10:20Z",
+        "url": "http://arxiv.org/abs/2507.11764v1",
+        "doi": "",
+        "authors": [
+          "Matteo Fasulo",
+          "Luca Babboni",
+          "Luca Tedeschini"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "This paper presents AI Wizards' participation in the CLEF 2025 CheckThat! Lab Task 1: Subjectivity Detection in News Articles, classifying sentences as subjective/objective in monolingual, multilingual, and zero-shot settings. Training/development datasets were provided for Arabic, German, English, Italian, and Bulgarian; final evaluation included additional unseen languages (e.g., Greek, Romanian, Polish, Ukrainian) to assess generalization. Our primary strategy enhanced transformer-based classifiers by integrating sentiment scores, derived from an auxiliary model, with sentence representations, aiming to improve upon standard fine-tuning. We explored this sentiment-augmented architecture with mDeBERTaV3-base, ModernBERT-base (English), and Llama3.2-1B. To address class imbalance, prevalent across languages, we employed decision threshold calibration optimized on the development set. Our experiments show sentiment feature integration significantly boosts performance, especially subjective F1 score. This framework led to high rankings, notably 1st for Greek (Macro F1 = 0.51)."
+        ]
+      },
+      {
+        "title": "AI-Driven Optimization of Functional Feature Placement in Automotive CAD",
+        "source": "OpenAlex",
+        "year": 2025,
+        "date": "2025-09-02",
+        "url": "https://doi.org/10.3390/a18090553",
+        "doi": "10.3390/a18090553",
+        "authors": [
+          "Ardian Kelmendi",
+          "George Pappas"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "The automotive industry increasingly relies on 3D modeling technologies to design and manufacture vehicle components with high precision. One critical challenge is optimizing the placement of latches that secure the dashboard side paneling, as these placements vary between models and must maintain minimal tolerance for movement to ensure durability. While generative artificial intelligence (AI) has advanced rapidly in generating text, images, and video, its application to creating accurate 3D CAD models remains limited. This paper proposes a novel framework that integrates a PointNet deep learning model with Python-based CAD automation to predict optimal clip placements and surface thickness for dashboard side panels. Unlike prior studies that focus on general-purpose CAD generation, this work specifically targets automotive interior components and demonstrates a practical method for automating part design. The approach involves generating placement data—potentially via generative AI—and importing it into the CAD environment to produce fully parameterized 3D models. Experimental results show that the prototype achieved a 75% success rate across six of eight test surfaces, indicating strong potential despite the limited sample size. This research highlights a clear pathway for applying generative AI to part design automation in the automotive sector and offers a foundation for scaling to broader design applications."
+        ]
+      },
+      {
+        "title": "Angular Deviation Diffuser: A Transformer-Based Diffusion Model for Efficient Protein Conformational Ensemble Generation",
+        "source": "Crossref / Crossref",
+        "year": 2025,
+        "date": "2025-3-10",
+        "url": "https://doi.org/10.1101/2025.03.03.640492",
+        "doi": "10.1101/2025.03.03.640492",
+        "authors": [
+          "YI YANG",
+          "Chuanye Xiong",
+          "Peng Tao"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:p>Protein functionality is inherently tied to its structure, with both static and dynamic conformations playing critical roles in defining biological activity. While molecular dynamics (MD) simulations have long been the standard for exploring protein dynamics, they come with high computational costs and limited sampling efficiency. Recent advances in deep learning, such as AlphaFold, have significantly improved static protein structure prediction, yet accurately generating the dynamic ensemble of protein conformations remains a complex challenge. In this study, we present a transformer-based diffusion model that generates diverse conformational ensembles of protein backbones by utilizing angular deviations as data flow. Our model combines a cutting-edge diffusion model with the principles of SE(3) symmetry to enhance both the accuracy and efficiency of conformational sampling. Applied to the Vivid (VVD) Photoreceptor protein system, the generated ensembles closely align with those from MD simulations while covering a broader range of conformational states. This approach offers an improved methodology for capturing protein dynamics, contributing to a more comprehensive understanding of protein structure and function.</jats:p>"
+        ]
+      },
+      {
+        "title": "AutoBrep: Autoregressive B-Rep Generation with Unified Topology and Geometry",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-12-02T18:46:25Z",
+        "url": "http://arxiv.org/abs/2512.03018v1",
+        "doi": "",
+        "authors": [
+          "Xiang Xu",
+          "Pradeep Kumar Jayaraman",
+          "Joseph G. Lambourne",
+          "Yilin Liu",
+          "Durvesh Malpure",
+          "Pete Meltzer"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "The boundary representation (B-Rep) is the standard data structure used in Computer-Aided Design (CAD) for defining solid models. Despite recent progress, directly generating B-Reps end-to-end with precise geometry and watertight topology remains a challenge. This paper presents AutoBrep, a novel Transformer model that autoregressively generates B-Reps with high quality and validity. AutoBrep employs a unified tokenization scheme that encodes both geometric and topological characteristics of a B-Rep model as a sequence of discrete tokens. Geometric primitives (i.e., surfaces and curves) are encoded as latent geometry tokens, and their structural relationships are defined as special topological reference tokens. Sequence order in AutoBrep naturally follows a breadth first traversal of the B-Rep face adjacency graph. At inference time, neighboring faces and edges along with their topological structure are progressively generated. Extensive experiments demonstrate the advantages of our unified representation when coupled with next-token prediction for B-Rep generation. AutoBrep outperforms baselines with better quality and watertightness. It is also highly scalable to complex solids with good fidelity and inference speed. We further show that autocompleting B-Reps is natively supported through our unified tokenization, enabling user-controllable CAD generation with minimal changes. Code is available at https://github.com/AutodeskAILab/AutoBrep."
+        ]
+      },
+      {
+        "title": "BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-27T07:16:53Z",
+        "url": "http://arxiv.org/abs/2511.22171v1",
+        "doi": "",
+        "authors": [
+          "Pu Li",
+          "Wenhao Zhang",
+          "Weize Quan",
+          "Biao Zhang",
+          "Peter Wonka",
+          "Dong-Ming Yan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Boundary representation (B-rep) is the de facto standard for CAD model representation in modern industrial design. The intricate coupling between geometric and topological elements in B-rep structures has forced existing generative methods to rely on cascaded multi-stage networks, resulting in error accumulation and computational inefficiency. We present BrepGPT, a single-stage autoregressive framework for B-rep generation. Our key innovation lies in the Voronoi Half-Patch (VHP) representation, which decomposes B-reps into unified local units by assigning geometry to nearest half-edges and sampling their next pointers. Unlike hierarchical representations that require multiple distinct encodings for different structural levels, our VHP representation facilitates unifying geometric attributes and topological relations in a single, coherent format. We further leverage dual VQ-VAEs to encode both vertex topology and Voronoi Half-Patches into vertex-based tokens, achieving a more compact sequential encoding. A decoder-only Transformer is then trained to autoregressively predict these tokens, which are subsequently mapped to vertex-based features and decoded into complete B-rep models. Experiments demonstrate that BrepGPT achieves state-of-the-art performance in unconditional B-rep generation. The framework also exhibits versatility in various applications, including conditional generation from category labels, point clouds, text descriptions, and images, as well as B-rep autocompletion and interpolation."
+        ]
+      }
+    ],
+    "dedup_notes": [
+      "Retrieved papers were deduplicated by DOI, URL, or normalized title; 34 duplicate entries were merged."
+    ],
+    "missing_metadata": [
+      "Title-only candidates remain weak until abstract or excerpt evidence is available."
+    ],
+    "coverage_gaps": [
+      "Fewer than 5 candidates were rated as direct or related to the task."
+    ],
+    "source_errors": [],
+    "planner_query_source": {
+      "fallback_queries": [
+        "B-Rep reconstruction from 3D scan neural network",
+        "point cloud to boundary representation deep learning",
+        "neural B-Rep generation from unstructured input"
+      ],
+      "effective_query": "\"B-Rep\" \"point cloud\" reconstruction neural network 2021 2022 2023 2024 2025",
+      "used_override_query": true,
+      "executed_queries": [
+        "\"B-Rep\" \"point cloud\" reconstruction neural network 2021 2022 2023 2024 2025",
+        "\"BRepNet\" \"CVPR 2021\" topological message passing solid models",
+        "\"point cloud to B-Rep\" reconstruction neural network 2022 2023 2024",
+        "\"3D scan\" \"boundary representation\" reconstruction deep learning CVPR SIGGRAPH",
+        "\"B-Rep generation\" \"diffusion model\" \"transformer\" 2023 2024 2025",
+        "\"neural B-Rep\" \"direct generation\" \"topology\" -CSG -\"operation sequence\"",
+        "\"B-Rep reconstruction\" ICCV ECCV NeurIPS 2022 2023",
+        "citations to \"BRepNet: A topological message passing system for solid models\"",
+        "\"boundary representation\" \"generative model\" \"neural network\" 2021-2024",
+        "B-Rep reconstruction from 3D scan neural network",
+        "point cloud to boundary representation deep learning",
+        "neural B-Rep generation from unstructured input"
+      ],
+      "fallback_used": true
+    }
+  },
+  "review_output": {
+    "decision": "REVISE",
+    "review_summary": "Retrieval results are insufficient for credible research notes. Only one paper (GraphBRep 2025) directly matches the core query of point-cloud-to-B-Rep reconstruction/generation. Most results are weakly related (B-Rep generation from text/LLMs, rotation-invariant learning, CAD program synthesis) or completely off-topic (protein design, 3D printing). Critical foundational papers from 2021-2024 are missing, and the search failed to capture the intended research frontier.",
+    "scores": {
+      "coverage_score": 0,
+      "relevance_score": 0,
+      "metadata_score": 2,
+      "diversity_score": 1,
+      "evidence_score": 1
+    },
+    "hard_requirements": {
+      "source_coverage": {
+        "passed": false,
+        "reason": "Only 1 of 8-10 required papers found. Missing foundational works (e.g., BRepNet 2021) and recent point-cloud-to-B-Rep reconstruction papers from 2022-2024."
+      },
+      "candidate_depth": {
+        "passed": false,
+        "reason": "Single relevant paper lacks sufficient detail for analysis. No papers address the primary input (unstructured point clouds/3D scans) with neural reconstruction methods."
+      },
+      "relevance": {
+        "passed": false,
+        "reason": "Majority of papers are irrelevant: CAD program synthesis (GIFT, Pointer-CAD), LLM-driven generation (FutureCAD), rotation-invariant learning (FoV-Net), protein design (ProtNHF), 3D printing review."
+      },
+      "metadata": {
+        "passed": true,
+        "reason": "Metadata (titles, years, authors, sources) is complete and verifiable for retrieved papers."
+      },
+      "query_fit": {
+        "passed": false,
+        "reason": "Query execution failed to target the specific subfield. Searches for \"B-Rep point cloud reconstruction\" should have yielded more results; the sparse return suggests incorrect query formulation or source limitations."
+      },
+      "core_method_fit": {
+        "passed": false,
+        "reason": "Only GraphBRep mentions direct B-Rep generation, but its abstract doesn't specify point cloud input. No papers explicitly tackle neural reconstruction from unstructured point clouds."
+      },
+      "time_consistency": {
+        "passed": true,
+        "reason": "All papers fall within 2021-2026 range as requested."
+      },
+      "gaps": {
+        "passed": false,
+        "reason": "Critical gaps: Missing BRepNet (CVPR 2021) and its citations; missing point-cloud-to-B-Rep reconstruction papers from CVPR/SIGGRAPH 2022-2024; missing diffusion/transformer-based B-Rep generation works; no coverage of latent space or variational approaches for B-Reps."
+      }
+    },
+    "key_risks": [
+      "The single relevant paper may not address point cloud input, making it insufficient for the research focus.",
+      "Retrieval appears to have broadened to general CAD generation (including program synthesis) rather than strict B-Rep reconstruction from scans.",
+      "Source selection (OpenAlex, arXiv) may have missed key conference papers in CVPR/SIGGRAPH proceedings.",
+      "The field might be smaller than assumed, but foundational papers from 2021-2023 should still be retrievable."
+    ],
+    "next_actions": [
+      "REVISE search strategy: Target specific known foundational papers (BRepNet: A topological message passing system for solid models, CVPR 2021) and use citation chaining.",
+      "REVISE queries: Use more specific phrases: \"point cloud to boundary representation reconstruction neural network\", \"scan-to-B-Rep deep learning\", \"neural reconstruction of B-Rep from point cloud\", \"BRepNet citations 2022 2023 2024\".",
+      "REVISE source focus: Prioritize computer vision/graphics conference venues (CVPR, ICCV, ECCV, SIGGRAPH, NeurIPS) rather than general repositories. Use venue-specific search if available.",
+      "Add explicit exclusion in queries: \"-LLM -\"large language model\" -\"program synthesis\" -\"CAD program\" -\"command sequence\" to filter out irrelevant CAD generation approaches."
+    ]
+  }
+}

@@ -1,0 +1,651 @@
+{
+  "query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input:** Unstructured Point Clouds or 3D scans are the highest priority. Multimodal or sketch/image inputs are acceptable only if the method is a major breakthrough in B-Rep generation.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, or end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep generation from point clouds, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in point-cloud-to-B-Rep tasks)",
+  "prepared_query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input:** Unstructured Point Clouds or 3D scans are the highest priority. Multimodal or sketch/image inputs are acceptable only if the method is a major breakthrough in B-Rep generation.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, or end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep generation from point clouds, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in point-cloud-to-B-Rep tasks)\n\n[Runtime Search Context]\nToday's date for this run is 2026-04-08.\nThe query contains a vague recency hint. Resolve it into an explicit year range against today's date.",
+  "task_interpretation": {
+    "intent": {
+      "topic": "3D Boundary Representation (B-Rep) reconstruction and generation from point clouds using neural networks",
+      "goal": "Identify 8-10 state-of-the-art research papers (2021-2026) that directly output B-Rep data structures (faces, edges, vertices, topology) from unstructured point clouds or 3D scans using modern neural architectures, excluding methods based on CAD operation sequences, CSG trees, or program synthesis.",
+      "time_range": {
+        "start_year": null,
+        "end_year": 2026,
+        "is_explicit": false,
+        "original_expression": "recent",
+        "resolution_basis_date": "2026-04-08",
+        "resolved_by_rule": ""
+      },
+      "must_include": [
+        "output is B-Rep data structure (faces, edges, vertices, topology)",
+        "input is unstructured point cloud or 3D scan",
+        "method uses modern neural architectures (e.g., latent space, variational, end-to-end generation)",
+        "direct generation of final B-Rep, not a construction history"
+      ],
+      "must_exclude": [
+        "CAD operation sequences or construction trees",
+        "sketch-and-extrude histories",
+        "Constructive Solid Geometry (CSG) trees",
+        "CAD program or macro synthesis"
+      ]
+    },
+    "query_plan": {
+      "primary_queries": [
+        "\"B-Rep reconstruction\" point cloud neural network 2023",
+        "\"boundary representation\" generation from scan deep learning CVPR",
+        "point cloud to B-Rep neural direct generation SIGGRAPH",
+        "B-Rep from point cloud end-to-end learning ICCV",
+        "neural B-Rep reconstruction topology learning ECCV",
+        "\"B-Rep\" \"point cloud\" reconstruction 2022 2023 2024",
+        "3D scan to boundary representation neural network",
+        "direct B-Rep generation neural architecture"
+      ],
+      "semantic_core_terms": [
+        "B-Rep reconstruction",
+        "boundary representation generation",
+        "point cloud to B-Rep",
+        "neural B-Rep",
+        "topology learning",
+        "geometric deep learning",
+        "3D shape reconstruction",
+        "CAD reconstruction"
+      ]
+    }
+  },
+  "retrieval_output": {
+    "sources_used": [
+      "Crossref",
+      "OpenAlex",
+      "arXiv"
+    ],
+    "queries_executed": [
+      {
+        "query": "\"B-Rep reconstruction\" point cloud neural network 2023 2024 2025",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "\"B-Rep reconstruction\" point cloud neural network 2023",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "\"boundary representation\" generation from scan deep learning CVPR",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "point cloud to B-Rep neural direct generation SIGGRAPH",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep from point cloud end-to-end learning ICCV",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "neural B-Rep reconstruction topology learning ECCV",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "\"B-Rep\" \"point cloud\" reconstruction 2022 2023 2024",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "3D scan to boundary representation neural network",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "direct B-Rep generation neural architecture",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep reconstruction",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "boundary representation generation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "point cloud to B-Rep",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "neural B-Rep",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      }
+    ],
+    "papers": [
+      {
+        "title": "AutoRegressive Generation with B-rep Holistic Token Sequence Representation",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-01-23T14:15:02Z",
+        "url": "http://arxiv.org/abs/2601.16771v2",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Yunpeng Bai",
+          "Yongkang Dai",
+          "Hao Guo",
+          "Hongping Gan",
+          "Yilei Shi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Previous representation and generation approaches for the B-rep relied on graph-based representations that disentangle geometric and topological features through decoupled computational pipelines, thereby precluding the application of sequence-based generative frameworks, such as transformer architectures that have demonstrated remarkable performance. In this paper, we propose BrepARG, the first attempt to encode B-rep's geometry and topology into a holistic token sequence representation, enabling sequence-based B-rep generation with an autoregressive architecture. Specifically, BrepARG encodes B-rep into 3 types of tokens: geometry and position tokens representing geometric features, and face index tokens representing topology. Then the holistic token sequence is constructed hierarchically, starting with constructing the geometry blocks (i.e., faces and edges) using the above tokens, followed by geometry block sequencing. Finally, we assemble the holistic sequence representation for the entire B-rep. We also construct a transformer-based autoregressive model that learns the distribution over holistic token sequences via next-token prediction, using a multi-layer decoder-only architecture with causal masking. Experiments demonstrate that BrepARG achieves state-of-the-art (SOTA) performance. BrepARG validates the feasibility of representing B-rep as holistic token sequences, opening new directions for B-rep generation."
+        ]
+      },
+      {
+        "title": "BrepGaussian: CAD reconstruction from Multi-View Images with Gaussian Splatting",
+        "source": "OpenAlex",
+        "year": 2026,
+        "date": "2026-02-24",
+        "url": "http://arxiv.org/abs/2602.21105",
+        "doi": "",
+        "authors": [
+          "Jiaxing Yu",
+          "Dongyang Ren",
+          "Hangyu Xu",
+          "Zhouyuxiao Yang",
+          "Yuanqi Li",
+          "Jie Guo",
+          "Zhengkang Zhou",
+          "Yanwen Guo"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "The boundary representation (B-rep) models a 3D solid as its explicit boundaries: trimmed corners, edges, and faces. Recovering B-rep representation from unstructured data is a challenging and valuable task of computer vision and graphics. Recent advances in deep learning have greatly improved the recovery of 3D shape geometry, but still depend on dense and clean point clouds and struggle to generalize to novel shapes. We propose B-rep Gaussian Splatting (BrepGaussian), a novel framework that learns 3D parametric representations from 2D images. We employ a Gaussian Splatting renderer with learnable features, followed by a specific fitting strategy. To disentangle geometry reconstruction and feature learning, we introduce a two-stage learning framework that first captures geometry and edges and then refines patch features to achieve clean geometry and coherent instance representations. Extensive experiments demonstrate the superior performance of our approach to state-of-the-art methods. We will release our code and datasets upon acceptance."
+        ]
+      },
+      {
+        "title": "Data-driven reconstruction of Amazon water levels with deep learning leveraging river topology",
+        "source": "Crossref / Crossref",
+        "year": 2026,
+        "date": "2026-3-14",
+        "url": "https://doi.org/10.5194/egusphere-egu26-19024",
+        "doi": "10.5194/egusphere-egu26-19024",
+        "authors": [
+          "Ruben Cartuyvels",
+          "Karim Douch",
+          "Diego Fernandez Prieto"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:p>Data-driven models are emerging as complementary approaches to numerical methods across the Earth sciences, offering the potential to be computationally efficient and free from physical parameterization bias. We present a neural network trained only on observations, integrating spatially and temporally sparse data from various altimeter instruments, to predict a dense reconstruction of water levels for the Amazon River network. Dense estimates for water level can enable better parameterizations of hydraulic models as well as accurate modeling of discharge in small- to medium-sized catchments.The Amazon basin hosts the largest rainforest in the World, making the monitoring of its rivers particularly important. Historical records of water level rely on in-situ flow gauges maintained by basin authorities (e.g. ANA in Brazil), offering temporally dense but geographically sparse observations. Since the 1990s, satellite altimetry has provided global yet sparse observations in ungauged areas. The recent SWOT mission introduces unprecedented spatial density thanks to its wide-swath InSAR sensor but lacks historical depth. To synthesize these disparate sources into a homogeneous product, we train an attention-based graph neural network for spatial and temporal densification via masked reconstruction. The model is trained to predict SWOT measurements conditioned on classical altimetry for 2023-2025, so it learns to infer the denser measurements taking only classical altimetry as input. River topology information from the SWORD database determines the decoding order and sparsifies attention interactions in the model architecture, with the aim of learning spatiotemporal dynamics in a physically consistent manner.We empirically validate the model on spatially and temporally held-out evaluation sets that include in-situ measurements from ANA gauges and benchmark it against an existing hybrid statistical-physical approach. We predict a first version of a reconstruction consisting of daily water level estimates for every SWOT reach in the Amazon basin between 2000 and 2025. This study contributes to the development of neural networks that unify sparse, non-overlapping sensor data without relying on physical approximations. In the future we will integrate complementary observations such as river width derived from imagery or SAR, and extend the framework to other major river basins globally.</jats:p>"
+        ]
+      },
+      {
+        "title": "Point2Brep: Geometry-Aware B-rep Reconstruction from Point Clouds",
+        "source": "Crossref / Crossref",
+        "year": 2026,
+        "date": "2026",
+        "url": "https://doi.org/10.2139/ssrn.6172545",
+        "doi": "10.2139/ssrn.6172545",
+        "authors": [
+          "yihang fu",
+          "jing li",
+          "Falai Chen"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:p>Reconstructing accurate boundary representations (B-reps) from unstructured point clouds remains challenging due to measurement noise and the intrinsic geometric and topological complexity of B-rep models. We present Point2Brep, a geometry-aware framework that reconstructs complete and topologically consistent B-rep models by tightly integrating learning-based inference with explicit parametric modeling and geometric reasoning. Point2Brep follows a two-stage pipeline. First, it segments noisy point clouds into surface patches via learning-guided region growing, prioritizing high-confidence interior points to fit reliable parametric surfaces. Second, conditioned on the reconstructed surfaces, Point2Brep predicts continuous geometric distance fields that encode spatial proximity to B-rep edges and vertices. These fields are subsequently resolved through explicit geometric reasoning to recover edge curves, vertex locations, and their connectivity. Extensive experiments demonstrate that Point2Brep significantly outperforms existing methods in both geometric accuracy and topological consistency.</jats:p>"
+        ]
+      },
+      {
+        "title": "<i>GraphBRep</i> : Explicit Graph Diffusion of B–Rep Topology for Efficient CAD Generation",
+        "source": "OpenAlex",
+        "year": 2025,
+        "date": "2025-12-15",
+        "url": "https://doi.org/10.1093/jcde/qwaf136",
+        "doi": "10.1093/jcde/qwaf136",
+        "authors": [
+          "Wei Kuang Lai",
+          "Tie Jun Xu",
+          "Ben Niu",
+          "Hu Wang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Abstract Direct B-Rep generation is increasingly important in Computer-Aided Design (CAD) workflows, eliminating costly modeling sequence data and enabling the creation of complex features. A key challenge is modeling the joint distribution of the misaligned geometry and topology. Existing methods tend to implicitly embed topology into the geometric features of edges. Although this integration ensures feature alignment, it also causes edge geometry to carry more redundant structural information compared to the original B-Rep, leading to significantly higher computational cost. For efficient generation, GraphBRep, a B-Rep generation model that explicitly represents and learns compact topology, is proposed. Based on the original B-Rep structure, an undirected weighted graph is constructed to represent the surface topology. A graph diffusion model is employed to learn topology conditioned on surface features, serving as the basis for determining connectivity between primitive surfaces. The explicit representation ensures a compact data structure, effectively reducing computational cost during both training and inference. Experiments on two large-scale unconditional datasets and one category-conditional dataset demonstrate that the proposed method significantly reduces training and inference times (up to 30.82% and 56.3% for given datasets, respectively) while maintaining high-quality CAD generation compared with SOTA."
+        ]
+      },
+      {
+        "title": "AutoBrep: Autoregressive B-Rep Generation with Unified Topology and Geometry",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-12-02T18:46:25Z",
+        "url": "http://arxiv.org/abs/2512.03018v1",
+        "doi": "",
+        "authors": [
+          "Xiang Xu",
+          "Pradeep Kumar Jayaraman",
+          "Joseph G. Lambourne",
+          "Yilin Liu",
+          "Durvesh Malpure",
+          "Pete Meltzer"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "The boundary representation (B-Rep) is the standard data structure used in Computer-Aided Design (CAD) for defining solid models. Despite recent progress, directly generating B-Reps end-to-end with precise geometry and watertight topology remains a challenge. This paper presents AutoBrep, a novel Transformer model that autoregressively generates B-Reps with high quality and validity. AutoBrep employs a unified tokenization scheme that encodes both geometric and topological characteristics of a B-Rep model as a sequence of discrete tokens. Geometric primitives (i.e., surfaces and curves) are encoded as latent geometry tokens, and their structural relationships are defined as special topological reference tokens. Sequence order in AutoBrep naturally follows a breadth first traversal of the B-Rep face adjacency graph. At inference time, neighboring faces and edges along with their topological structure are progressively generated. Extensive experiments demonstrate the advantages of our unified representation when coupled with next-token prediction for B-Rep generation. AutoBrep outperforms baselines with better quality and watertightness. It is also highly scalable to complex solids with good fidelity and inference speed. We further show that autocompleting B-Reps is natively supported through our unified tokenization, enabling user-controllable CAD generation with minimal changes. Code is available at https://github.com/AutodeskAILab/AutoBrep."
+        ]
+      },
+      {
+        "title": "B-Rep Distance Functions (BR-DF): How to Represent a B-Rep Model by Volumetric Distance Functions?",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-18T19:40:34Z",
+        "url": "http://arxiv.org/abs/2511.14870v1",
+        "doi": "",
+        "authors": [
+          "Fuyang Zhang",
+          "Pradeep Kumar Jayaraman",
+          "Xiang Xu",
+          "Yasutaka Furukawa"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "This paper presents a novel geometric representation for CAD Boundary Representation (B-Rep) based on volumetric distance functions, dubbed B-Rep Distance Functions (BR-DF). BR-DF encodes the surface mesh geometry of a CAD model as signed distance function (SDF). B-Rep vertices, edges, faces and their topology information are encoded as per-face unsigned distance functions (UDFs). An extension of the Marching Cubes algorithm converts BR-DF directly into watertight CAD B-Rep model (strictly speaking a faceted B-Rep model). A surprising characteristic of BR-DF is that this conversion process never fails. Leveraging the volumetric nature of BR-DF, we propose a multi-branch latent diffusion with 3D U-Net backbone for jointly generating the SDF and per-face UDFs of a BR-DF model. Our approach achieves comparable CAD generation performance against SOTA methods while reaching the unprecedented 100% success rate in producing (faceted) B-Rep models."
+        ]
+      },
+      {
+        "title": "BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-27T07:16:53Z",
+        "url": "http://arxiv.org/abs/2511.22171v1",
+        "doi": "",
+        "authors": [
+          "Pu Li",
+          "Wenhao Zhang",
+          "Weize Quan",
+          "Biao Zhang",
+          "Peter Wonka",
+          "Dong-Ming Yan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Boundary representation (B-rep) is the de facto standard for CAD model representation in modern industrial design. The intricate coupling between geometric and topological elements in B-rep structures has forced existing generative methods to rely on cascaded multi-stage networks, resulting in error accumulation and computational inefficiency. We present BrepGPT, a single-stage autoregressive framework for B-rep generation. Our key innovation lies in the Voronoi Half-Patch (VHP) representation, which decomposes B-reps into unified local units by assigning geometry to nearest half-edges and sampling their next pointers. Unlike hierarchical representations that require multiple distinct encodings for different structural levels, our VHP representation facilitates unifying geometric attributes and topological relations in a single, coherent format. We further leverage dual VQ-VAEs to encode both vertex topology and Voronoi Half-Patches into vertex-based tokens, achieving a more compact sequential encoding. A decoder-only Transformer is then trained to autoregressively predict these tokens, which are subsequently mapped to vertex-based features and decoded into complete B-rep models. Experiments demonstrate that BrepGPT achieves state-of-the-art performance in unconditional B-rep generation. The framework also exhibits versatility in various applications, including conditional generation from category labels, point clouds, text descriptions, and images, as well as B-rep autocompletion and interpolation."
+        ]
+      },
+      {
+        "title": "Deep knowledge tracing and cognitive load estimation for personalized learning path generation using neural network architecture",
+        "source": "Crossref / Scientific Reports",
+        "year": 2025,
+        "date": "2025-7-10",
+        "url": "https://doi.org/10.1038/s41598-025-10497-x",
+        "doi": "10.1038/s41598-025-10497-x",
+        "authors": [
+          "Chunyan Tong",
+          "Changhong Ren"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:title>Abstract</jats:title> <jats:p>This paper presents a novel approach for personalized learning path generation by integrating deep knowledge tracing and cognitive load estimation within a unified framework. We propose a dual-stream neural network architecture that simultaneously models students’ knowledge states and cognitive load levels to optimize learning trajectories. The knowledge state tracking module employs a bidirectional Transformer with graph attention mechanisms to capture complex relationships between knowledge components, while the cognitive load estimation module utilizes multimodal data analysis to dynamically assess mental effort during learning activities. A dual-objective optimization algorithm balances knowledge acquisition with cognitive load management to generate paths that maintain optimal challenge levels. Experimental evaluations across multiple educational domains demonstrate that our approach outperforms existing methods in prediction accuracy (87.5%), path quality (4.4/5), and learning efficiency (24.6% improvement). The implemented system supports real-time adaptation based on performance and cognitive state, resulting in reduced frustration, higher engagement, and improved knowledge retention. This research contributes to both theoretical understanding of learning processes and practical implementation of next-generation adaptive educational technologies.</jats:p>"
+        ]
+      },
+      {
+        "title": "From 2D CAD Drawings to 3D Parametric Models: A Vision-Language Approach",
+        "source": "OpenAlex",
+        "year": 2025,
+        "date": "2025-04-11",
+        "url": "https://doi.org/10.1609/aaai.v39i8.32858",
+        "doi": "10.1609/aaai.v39i8.32858",
+        "authors": [
+          "Xi‐Lin Wang",
+          "Jia Zheng",
+          "Y. Hu",
+          "Zhigang Zhu",
+          "Qian Yu",
+          "Zihan Zhou"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "In this paper, we present CAD2Program, a new method for reconstructing 3D parametric models from 2D CAD drawings. Our proposed method is inspired by recent successes in vision-language models (VLMs), and departs from traditional methods which rely on task-specific data representations and/or algorithms. Specifically, on the input side, we simply treat the 2D CAD drawing as a raster image, regardless of its original format, and encode the image with a standard ViT model. We show that such an encoding scheme achieves competitive performance against existing methods that operate on vector-graphics inputs, while imposing substantially fewer restrictions on the 2D drawings. On the output side, our method auto-regressively predicts a general-purpose language describing 3D parametric models in text form. Compared to other sequence modeling methods for CAD which use domain-specific sequence representations with fixed-size slots, our text-based representation is more flexible, and can be easily extended to arbitrary geometric entities and semantic or functional properties. Experimental results on a large-scale dataset of cabinet models demonstrate the effectiveness of our method."
+        ]
+      },
+      {
+        "title": "Generalized Regularized Evidential Deep Learning Models: Theory and Comprehensive Evaluation",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-12-27T11:26:18Z",
+        "url": "http://arxiv.org/abs/2512.23753v1",
+        "doi": "",
+        "authors": [
+          "Deep Shankar Pandey",
+          "Hyomin Choi",
+          "Qi Yu"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Evidential deep learning (EDL) models, based on Subjective Logic, introduce a principled and computationally efficient way to make deterministic neural networks uncertainty-aware. The resulting evidential models can quantify fine-grained uncertainty using learned evidence. However, the Subjective-Logic framework constrains evidence to be non-negative, requiring specific activation functions whose geometric properties can induce activation-dependent learning-freeze behavior: a regime where gradients become extremely small for samples mapped into low-evidence regions. We theoretically characterize this behavior and analyze how different evidential activations influence learning dynamics. Building on this analysis, we design a general family of activation functions and corresponding evidential regularizers that provide an alternative pathway for consistent evidence updates across activation regimes. Extensive experiments on four benchmark classification problems (MNIST, CIFAR-10, CIFAR-100, and Tiny-ImageNet), two few-shot classification problems, and blind face restoration problem empirically validate the developed theory and demonstrate the effectiveness of the proposed generalized regularized evidential models."
+        ]
+      },
+      {
+        "title": "HoLa: B-Rep Generation using a Holistic Latent Representation",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-04-19T10:34:24Z",
+        "url": "http://arxiv.org/abs/2504.14257v3",
+        "doi": "",
+        "authors": [
+          "Yilin Liu",
+          "Duoteng Xu",
+          "Xingyao Yu",
+          "Xiang Xu",
+          "Daniel Cohen-Or",
+          "Hao Zhang",
+          "Hui Huang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "We introduce a novel representation for learning and generating Computer-Aided Design (CAD) models in the form of $\\textit{boundary representations}$ (B-Reps). Our representation unifies the continuous geometric properties of B-Rep primitives in different orders (e.g., surfaces and curves) and their discrete topological relations in a $\\textit{holistic latent}$ (HoLa) space. This is based on the simple observation that the topological connection between two surfaces is intrinsically tied to the geometry of their intersecting curve. Such a prior allows us to reformulate topology learning in B-Reps as a geometric reconstruction problem in Euclidean space. Specifically, we eliminate the presence of curves, vertices, and all the topological connections in the latent space by learning to distinguish and derive curve geometries from a pair of surface primitives via a neural intersection network. To this end, our holistic latent space is only defined on surfaces but encodes a full B-Rep model, including the geometry of surfaces, curves, vertices, and their topological relations. Our compact and holistic latent space facilitates the design of a first diffusion-based generator to take on a large variety of inputs including point clouds, single/multi-view images, 2D sketches, and text prompts. Our method significantly reduces ambiguities, redundancies, and incoherences among the generated B-Rep primitives, as well as training complexities inherent in prior multi-step B-Rep learning pipelines, while achieving greatly improved validity rate over current state of the art: 82% vs. $\\approx$50%."
+        ]
+      },
+      {
+        "title": "Masked Clustering Prediction for Unsupervised Point Cloud Pre-training",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-08-12T12:58:44Z",
+        "url": "http://arxiv.org/abs/2508.08910v1",
+        "doi": "",
+        "authors": [
+          "Bin Ren",
+          "Xiaoshui Huang",
+          "Mengyuan Liu",
+          "Hong Liu",
+          "Fabio Poiesi",
+          "Nicu Sebe",
+          "Guofeng Mei"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Vision transformers (ViTs) have recently been widely applied to 3D point cloud understanding, with masked autoencoding as the predominant pre-training paradigm. However, the challenge of learning dense and informative semantic features from point clouds via standard ViTs remains underexplored. We propose MaskClu, a novel unsupervised pre-training method for ViTs on 3D point clouds that integrates masked point modeling with clustering-based learning. MaskClu is designed to reconstruct both cluster assignments and cluster centers from masked point clouds, thus encouraging the model to capture dense semantic information. Additionally, we introduce a global contrastive learning mechanism that enhances instance-level feature learning by contrasting different masked views of the same point cloud. By jointly optimizing these complementary objectives, i.e., dense semantic reconstruction, and instance-level contrastive learning. MaskClu enables ViTs to learn richer and more semantically meaningful representations from 3D point clouds. We validate the effectiveness of our method via multiple 3D tasks, including part segmentation, semantic segmentation, object detection, and classification, where MaskClu sets new competitive results. The code and models will be released at:https://github.com/Amazingren/maskclu."
+        ]
+      },
+      {
+        "title": "Multi-agent Reinforcement Learning-based In-place Scaling Engine for Edge-cloud Systems",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-07-10T11:52:34Z",
+        "url": "http://arxiv.org/abs/2507.07671v1",
+        "doi": "",
+        "authors": [
+          "Jovan Prodanov",
+          "Blaž Bertalanič",
+          "Carolina Fortuna",
+          "Shih-Kai Chou",
+          "Matjaž Branko Jurič",
+          "Ramon Sanchez-Iborra",
+          "Jernej Hribar"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "Modern edge-cloud systems face challenges in efficiently scaling resources to handle dynamic and unpredictable workloads. Traditional scaling approaches typically rely on static thresholds and predefined rules, which are often inadequate for optimizing resource utilization and maintaining performance in distributed and dynamic environments. This inefficiency hinders the adaptability and performance required in edge-cloud infrastructures, which can only be achieved through the newly proposed in-place scaling. To address this problem, we propose the Multi-Agent Reinforcement Learning-based In-place Scaling Engine (MARLISE) that enables seamless, dynamic, reactive control with in-place resource scaling. We develop our solution using two Deep Reinforcement Learning algorithms: Deep Q-Network (DQN), and Proximal Policy Optimization (PPO). We analyze each version of the proposed MARLISE solution using dynamic workloads, demonstrating their ability to ensure low response times of microservices and scalability. Our results show that MARLISE-based approaches outperform heuristic method in managing resource elasticity while maintaining microservice response times and achieving higher resource efficiency."
+        ]
+      },
+      {
+        "title": "Nutritional assessment system integrating semantic segmentation and point cloud modeling techniques",
+        "source": "Crossref / Scientific Reports",
+        "year": 2025,
+        "date": "2025-11-10",
+        "url": "https://doi.org/10.1038/s41598-025-23096-7",
+        "doi": "10.1038/s41598-025-23096-7",
+        "authors": [
+          "Chin-Hsuan Lin",
+          "Jung-Tang Huang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "weak",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "Only weakly connected to the task. Topical match is limited. Backed by abstract-level evidence.",
+        "evidence_snippets": [
+          "<jats:title>Abstract</jats:title> <jats:p>Balanced nutrition plays a vital role in preventing chronic diseases. We propose a home-based monitoring system that integrates an Nvidia Jetson AGX Xavier embedded device with an Intel RealSense D435 depth camera mounted vertically above the dining table. The system collects data every minute during meals, capturing point clouds with RGB information. Deep-learning object detection models identify and track multiple food items, ensuring each item is recognized independently. Point clouds are aligned using Random Sample Consensus (RANSAC) and Iterative Closest Point (ICP), while Density-Based Spatial Clustering of Applications with Noise (DBSCAN) distinguishes the table, plate, and food. The system records temporal changes in meal portions and reconstructs food point clouds to estimate volume. Each estimate is linked to the corresponding food category predicted by the semantic segmentation model and combined with nutritional values. All data are uploaded to the cloud, enabling user analysis along with preliminary assessments of total nutrient intake and eating speed. By integrating these components, the system provides accurate records of meal volume and composition, supporting comprehensive evaluations of home-based nutrition over a three-month period.</jats:p>"
+        ]
+      }
+    ],
+    "dedup_notes": [
+      "Retrieved papers were deduplicated by DOI, URL, or normalized title; 70 duplicate entries were merged."
+    ],
+    "missing_metadata": [
+      "Title-only candidates remain weak until abstract or excerpt evidence is available."
+    ],
+    "coverage_gaps": [
+      "Fewer than 5 candidates were rated as direct or related to the task.",
+      "No candidate reached verified status from excerpt-backed evidence."
+    ],
+    "source_errors": []
+  },
+  "review_output": {
+    "decision": "REVISE",
+    "review_summary": "Retrieval returned many papers with low topical relevance and weak task fit. Only a few (e.g., Point2Brep, BrepGaussian, HoLa) appear potentially relevant but lack sufficient evidence to confirm they meet all hard requirements (especially input from point clouds and exclusion of operation sequences). Coverage is insufficient for 8-10 credible papers.",
+    "scores": {
+      "coverage_score": 0,
+      "relevance_score": 0,
+      "metadata_score": 1,
+      "diversity_score": 1,
+      "evidence_score": 0
+    },
+    "hard_requirements": {
+      "source_coverage": {
+        "passed": false,
+        "reason": "Insufficient number of relevant papers. Need 8-10 credible candidates; retrieval yielded only a few weak matches."
+      },
+      "candidate_depth": {
+        "passed": false,
+        "reason": "Most candidates have low topical relevance and weak task fit. Evidence snippets are abstract-level and do not confirm critical details like input type or exclusion of operation sequences."
+      },
+      "relevance": {
+        "passed": false,
+        "reason": "Many papers are off-topic (e.g., river topology, nutritional assessment, learning paths). Even potentially relevant ones lack clear confirmation of direct B-Rep generation from point clouds."
+      },
+      "metadata": {
+        "passed": true,
+        "reason": "Basic metadata (title, year, authors, source) is present for most entries."
+      },
+      "query_fit": {
+        "passed": false,
+        "reason": "Queries executed align with the plan, but results are sparse and many are irrelevant, indicating the query strategy may need refinement."
+      },
+      "core_method_fit": {
+        "passed": false,
+        "reason": "Insufficient evidence to verify that any paper uses modern neural architectures for direct B-Rep generation from point clouds without operation sequences."
+      },
+      "time_consistency": {
+        "passed": true,
+        "reason": "All papers are within the resolved time range (2021-2026)."
+      },
+      "gaps": {
+        "passed": false,
+        "reason": "Major gaps in coverage: few papers directly address point-cloud-to-B-Rep reconstruction. Need to find more seminal works from top venues (CVPR, SIGGRAPH, ICCV, etc.)."
+      }
+    },
+    "key_risks": [
+      "Many retrieved papers are irrelevant to the core topic (e.g., educational technology, river monitoring).",
+      "Evidence snippets are too vague to confirm compliance with must-include and must-exclude criteria.",
+      "Lack of papers from premier computer vision/graphics conferences suggests the search may be missing the key literature."
+    ],
+    "next_actions": [
+      "Refine search queries to target specific conferences: e.g., \"CVPR B-Rep reconstruction point cloud\", \"SIGGRAPH boundary representation generation neural\", \"ECCV 2024 B-Rep from scan\".",
+      "Explicitly exclude off-topic terms: e.g., avoid \"river\", \"nutritional\", \"learning path\".",
+      "Search for known seminal papers in the area (e.g., \"Point2Brep\" likely from 2024 CVPR/ICCV; verify).",
+      "Use backward/forward citation chaining on any strong candidate (e.g., HoLa, Point2Brep) to find related works."
+    ]
+  }
+}
