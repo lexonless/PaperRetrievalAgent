@@ -15,9 +15,3 @@ mcp_assignment_build
 .env_groq
 .env_openrouter
 .env_qwen
-autogen_reports/
-mid_report
-.env_glm
-.env_openrouter
-.env_qwen
-.env_groq
