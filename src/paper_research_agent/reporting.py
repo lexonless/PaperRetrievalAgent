@@ -46,6 +46,14 @@ def save_markdown_report(task_result: TaskResult, query: str, output_dir: str = 
     )
 
 
+def render_markdown_to_safe_html(markdown_text: str) -> str:
+    from markdown_it import MarkdownIt
+
+    markdown_text = _strip_query_section(markdown_text)
+    renderer = MarkdownIt("commonmark", {"html": False})
+    return renderer.render(markdown_text)
+
+
 def format_final_report_as_markdown(task_result: TaskResult, query: str) -> str:
     lines: list[str] = [f"**Generated At:** {datetime.now().isoformat(timespec='seconds')}"]
     if task_result.stop_reason:
@@ -239,6 +247,25 @@ def _slugify(value: str) -> str:
     normalized = re.sub(r"[^a-z0-9\-_]+", "-", normalized)
     normalized = re.sub(r"-{2,}", "-", normalized).strip("-")
     return normalized
+
+
+def _strip_query_section(markdown_text: str) -> str:
+    lines = markdown_text.splitlines()
+    filtered_lines: list[str] = []
+    skipping = False
+
+    for line in lines:
+        if line.strip() == "## Query Understanding":
+            skipping = True
+            continue
+        if skipping and line.startswith("## "):
+            skipping = False
+        if not skipping:
+            filtered_lines.append(line)
+
+    cleaned = "\n".join(filtered_lines)
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+    return cleaned + "\n" if cleaned else ""
 
 
 def _collect_review_decisions(task_result: TaskResult) -> list[dict[str, str]]:

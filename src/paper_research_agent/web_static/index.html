@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Paper Retrieval Agent</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <section class="intro">
+        <p class="eyebrow">Paper Retrieval Agent</p>
+        <h1>Research Notes</h1>
+        <p class="lead">Submit a query and wait for the agent system to collect papers, review them, and write final notes.</p>
+      </section>
+
+      <section class="composer" aria-labelledby="query-label">
+        <label id="query-label" class="label" for="query-input">Query</label>
+        <textarea
+          id="query-input"
+          name="query"
+          rows="7"
+          placeholder="Search recent papers on multimodal models for medical image segmentation."
+        ></textarea>
+        <div class="actions">
+          <button id="submit-button" type="button">Run search</button>
+          <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="status-band" aria-labelledby="status-heading">
+        <div>
+          <p class="section-kicker">Status</p>
+          <h2 id="status-heading">Current run</h2>
+          <p id="status-detail" class="status-detail">The page will show stage updates here.</p>
+        </div>
+        <p id="job-status" class="status-chip idle">Idle</p>
+      </section>
+
+      <section class="timeline-band" aria-labelledby="timeline-heading">
+        <div class="timeline-header">
+          <div>
+            <p class="section-kicker">Activity</p>
+            <h2 id="timeline-heading">Recent steps</h2>
+          </div>
+        </div>
+        <ul id="activity-log" class="activity-log">
+          <li class="placeholder">Recent progress updates will appear here.</li>
+        </ul>
+      </section>
+
+      <section class="result-band" aria-labelledby="result-heading">
+        <div class="result-header">
+          <div>
+            <p class="section-kicker">Output</p>
+            <h2 id="result-heading">Notes</h2>
+          </div>
+          <p id="job-meta" class="job-meta"></p>
+        </div>
+        <article id="result-content" class="result-content">
+          <p class="placeholder">The final notes will appear here.</p>
+        </article>
+      </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

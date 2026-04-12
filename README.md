@@ -61,6 +61,14 @@ You can also use the installed CLI entry:
 paper-agent --query "your topic"
 ```
 
+Run the web UI:
+
+```bash
+paper-agent-web --host 127.0.0.1 --port 8000
+```
+
+Then open `http://127.0.0.1:8000`.
+
 ## Output
 
 Reports are saved under `reports/` by default:

@@ -7,13 +7,17 @@ requires-python = ">=3.10"
 dependencies = [
     "autogen-agentchat>=0.4,<0.5",
     "autogen-ext[openai]>=0.4,<0.5",
+    "fastapi>=0.115,<1.0",
     "httpx>=0.27,<1.0",
+    "markdown-it-py>=3.0,<4.0",
     "pypdf>=5.0,<6.0",
     "python-dotenv>=1.0,<2.0",
+    "uvicorn>=0.30,<1.0",
 ]
 
 [project.scripts]
 paper-agent = "paper_research_agent.main:main"
+paper-agent-web = "paper_research_agent.web:main"
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
