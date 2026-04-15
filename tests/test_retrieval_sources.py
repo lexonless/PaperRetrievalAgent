@@ -60,6 +60,14 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(executed_specs), 1)
         self.assertEqual(executed_specs[0]["sources"], ["arXiv"])
 
+    async def test_arxiv_structured_query_is_not_prefixed_twice(self) -> None:
+        client = _FakeHttpClient()
+        collector = PaperSourceCollector(settings=self._build_settings(), client=client)
+
+        await collector.search_arxiv_records('all:"graph rag" AND all:retrieval', max_results=3)
+
+        self.assertEqual(client.last_params["search_query"], 'all:"graph rag" AND all:retrieval')
+
     def test_ranking_recognizes_openalex_source_family(self) -> None:
         engine = PaperRankingEngine()
         papers, duplicate_count, raw_source_families = engine.prepare_ranked_papers(
@@ -153,3 +161,21 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class _FakeHttpResponse:
+    def __init__(self) -> None:
+        self.text = """<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"></feed>"""
+
+    def raise_for_status(self) -> None:
+        return None
+
+
+class _FakeHttpClient:
+    def __init__(self) -> None:
+        self.last_params: dict[str, object] = {}
+
+    async def get(self, _url: str, params: dict[str, object]):
+        self.last_params = dict(params)
+        return _FakeHttpResponse()

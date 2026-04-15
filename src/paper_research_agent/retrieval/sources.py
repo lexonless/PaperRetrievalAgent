@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
@@ -262,9 +263,10 @@ class PaperSourceCollector:
 
     async def search_arxiv_records(self, query: str, max_results: int | None = None) -> list[PaperRecord]:
         limit = self._resolve_limit(max_results)
+        search_query = self._format_arxiv_search_query(query)
         response = await self._client.get(
             "http://export.arxiv.org/api/query",
-            params={"search_query": f"all:{query}", "start": 0, "max_results": limit, "sortBy": "relevance", "sortOrder": "descending"},
+            params={"search_query": search_query, "start": 0, "max_results": limit, "sortBy": "relevance", "sortOrder": "descending"},
         )
         response.raise_for_status()
         root = ET.fromstring(response.text)
@@ -380,6 +382,14 @@ class PaperSourceCollector:
                 )
             )
         return records
+
+    def _format_arxiv_search_query(self, query: str) -> str:
+        cleaned = normalize_text(query)
+        if not cleaned:
+            return ""
+        if re.search(r"\b(?:all|ti|abs|au|cat|id|jr|co|rn):", cleaned, flags=re.IGNORECASE):
+            return cleaned
+        return f"all:{cleaned}"
 
     def _read_local_pdf_text(self, path: Path, max_chars: int = 1800) -> str:
         try:

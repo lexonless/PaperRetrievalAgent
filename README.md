@@ -1,18 +1,25 @@
-# Paper Retrieval Agent
+# Raw Feeder v1
 
-A LangGraph-based research agent prototype for project-centered literature retrieval.
+A paper discovery feeder for an LLM Wiki workflow. This project takes a natural-language research query, searches academic sources, deduplicates and filters paper candidates, and materializes the top results as `raw/papers/*.md` files that a downstream wiki agent can ingest.
 
-This repository contains the current mid-stage implementation of a research workflow that can interpret a literature task, retrieve papers from multiple sources, run a review-and-revise loop, and write project-scoped research notes with structured artifacts.
+## System Boundary
 
-## Current Progress
+This system **does**:
 
-At the current stage, the repository already includes:
+- interpret a fuzzy natural-language paper discovery request
+- generate source-aware queries for `arXiv`, `Crossref`, and `OpenAlex`
+- retrieve and deduplicate paper candidates
+- materialize selected papers into stable raw markdown files
+- write batch metadata and an append-only feeder log
 
-- a LangGraph workflow for task interpretation, retrieval, review, note generation, and artifact persistence
-- multi-source retrieval from `arXiv`, `Crossref`, and `OpenAlex`
-- optional local PDF integration
-- reviewer-guided revision when retrieval quality is insufficient
-- project-scoped outputs including notes, retrieval JSON, traces, and manifests
+This system **does not**:
+
+- edit `wiki/index.md`, `wiki/overview.md`, or any wiki pages
+- build concept/entity pages
+- answer knowledge questions or write syntheses
+- perform refresh, incremental sync, or repo discovery
+
+The output of this repo is `raw/` input for a downstream wiki agent. It does not maintain the wiki itself.
 
 ## Quick Start
 
@@ -26,166 +33,58 @@ pip install -e .
 
 ### 2. Configure
 
-Copy `.env.example` to `.env` and select a model provider.
+Copy `.env.example` to `.env` and set a supported OpenAI-compatible model provider.
 
-Example:
-
-```bash
-MODEL_PROVIDER=glm
-GLM_API_KEY=your_key
-GLM_BASE_URL=https://open.bigmodel.cn/api/paas/v4
-GLM_MODEL=glm-4.5-air
-```
-
-Optional rerank settings:
+### 3. Run discovery
 
 ```bash
-RERANK_MODEL=
-RERANK_BASE_URL=
-RERANK_API_KEY=
+raw-feeder discover --project brep-discovery --query "recent papers on direct B-Rep generation from natural language descriptions" --top-k 15
 ```
 
-Supported providers currently include:
+## Output Layout
 
-- `glm`
-- `deepseek`
-- `qwen`
-- `groq`
-- `openrouter`
-
-### 3. Run
-
-Run a direct query:
-
-```bash
-python -m paper_research_agent.main --project multimodal-imaging --query "recent papers on multimodal models for medical image segmentation"
-```
-
-Run from a query file:
-
-```bash
-python -m paper_research_agent.main --project brep-reconstruct --query-file query.txt
-```
-
-Use a local PDF directory:
-
-```bash
-python -m paper_research_agent.main --project multimodal-imaging --query "foundation models for medical segmentation" --pdf-dir E:\Search\参考\B-Rep
-```
-
-You can also use the installed script entrypoint:
-
-```bash
-paper-agent --help
-```
-
-## Workflow
-
-The workflow is organized as a top-level LangGraph graph plus a retrieval subgraph.
-
-Top-level graph:
-
-1. `prepare_run_context`
-2. `paper_retrieval_subgraph`
-3. `generate_research_note`
-4. `persist_project_artifacts`
-
-Retrieval subgraph:
-
-1. `task_interpretation_node`
-2. `retrieval_node`
-3. `reviewer_node`
-4. `validate_review_gate_node`
-
-Current high-level execution flow:
-
-1. interpret the task into a structured intent and query plan
-2. retrieve candidates from academic sources
-3. rank, filter, and deduplicate results
-4. review retrieval quality against task constraints
-5. revise and retry if needed
-6. verify promising papers with PDF evidence when possible
-7. generate a research note
-8. persist all project artifacts
-
-## Project Layout
+Each project is organized around raw feeder outputs:
 
 ```text
-src/paper_research_agent/
-  app.py
-  main.py
-  core/
-    config.py
-    llm.py
-    models.py
-    normalization.py
-    state.py
-  graph/
-    builder.py
-  project/
-    reporting.py
-    store.py
-  retrieval/
-    ranking.py
-    sources.py
-    toolkit.py
-    utils.py
-    verification.py
-
-projects/
-  <project_slug>/
-    project.md
-    notes/
-    retrieval/
-    traces/
-    sources/
-      manifest.json
+projects/<project_slug>/
+  project.md
+  raw/
+    papers/
+      *.md
+  .feeder/
+    log.md
+    batches/
+      *.json
 ```
 
-Module roles:
+- `project.md`: optional project context that shapes discovery intent
+- `raw/papers/*.md`: source materials for downstream wiki ingest
+- `.feeder/batches/*.json`: machine-readable records of each discovery run
+- `.feeder/log.md`: append-only operation log
 
-- `core/`: shared settings, schemas, normalization, state, and LLM helpers
-- `graph/`: LangGraph construction and node orchestration
-- `retrieval/`: source collection, ranking, rerank support, PDF verification, and retrieval toolkit
-- `project/`: artifact storage, manifest management, and note/trace rendering
-- `app.py` / `main.py`: application wrapper and CLI entrypoint
+## Raw Paper Format
 
-## Output Artifacts
+Every raw paper file is a single-source document. It includes:
 
-Each run writes reusable project materials:
+- bibliographic metadata
+- canonical URL / DOI / PDF URL when available
+- abstract or best available summary
+- matched discovery queries
+- provenance fields (`fetched_at`, `fetched_by`, source family)
 
-- `notes/*.md`: project-scoped research notes
-- `retrieval/*.json`: structured retrieval and review outputs
-- `traces/*.json`: execution traces
-- `sources/manifest.json`: accumulated project source and run metadata
+The file is explicitly marked as raw source material and not as a wiki page or synthesis.
 
-When local PDFs are enabled, `retrieval/*.json` also records `local_library_debug`, including:
+## Example Flow
 
-- how many local PDFs were scanned
-- how many produced readable text
-- how many matched the interpreted query
-- how many were retained in final retrieval results
+1. Create or edit `projects/<slug>/project.md` with domain context.
+2. Run `raw-feeder discover ...`.
+3. Inspect the generated files in `projects/<slug>/raw/papers/`.
+4. Point your wiki agent at those raw markdown files and ingest them into the wiki layer.
 
-## CLI Options
+A static demo is included under `projects/demo-paper-discovery/` so the final raw and batch shapes are visible without running a live networked discovery.
 
-- `--project`: project slug used for the project library
-- `--query`: direct natural-language research task
-- `--query-file`: read the task from a text file
-- `--pdf-dir`: optional local PDF directory
-- `--output-dir`: custom root for project artifacts
-- `--no-stream`: disable streaming progress output
+## Development Notes
 
-## Current Scope
-
-This repository should currently be viewed as the groundwork for a larger research agent, not as a full end-to-end research platform.
-
-The current implementation focuses on:
-
-- building the retrieval workflow itself
-- making intermediate outputs traceable
-- producing reusable project-scoped artifacts
-
-It does **not** yet focus on:
-
-- long-term memory
-- vector database indexing
+- The codebase intentionally reuses the existing source collectors and ranking utilities from the previous retrieval prototype.
+- The LLM is only used for lightweight discover-intent parsing. It does not perform review loops or note generation.
+- v1 supports only paper discovery from zero. No refresh/update pipeline is implemented yet.

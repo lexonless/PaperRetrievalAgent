@@ -1,37 +1,21 @@
 from __future__ import annotations
 
 from .core.config import Settings
-from .core.state import create_initial_state
-from .graph import build_research_assistant_graph, create_resources
+from .discover import RawFeederService
 
 
-class ResearchAssistantApplication:
+class RawFeederApplication:
     def __init__(self, settings: Settings, *, output_root: str = "projects") -> None:
-        self.settings = settings
-        self.resources = create_resources(settings, output_root=output_root)
-        self.graph = build_research_assistant_graph(self.resources)
+        self._service = RawFeederService(settings, output_root=output_root)
 
-    async def run(
+    async def discover(
         self,
         *,
         project_slug: str,
-        task: str,
-        pdf_dir: str = "",
-    ) -> dict:
-        initial_state = create_initial_state(project_slug=project_slug, query=task)
-        initial_state["project"]["pdf_dir"] = pdf_dir
-        return await self.graph.ainvoke(initial_state)
-
-    async def run_stream(
-        self,
-        *,
-        project_slug: str,
-        task: str,
-        pdf_dir: str = "",
+        query: str,
+        top_k: int = 5,
     ):
-        initial_state = create_initial_state(project_slug=project_slug, query=task)
-        initial_state["project"]["pdf_dir"] = pdf_dir
-        return self.graph.astream(initial_state, stream_mode="values")
+        return await self._service.discover(project_slug=project_slug, query=query, top_k=top_k)
 
     async def close(self) -> None:
-        await self.resources.toolkit.close()
+        await self._service.close()
