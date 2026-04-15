@@ -255,7 +255,7 @@ class PaperRankingEngine:
                 {
                     "query": item["query"],
                     "sources": item["sources"],
-                    "notes": "Primary query executed from the latest task interpretation." if str(item.get("stage", "")).strip().lower() == PRIMARY_STAGE else "Semantic core term expansion executed because earlier retrieval remained sparse." if str(item.get("stage", "")).strip().lower().startswith(TOPIC_FALLBACK_STAGE) else "Derived from the latest task interpretation.",
+                    "notes": normalize_text(item.get("notes", "")) or ("Primary query executed from the latest task interpretation." if str(item.get("stage", "")).strip().lower() == PRIMARY_STAGE else "Semantic core term expansion executed because earlier retrieval remained sparse." if str(item.get("stage", "")).strip().lower().startswith(TOPIC_FALLBACK_STAGE) else "Derived from the latest task interpretation."),
                 }
                 for item in executed_query_specs
             ],
@@ -543,15 +543,25 @@ class PaperRankingEngine:
 
     def _deduplicate_retrieval_papers(self, papers: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
         best_by_key: dict[str, dict[str, Any]] = {}
+        key_by_normalized_title: dict[str, str] = {}
         duplicate_count = 0
         for paper in papers:
             key = self._retrieval_paper_dedup_key(paper)
+            title_key = self._retrieval_paper_title_key(paper)
+            if title_key:
+                existing_key_for_title = key_by_normalized_title.get(title_key)
+                if existing_key_for_title is not None and existing_key_for_title != key:
+                    key = existing_key_for_title
             existing = best_by_key.get(key)
             if existing is None:
                 best_by_key[key] = paper
+                if title_key:
+                    key_by_normalized_title[title_key] = key
                 continue
             duplicate_count += 1
             best_by_key[key] = self._merge_retrieval_papers(existing, paper)
+            if title_key:
+                key_by_normalized_title[title_key] = key
         return list(best_by_key.values()), duplicate_count
 
     def _retrieval_paper_dedup_key(self, paper: dict[str, Any]) -> str:
@@ -561,7 +571,10 @@ class PaperRankingEngine:
         url = normalize_text(paper.get("url", ""), for_matching=True)
         if url:
             return f"url:{re.sub(r'v\\d+$', '', url)}"
-        return f"title:{normalize_text(paper.get('title', ''), for_matching=True)}"
+        return f"title:{self._retrieval_paper_title_key(paper)}"
+
+    def _retrieval_paper_title_key(self, paper: dict[str, Any]) -> str:
+        return normalize_text(paper.get("title", ""), for_matching=True)
 
     def _merge_retrieval_papers(self, left: dict[str, Any], right: dict[str, Any]) -> dict[str, Any]:
         primary = left if self._retrieval_paper_quality_score(left) >= self._retrieval_paper_quality_score(right) else right

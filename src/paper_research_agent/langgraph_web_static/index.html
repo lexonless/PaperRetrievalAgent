@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LangGraph Research Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <section class="intro">
+        <p class="eyebrow">LangGraph Research Assistant</p>
+        <h1>Project Notes</h1>
+        <p class="lead">Submit a project query and follow the graph as it interprets the task, retrieves papers, reviews quality, and writes the final note.</p>
+      </section>
+
+      <section class="composer" aria-labelledby="query-label">
+        <div class="field-grid">
+          <div class="field">
+            <label class="label" for="project-slug-input">Project Slug</label>
+            <input id="project-slug-input" name="project_slug" type="text" placeholder="medical-vision" />
+          </div>
+          <div class="field">
+            <label class="label" for="pdf-dir-input">PDF Directory (Optional)</label>
+            <div class="input-with-button">
+              <input id="pdf-dir-input" name="pdf_dir" type="text" placeholder="D:\papers\medical" />
+              <button id="choose-pdf-dir-button" type="button" class="secondary-button">Choose Folder</button>
+            </div>
+          </div>
+        </div>
+        <label id="query-label" class="label" for="query-input">Query</label>
+        <textarea
+          id="query-input"
+          name="query"
+          rows="8"
+          placeholder="Search recent papers on multimodal models for medical image segmentation and write a project-oriented research note."
+        ></textarea>
+        <div class="actions">
+          <button id="submit-button" type="button">Run research</button>
+          <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="status-band" aria-labelledby="status-heading">
+        <div>
+          <p class="section-kicker">Status</p>
+          <h2 id="status-heading">Current run</h2>
+          <p id="status-detail" class="status-detail">The page will show stage updates here.</p>
+        </div>
+        <p id="job-status" class="status-chip idle">Idle</p>
+      </section>
+
+      <section class="timeline-band" aria-labelledby="timeline-heading">
+        <div class="timeline-header">
+          <div>
+            <p class="section-kicker">Activity</p>
+            <h2 id="timeline-heading">Recent steps</h2>
+          </div>
+        </div>
+        <ul id="activity-log" class="activity-log">
+          <li class="placeholder">Recent graph updates will appear here.</li>
+        </ul>
+      </section>
+
+      <section class="result-band" aria-labelledby="result-heading">
+        <div class="result-header">
+          <div>
+            <p class="section-kicker">Output</p>
+            <h2 id="result-heading">Notes</h2>
+          </div>
+          <p id="job-meta" class="job-meta"></p>
+        </div>
+        <article id="result-content" class="result-content">
+          <p class="placeholder">The final research note will appear here.</p>
+        </article>
+      </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

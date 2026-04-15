@@ -1,0 +1,833 @@
+{
+  "query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze as many as possible state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)",
+  "prepared_query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze as many as possible state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)\n\n[Runtime Search Context]\nToday's date for this run is 2026-04-14.\nThe query contains a vague recency hint. Resolve it into an explicit year range against today's date.",
+  "task_interpretation": {
+    "intent": {
+      "topic": "Neural network-based 3D Boundary Representation (B-Rep) reconstruction and generation",
+      "goal": "Identify and analyze state-of-the-art research papers (2021-2026) that directly output the final B-Rep data structure (faces, edges, vertices, topology) using modern neural architectures, strictly excluding methods that output CAD operation sequences, CSG trees, or programs.",
+      "time_range": {
+        "start_year": null,
+        "end_year": 2026,
+        "is_explicit": false,
+        "original_expression": "recent",
+        "resolution_basis_date": "2026-04-14",
+        "resolved_by_rule": ""
+      },
+      "must_include": [
+        "direct output of B-Rep topology and geometry",
+        "modern neural architectures (latent, variational, diffusion, autoregressive, transformer)",
+        "end-to-end generation or reconstruction"
+      ],
+      "must_exclude": [
+        "CAD operation sequences",
+        "sketch-and-extrude histories",
+        "CAD construction trees",
+        "Constructive Solid Geometry (CSG)",
+        "CAD program synthesis",
+        "step-by-step modeling history"
+      ]
+    },
+    "query_plan": {
+      "primary_queries": [
+        "\"B-Rep\" diffusion generation neural",
+        "\"boundary representation\" reconstruction transformer",
+        "neural B-Rep generation variational autoencoder",
+        "direct B-Rep output deep learning -CSG -\"operation sequence\" -\"program synthesis\"",
+        "B-Rep topology learning graph neural network",
+        "end-to-end B-Rep reconstruction from point cloud",
+        "B-Rep structured prediction autoregressive model"
+      ],
+      "semantic_core_terms": [
+        "B-Rep generation neural",
+        "B-Rep reconstruction neural",
+        "boundary representation generation deep learning",
+        "neural topology prediction",
+        "structured 3D geometry learning"
+      ]
+    },
+    "hard_requirements": {
+      "minimum_paper_count": 0,
+      "maximum_paper_count": null,
+      "required_paper_types": [
+        "research paper",
+        "conference paper",
+        "journal article"
+      ],
+      "forbidden_paper_types": [
+        "survey",
+        "review",
+        "tutorial",
+        "book chapter",
+        "preprint without peer review"
+      ],
+      "required_source_families": []
+    }
+  },
+  "retrieval_output": {
+    "sources_used": [
+      "Crossref",
+      "OpenAlex",
+      "arXiv"
+    ],
+    "queries_executed": [
+      {
+        "query": "\"B-Rep\" diffusion generation neural",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "\"boundary representation\" reconstruction transformer",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "neural B-Rep generation variational autoencoder",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "direct B-Rep output deep learning -CSG -\"operation sequence\" -\"program synthesis\"",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep topology learning graph neural network",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "end-to-end B-Rep reconstruction from point cloud",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep structured prediction autoregressive model",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep generation neural",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "B-Rep reconstruction neural",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "boundary representation generation deep learning",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "neural topology prediction",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      }
+    ],
+    "papers": [
+      {
+        "title": "AutoRegressive Generation with B-rep Holistic Token Sequence Representation",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-01-23T14:15:02Z",
+        "url": "http://arxiv.org/abs/2601.16771v2",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Yunpeng Bai",
+          "Yongkang Dai",
+          "Hao Guo",
+          "Hongping Gan",
+          "Yilei Shi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper proposes BrepARG, an autoregressive model that directly generates B-Rep geometry and topology as a holistic token sequence, using a transformer architecture. This matches the request for direct B-Rep output, modern neural architectures (autoregressive/transformer), and end-to-end generation.",
+        "evidence_snippets": [
+          "Previous representation and generation approaches for the B-rep relied on graph-based representations that disentangle geometric and topological features through decoupled computational pipelines, thereby precluding the application of sequence-based generative frameworks, such as transformer architectures that have demonstrated remarkable performance. In this paper, we propose BrepARG, the first attempt to encode B-rep's geometry and topology into a holistic token sequence representation, enabling sequence-based B-rep generation with an autoregressive architecture. Specifically, BrepARG encodes B-rep into 3 types of tokens: geometry and position tokens representing geometric features, and face index tokens representing topology. Then the holistic token sequence is constructed hierarchically, starting with constructing the geometry blocks (i.e., faces and edges) using the above tokens, followed by geometry block sequencing. Finally, we assemble the holistic sequence representation for the entire B-rep. We also construct a transformer-based autoregressive model that learns the distribution over holistic token sequences via next-token prediction, using a multi-layer decoder-only architecture with causal masking. Experiments demonstrate that BrepARG achieves state-of-the-art (SOTA) performance. BrepARG validates the feasibility of representing B-rep as holistic token sequences, opening new directions for B-rep generation."
+        ]
+      },
+      {
+        "title": "HiDiGen: Hierarchical Diffusion for B-Rep Generation with Explicit Topological Constraints",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-04-03T08:06:51Z",
+        "url": "http://arxiv.org/abs/2604.02847v1",
+        "doi": "",
+        "authors": [
+          "Shurui Liu",
+          "Weide Chen",
+          "Ancong Wu"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper proposes HiDiGen, a hierarchical diffusion framework for B-Rep generation that models topological constraints and uses Transformer-based diffusion modules to generate face surfaces and vertex positions. This directly addresses B-Rep generation with a modern neural architecture (diffusion/transformer) and outputs the final B-Rep structure.",
+        "evidence_snippets": [
+          "Boundary representation (B-rep) is the standard 3D modeling format in CAD systems, encoding both geometric primitives and topological connectivity. Despite its prevalence, deep generative modeling of valid B-rep structures remains challenging due to the intricate interplay between discrete topology and continuous geometry. In this paper, we propose HiDiGen, a hierarchical generation framework that decouples geometry modeling into two stages, each guided by explicitly modeled topological constraints. Specifically, our approach first establishes face-edge incidence relations to define a coherent topological scaffold, upon which face proxies and initial edge curves are generated. Subsequently, multiple Transformer-based diffusion modules are employed to refine the geometry by generating precise face surfaces and vertex positions, with edge-vertex adjacencies dynamically established and enforced to preserve structural consistency. This progressive geometry hierarchy enables the generation of more novel and diverse shapes, while two-stage topological modeling ensures high validity. Experimental results show that HiDiGen achieves strong performance, generating novel, diverse, and topologically sound CAD models."
+        ]
+      },
+      {
+        "title": "AutoBrep: Autoregressive B-Rep Generation with Unified Topology and Geometry",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-12-02T18:46:25Z",
+        "url": "http://arxiv.org/abs/2512.03018v1",
+        "doi": "",
+        "authors": [
+          "Xiang Xu",
+          "Pradeep Kumar Jayaraman",
+          "Joseph G. Lambourne",
+          "Yilin Liu",
+          "Durvesh Malpure",
+          "Pete Meltzer"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents AutoBrep, a Transformer model that autoregressively generates B-Reps end-to-end using a unified tokenization of geometry and topology. It explicitly addresses direct B-Rep generation with a modern neural architecture (autoregressive transformer), fitting the user's goal and must-include criteria.",
+        "evidence_snippets": [
+          "The boundary representation (B-Rep) is the standard data structure used in Computer-Aided Design (CAD) for defining solid models. Despite recent progress, directly generating B-Reps end-to-end with precise geometry and watertight topology remains a challenge. This paper presents AutoBrep, a novel Transformer model that autoregressively generates B-Reps with high quality and validity. AutoBrep employs a unified tokenization scheme that encodes both geometric and topological characteristics of a B-Rep model as a sequence of discrete tokens. Geometric primitives (i.e., surfaces and curves) are encoded as latent geometry tokens, and their structural relationships are defined as special topological reference tokens. Sequence order in AutoBrep naturally follows a breadth first traversal of the B-Rep face adjacency graph. At inference time, neighboring faces and edges along with their topological structure are progressively generated. Extensive experiments demonstrate the advantages of our unified representation when coupled with next-token prediction for B-Rep generation. AutoBrep outperforms baselines with better quality and watertightness. It is also highly scalable to complex solids with good fidelity and inference speed. We further show that autocompleting B-Reps is natively supported through our unified tokenization, enabling user-controllable CAD generation with minimal changes. Code is available at https://github.com/AutodeskAILab/AutoBrep."
+        ]
+      },
+      {
+        "title": "BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-27T07:16:53Z",
+        "url": "http://arxiv.org/abs/2511.22171v1",
+        "doi": "",
+        "authors": [
+          "Pu Li",
+          "Wenhao Zhang",
+          "Weize Quan",
+          "Biao Zhang",
+          "Peter Wonka",
+          "Dong-Ming Yan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents BrepGPT, a single-stage autoregressive framework for B-rep generation using a Voronoi Half-Patch representation and a decoder-only Transformer. It directly outputs B-Rep models, uses a modern neural architecture (autoregressive/transformer/VQ-VAE), and supports end-to-end generation, matching all core requirements.",
+        "evidence_snippets": [
+          "Boundary representation (B-rep) is the de facto standard for CAD model representation in modern industrial design. The intricate coupling between geometric and topological elements in B-rep structures has forced existing generative methods to rely on cascaded multi-stage networks, resulting in error accumulation and computational inefficiency. We present BrepGPT, a single-stage autoregressive framework for B-rep generation. Our key innovation lies in the Voronoi Half-Patch (VHP) representation, which decomposes B-reps into unified local units by assigning geometry to nearest half-edges and sampling their next pointers. Unlike hierarchical representations that require multiple distinct encodings for different structural levels, our VHP representation facilitates unifying geometric attributes and topological relations in a single, coherent format. We further leverage dual VQ-VAEs to encode both vertex topology and Voronoi Half-Patches into vertex-based tokens, achieving a more compact sequential encoding. A decoder-only Transformer is then trained to autoregressively predict these tokens, which are subsequently mapped to vertex-based features and decoded into complete B-rep models. Experiments demonstrate that BrepGPT achieves state-of-the-art performance in unconditional B-rep generation. The framework also exhibits versatility in various applications, including conditional generation from category labels, point clouds, text descriptions, and images, as well as B-rep autocompletion and interpolation."
+        ]
+      },
+      {
+        "title": "BrepGen: A B-rep Generative Diffusion Model with Structured Latent Geometry",
+        "source": "arXiv",
+        "year": 2024,
+        "date": "2024-01-28T04:07:59Z",
+        "url": "http://arxiv.org/abs/2401.15563v3",
+        "doi": "",
+        "authors": [
+          "Xiang Xu",
+          "Joseph G. Lambourne",
+          "Pradeep Kumar Jayaraman",
+          "Zhengqing Wang",
+          "Karl D. D. Willis",
+          "Yasutaka Furukawa"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper directly addresses the user's goal. 'BrepGen' is a diffusion-based generative model that 'directly outputs a Boundary representation (B-rep) CAD model'. It uses a modern neural architecture (Transformer-based diffusion), performs end-to-end generation, and explicitly handles B-Rep topology (faces, edges, vertices) and geometry via a structured latent tree. It fits all 'must_include' criteria and does not involve the excluded methods like CAD operation sequences or CSG trees.",
+        "evidence_snippets": [
+          "This paper presents BrepGen, a diffusion-based generative approach that directly outputs a Boundary representation (B-rep) Computer-Aided Design (CAD) model. BrepGen represents a B-rep model as a novel structured latent geometry in a hierarchical tree. With the root node representing a whole CAD solid, each element of a B-rep model (i.e., a face, an edge, or a vertex) progressively turns into a child-node from top to bottom. B-rep geometry information goes into the nodes as the global bounding box of each primitive along with a latent code describing the local geometric shape. The B-rep topology information is implicitly represented by node duplication. When two faces share an edge, the edge curve will appear twice in the tree, and a T-junction vertex with three incident edges appears six times in the tree with identical node features. Starting from the root and progressing to the leaf, BrepGen employs Transformer-based diffusion models to sequentially denoise node features while duplicated nodes are detected and merged, recovering the B-Rep topology information. Extensive experiments show that BrepGen advances the task of CAD B-rep generation, surpassing existing methods on various benchmarks. Results on our newly collected furniture dataset further showcase its exceptional capability in generating complicated geometry. While previous methods were limited to generating simple prismatic shapes, BrepGen incorporates free-form and doubly-curved surfaces for the first time. Additional applications of BrepGen include CAD autocomplete and design interpolation. The code, pretrained models, and dataset are available at https://github.com/samxuxiang/BrepGen."
+        ]
+      },
+      {
+        "title": "ComplexGen",
+        "source": "OpenAlex",
+        "year": 2022,
+        "date": "2022-07-01",
+        "url": "https://doi.org/10.1145/3528223.3530078",
+        "doi": "10.1145/3528223.3530078",
+        "authors": [
+          "Haoxiang Guo",
+          "Shilin Liu",
+          "Hao Pan",
+          "Yang Liu",
+          "Xin Tong",
+          "Baining Guo"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper 'ComplexGen' directly addresses B-Rep reconstruction from point clouds. It explicitly detects geometric primitives (vertices, edges, surface patches) and their relationships, modeling them as a chain complex to recover a definite B-Rep. It uses a modern neural architecture (sparse CNN encoder, tri-path transformer decoder) for end-to-end probabilistic structure prediction, followed by optimization. This matches all core requirements: direct B-Rep output, modern neural architecture, and reconstruction task.",
+        "evidence_snippets": [
+          "We view the reconstruction of CAD models in the boundary representation (B-Rep) as the detection of geometric primitives of different orders, i.e. , vertices, edges and surface patches, and the correspondence of primitives, which are holistically modeled as a chain complex, and show that by modeling such comprehensive structures more complete and regularized reconstructions can be achieved. We solve the complex generation problem in two steps. First, we propose a novel neural framework that consists of a sparse CNN encoder for input point cloud processing and a tri-path transformer decoder for generating geometric primitives and their mutual relationships with estimated probabilities. Second, given the probabilistic structure predicted by the neural network, we recover a definite B-Rep chain complex by solving a global optimization maximizing the likelihood under structural validness constraints and applying geometric refinements. Extensive tests on large scale CAD datasets demonstrate that the modeling of B-Rep chain complex structure enables more accurate detection for learning and more constrained reconstruction for optimization, leading to structurally more faithful and complete CAD B-Rep models than previous results."
+        ]
+      },
+      {
+        "title": "ComplexGen: CAD Reconstruction by B-Rep Chain Complex Generation",
+        "source": "OpenAlex",
+        "year": 2022,
+        "date": "2022-05-29",
+        "url": "http://arxiv.org/abs/2205.14573",
+        "doi": "10.48550/arxiv.2205.14573",
+        "authors": [
+          "Haoxiang Guo",
+          "Shilin Liu",
+          "Hao Pan",
+          "Yang Liu",
+          "Xin Tong",
+          "Baining Guo"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "This appears to be the same 'ComplexGen' paper (same title and abstract as p20). It describes the same method for CAD reconstruction by B-Rep chain complex generation using a neural framework with a transformer decoder. It directly outputs the B-Rep topology and geometry (vertices, edges, surfaces) from an input point cloud, fitting the requested task precisely.",
+        "evidence_snippets": [
+          "We view the reconstruction of CAD models in the boundary representation (B-Rep) as the detection of geometric primitives of different orders, i.e. vertices, edges and surface patches, and the correspondence of primitives, which are holistically modeled as a chain complex, and show that by modeling such comprehensive structures more complete and regularized reconstructions can be achieved. We solve the complex generation problem in two steps. First, we propose a novel neural framework that consists of a sparse CNN encoder for input point cloud processing and a tri-path transformer decoder for generating geometric primitives and their mutual relationships with estimated probabilities. Second, given the probabilistic structure predicted by the neural network, we recover a definite B-Rep chain complex by solving a global optimization maximizing the likelihood under structural validness constraints and applying geometric refinements. Extensive tests on large scale CAD datasets demonstrate that the modeling of B-Rep chain complex structure enables more accurate detection for learning and more constrained reconstruction for optimization, leading to structurally more faithful and complete CAD B-Rep models than previous results."
+        ]
+      },
+      {
+        "title": "ComplexGen: CAD Reconstruction by B-Rep Chain Complex Generation",
+        "source": "arXiv",
+        "year": 2022,
+        "date": "2022-05-29T05:30:33Z",
+        "url": "http://arxiv.org/abs/2205.14573v1",
+        "doi": "",
+        "authors": [
+          "Haoxiang Guo",
+          "Shilin Liu",
+          "Hao Pan",
+          "Yang Liu",
+          "Xin Tong",
+          "Baining Guo"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "This is another instance of the 'ComplexGen' paper (same abstract as p20 and p21). It confirms the method for B-Rep reconstruction using a neural network to generate primitives and their relationships, leading to a complete CAD B-Rep model. It is a direct match for the task of neural B-Rep reconstruction.",
+        "evidence_snippets": [
+          "We view the reconstruction of CAD models in the boundary representation (B-Rep) as the detection of geometric primitives of different orders, i.e. vertices, edges and surface patches, and the correspondence of primitives, which are holistically modeled as a chain complex, and show that by modeling such comprehensive structures more complete and regularized reconstructions can be achieved. We solve the complex generation problem in two steps. First, we propose a novel neural framework that consists of a sparse CNN encoder for input point cloud processing and a tri-path transformer decoder for generating geometric primitives and their mutual relationships with estimated probabilities. Second, given the probabilistic structure predicted by the neural network, we recover a definite B-Rep chain complex by solving a global optimization maximizing the likelihood under structural validness constraints and applying geometric refinements. Extensive tests on large scale CAD datasets demonstrate that the modeling of B-Rep chain complex structure enables more accurate detection for learning and more constrained reconstruction for optimization, leading to structurally more faithful and complete CAD B-Rep models than previous results."
+        ]
+      },
+      {
+        "title": "STream3R: Scalable Sequential 3D Reconstruction with Causal Transformer",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-08-14T17:58:05Z",
+        "url": "http://arxiv.org/abs/2508.10893v1",
+        "doi": "",
+        "authors": [
+          "Yushi Lan",
+          "Yihang Luo",
+          "Fangzhou Hong",
+          "Shangchen Zhou",
+          "Honghua Chen",
+          "Zhaoyang Lyu",
+          "Shuai Yang",
+          "Bo Dai"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "excerpt",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents a sequential 3D reconstruction method using a causal Transformer, which is a modern neural architecture. It mentions 'pointmap prediction' and 'multi-view reconstruction', which are related to 3D reconstruction. However, the abstract does not specify the output representation; it does not confirm direct output of B-Rep topology and geometry (faces, edges, vertices), leaving ambiguity about whether it fits the strict requirement of the task.",
+        "evidence_snippets": [
+          "We present STream3R, a novel approach to 3D reconstruction that reformulates pointmap prediction as a decoder-only Transformer problem. Existing state-of-the-art methods for multi-view reconstruction either depend on expensive global optimization or rely on simplistic memory mechanisms that scale poorly with sequence length. In contrast, STream3R introduces an streaming framework that processes image sequences efficiently using causal attention, inspired by advances in modern language modeling. By learning geometric priors from large-scale 3D datasets, STream3R generalizes well to diverse and challenging scenarios, including dynamic scenes where traditional methods often fail. Extensive experiments show that our method consistently outperforms prior work across both static and dynamic scen",
+          "STREAM 3R: Scalable Sequential 3D Reconstruction with Causal Transformer Yushi Lan1∗, Yihang Luo1∗, Fangzhou Hong1, Shangchen Zhou1, Honghua Chen1, Zhaoyang Lyu2, Shuai Yang3, Bo Dai4, Chen Change Loy1, Xingang Pan1 1S-Lab, Nanyang Technological University, Singapore 2Shanghai Artificial Intelligence Laboratory 3WICT, Peking University 4The University of Hong Kong https://nirvanalan.github.io/projects/stream3r Cache Features of View 1 Cache Features of View 1, 2 Cache Features of View 1, 2, 3 Figure 1: STREAM 3R. Given a stream of input images, our method estimates dense 3D geometry for each incoming frame using a causal Transformer. Features from previously observed frames are cached as context for future inference. Abstract We present STREAM 3R, a novel approach to 3D reconstruction that"
+        ]
+      },
+      {
+        "title": "Multi-scale Topology Optimization for Manufacturable Graded Lattice Structure via Neural Network Prediction Model",
+        "source": "Crossref / Crossref",
+        "year": 2023,
+        "date": "2023-6-28",
+        "url": "https://doi.org/10.21203/rs.3.rs-2903295/v1",
+        "doi": "10.21203/rs.3.rs-2903295/v1",
+        "authors": [
+          "Shihang Wang",
+          "Junyuan Zhang",
+          "Hao Zhou",
+          "Le Zhang",
+          "Kai Cao"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper uses a neural network prediction model within a multi-scale topology optimization framework for designing manufacturable gradient lattice structures. It involves 'neural topology prediction' which is topically relevant to structured geometry learning. However, it is about topology optimization for mechanical structures, not the direct generation or reconstruction of B-Rep data structures (faces, edges, vertices, topology) from data. The fit is related but not direct, as the output is a density field for lattice design, not a B-Rep. The evidence is insufficient to confirm it outputs a final B-Rep.",
+        "evidence_snippets": [
+          "<title>Abstract</title> <p>This paper presents a multi-scale topology optimization method based on neural network (MSTO-NN) for manufacturable gradient lattice structures (MGLS), which takes into account the manufacturing limitation of fine feature size. The establishment of the optimization model is firstly based on mechanics-based homogenization method to obtain the equivalent properties of lattice structure with larger cells. To balance computational efficiency and accuracy, a prediction model of the equivalent properties of lattice structures is constructed using neural networks, which replaces micro-scale finite element analysis. The sensitivity analysis of neural networks is derived and integrated into multi-scale topology optimization. To ensure the manufacturability of lattice structure, the material interpolation for MGLS based on ordered SIMP is proposed to filter the fine feature structure during optimization process. Numerical examples under 2D and 3D boundary conditions are performed to validate the proposed method. The results show that the proposed multi-scale topology optimization method can effectively realize the utilization of materials, improve the stiffness of the structure and ensure the feasibility of the manufacturing process. Moreover, the comparison of numerical examples reveals that the size of cell and fine feature size limitation have a significant impact on the structural design and performance.</p>"
+        ]
+      },
+      {
+        "title": "Hierarchical CADNet: Learning from B-Reps for Machining Feature Recognition",
+        "source": "OpenAlex",
+        "year": 2022,
+        "date": "2022-02-07",
+        "url": "https://doi.org/10.1016/j.cad.2022.103226",
+        "doi": "10.1016/j.cad.2022.103226",
+        "authors": [
+          "Andrew Colligan",
+          "Trevor Robinson",
+          "Declan Nolan",
+          "Hua Yang",
+          "Weijuan Cao"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents a hierarchical graph neural network (Hierarchical CADNet) that learns from B-Rep representations for machining feature recognition. It processes B-Rep topology and geometry, which is topically relevant. However, the task is feature identification/classification, not the generation or reconstruction of a full B-Rep structure. It is a related, useful method for B-Rep analysis but does not directly perform the requested generation/reconstruction output task.",
+        "evidence_snippets": [
+          "Deep learning approaches have been shown to be capable of recognizing shape features (e.g. machining features) in Computer-Aided Design (CAD) models in certain circumstances, yet still have issues when the features intersect, and in exploiting the geometric and topological information which comprises the boundary representation (B-Rep) of the typical CAD model. This paper presents a novel hierarchical B-Rep graph shape representation which encodes information about the surface geometry and face topology of the B-Rep. To learn from this new shape representation, a novel hierarchical graph convolutional network called Hierarchical CADNet has been created, which has been shown to outperform other state-of-the-art neural architectures on feature identification, including machining features that intersect, with improvements in accuracy for some more complex CAD models."
+        ]
+      },
+      {
+        "title": "AAGCN: A Graph Convolutional Neural Network with Adaptive Feature and Topology Learning",
+        "source": "Crossref / Crossref",
+        "year": 2024,
+        "date": "2024-1-8",
+        "url": "https://doi.org/10.21203/rs.3.rs-3831311/v1",
+        "doi": "10.21203/rs.3.rs-3831311/v1",
+        "authors": [
+          "Bin Wang",
+          "Bodong Cai",
+          "Jinfang Sheng",
+          "Wenzhe Jiao"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper proposes a graph convolutional neural network for adaptive feature and topology learning on generic graph data like social networks. While it deals with topology learning, a concept relevant to B-Reps, the application domain and evidence are entirely about node classification on abstract graphs, not 3D geometric B-Rep generation or reconstruction.",
+        "evidence_snippets": [
+          "<title>Abstract</title> <p>In recent years, there has been a growing prevalence of deep learning in various domains, owing to advancements in information technology and computing power. Graph neural network methods within deep learning have shown remarkable capabilities in processing graph-structured data, such as social networks and traffic networks. As a result, they have garnered significant attention from researchers.However, real-world data often face challenges like data sparsity and missing labels, which can hinder the performance and generalization ability of graph convolutional neural networks. To overcome these challenges, our research aims to effectively extract the hidden features and topological information of graph convolutional neural networks. We propose an innovative model called Adaptive Feature and Topology Graph Convolutional Neural Network (AAGCN). By incorporating an adaptive layer, our model preprocesses the data and integrates the hidden features and topological information with the original data's features and structure. These fused features are then utilized in the convolutional layer for training, significantly enhancing the expressive power of graph convolutional neural networks.To evaluate the effectiveness of the adaptive layer in the AAGCN model, we conducted node classification experiments on real datasets. The results validate its ability to address data sparsity and improve the classification performance of graph convolutional neural networks.In conclusion, our research primarily focuses on addressing data sparsity and missing labels in graph convolutional neural networks. The proposed AAGCN model, which incorporates an adaptive layer, effectively extracts hidden features and topological information, thereby enhancing the expressive power and classification performance of these networks.</p>"
+        ]
+      },
+      {
+        "title": "3D convolutional neural network for machining feature recognition with gradient-based visual explanations from 3D CAD models",
+        "source": "OpenAlex",
+        "year": 2022,
+        "date": "2022-09-01",
+        "url": "https://doi.org/10.1038/s41598-022-19212-6",
+        "doi": "10.1038/s41598-022-19212-6",
+        "authors": [
+          "Jinwon Lee",
+          "Hyunoh Lee",
+          "Duhwan Mun"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper uses a 3D CNN for machining feature recognition from CAD models. While it processes B-Rep data (topological and geometric information from CAD) and uses a modern neural network, its task is classification and localization of features, not the direct output or generation of a complete B-Rep data structure (faces, edges, vertices, topology). It is a related application but does not fit the core task of reconstruction or generation.",
+        "evidence_snippets": [
+          "In the manufacturing industry, all things related to a product manufactured are generated and managed with a three-dimensional (3D) computer-aided design (CAD) system. CAD models created in a 3D CAD system are represented as geometric and topological information for exchange between different CAD systems. Although 3D CAD models are easy to use for product design, it is not suitable for direct use in manufacturing since information on machining features is absent. This study proposes a novel deep learning model to recognize machining features from a 3D CAD model and detect feature areas using gradient-weighted class activation mapping (Grad-CAM). To train the deep learning networks, we construct a dataset consisting of single and multi-feature. Our networks comprised of 12 layers classified the machining features with high accuracy of 98.81% on generated datasets. In addition, we estimated the area of the machining feature by applying Grad-CAM to the trained model. The deep learning model for machining feature recognition can be utilized in various fields such as 3D model simplification, computer-aided engineering, mechanical part retrieval, and assembly component identification."
+        ]
+      },
+      {
+        "title": "Intrinsic Stability Limits of Autoregressive Reasoning: Structural Consequences for Long-Horizon Execution",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-02-06T06:11:06Z",
+        "url": "http://arxiv.org/abs/2602.06413v1",
+        "doi": "",
+        "authors": [
+          "Hsien-Jyh Liao"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper analyzes intrinsic stability limits of autoregressive reasoning in large language models for long-horizon tasks. It does not address 3D geometry, B-Reps, or neural network-based generation/reconstruction of boundary representations. The matched query appears to be a misfire based on the term 'autoregressive model' in a different context.",
+        "evidence_snippets": [
+          "Large language models (LLMs) demonstrate remarkable reasoning capabilities, yet their performance often deteriorates sharply in long-horizon tasks, exhibiting systematic breakdown beyond certain scales. Conventional explanations primarily attribute this phenomenon to task complexity, such as combinatorial search explosion or long-term credit assignment challenges. In this work, we argue that these explanations are incomplete: even in linear, unbranched tasks without semantic ambiguity, autoregressive execution is subject to an intrinsic stability limit. We propose that the fundamental constraint on long-horizon reasoning arises from process-level instability in autoregressive generation rather than solely from search or task complexity, reframing long-horizon reasoning as a problem of structural governance. We derive Theorem~A, showing that decision advantage in single-path autoregressive reasoning decays exponentially with execution length, imposing a fundamental bound on maintainable reasoning chains. This result implies a structural consequence: stable long-horizon reasoning requires discrete segmentation, naturally inducing graph-like execution structures such as directed acyclic graphs (DAGs). Empirical studies in both synthetic environments and real TextWorld tasks reveal observable performance cliffs consistent with theoretical predictions. Our findings provide a dynamical perspective on long-horizon reasoning failure and suggest new limitations on maintaining long-term coherence under purely autoregressive architectures. Furthermore, we highlight that short-horizon evaluation protocols may obscure structural instability, indicating a potential shift from scaling toward structured governance in future reasoning systems."
+        ]
+      },
+      {
+        "title": "Deep knowledge tracing and cognitive load estimation for personalized learning path generation using neural network architecture",
+        "source": "Crossref / Scientific Reports",
+        "year": 2025,
+        "date": "2025-7-10",
+        "url": "https://doi.org/10.1038/s41598-025-10497-x",
+        "doi": "10.1038/s41598-025-10497-x",
+        "authors": [
+          "Chunyan Tong",
+          "Changhong Ren"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper is about personalized learning path generation using deep knowledge tracing and cognitive load estimation. It has no relation to 3D modeling, B-Reps, or geometric deep learning. The matched query appears to be a broad misfire on the term 'generation neural'.",
+        "evidence_snippets": [
+          "<jats:title>Abstract</jats:title> <jats:p>This paper presents a novel approach for personalized learning path generation by integrating deep knowledge tracing and cognitive load estimation within a unified framework. We propose a dual-stream neural network architecture that simultaneously models students’ knowledge states and cognitive load levels to optimize learning trajectories. The knowledge state tracking module employs a bidirectional Transformer with graph attention mechanisms to capture complex relationships between knowledge components, while the cognitive load estimation module utilizes multimodal data analysis to dynamically assess mental effort during learning activities. A dual-objective optimization algorithm balances knowledge acquisition with cognitive load management to generate paths that maintain optimal challenge levels. Experimental evaluations across multiple educational domains demonstrate that our approach outperforms existing methods in prediction accuracy (87.5%), path quality (4.4/5), and learning efficiency (24.6% improvement). The implemented system supports real-time adaptation based on performance and cognitive state, resulting in reduced frustration, higher engagement, and improved knowledge retention. This research contributes to both theoretical understanding of learning processes and practical implementation of next-generation adaptive educational technologies.</jats:p>"
+        ]
+      }
+    ],
+    "dedup_notes": [
+      "Retrieved papers were deduplicated by DOI, URL, or normalized title; 24 duplicate entries were merged."
+    ],
+    "missing_metadata": [
+      "Title-only candidates remain weak until abstract or excerpt evidence is available."
+    ],
+    "coverage_gaps": [
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=%22B-Rep%22+diffusion+generation+neural&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=%22boundary+representation%22+reconstruction+transformer&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+B-Rep+generation+variational+autoencoder&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+B-Rep+output+deep+learning+-CSG+-%22operation+sequence%22+-%22program+synthesis%22&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+topology+learning+graph+neural+network&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=end-to-end+B-Rep+reconstruction+from+point+cloud&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+structured+prediction+autoregressive+model&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+generation+neural&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+reconstruction+neural&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation+generation+deep+learning&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+topology+prediction&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+    ],
+    "source_errors": [
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=%22B-Rep%22+diffusion+generation+neural&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "\"B-Rep\" diffusion generation neural"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=%22boundary+representation%22+reconstruction+transformer&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "\"boundary representation\" reconstruction transformer"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+B-Rep+generation+variational+autoencoder&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "neural B-Rep generation variational autoencoder"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+B-Rep+output+deep+learning+-CSG+-%22operation+sequence%22+-%22program+synthesis%22&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "direct B-Rep output deep learning -CSG -\"operation sequence\" -\"program synthesis\""
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+topology+learning+graph+neural+network&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "B-Rep topology learning graph neural network"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=end-to-end+B-Rep+reconstruction+from+point+cloud&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "end-to-end B-Rep reconstruction from point cloud"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+structured+prediction+autoregressive+model&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "B-Rep structured prediction autoregressive model"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+generation+neural&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "B-Rep generation neural"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+reconstruction+neural&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "B-Rep reconstruction neural"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation+generation+deep+learning&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "boundary representation generation deep learning"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+topology+prediction&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "neural topology prediction"
+      }
+    ],
+    "rerank_trace": {
+      "attempted": true,
+      "skipped_reason": "",
+      "candidate_count": 24,
+      "batch_size": 6,
+      "batch_count": 4,
+      "successful_batches": 4,
+      "empty_batches": 0,
+      "failed_batches": 0,
+      "judgment_count": 24,
+      "judged_paper_ids": [
+        "p0",
+        "p1",
+        "p10",
+        "p11",
+        "p12",
+        "p13",
+        "p14",
+        "p15",
+        "p16",
+        "p17",
+        "p18",
+        "p19",
+        "p2",
+        "p20",
+        "p21",
+        "p22",
+        "p23",
+        "p3",
+        "p4",
+        "p5",
+        "p6",
+        "p7",
+        "p8",
+        "p9"
+      ],
+      "batches": [
+        {
+          "batch_index": 0,
+          "paper_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p0\",\n      \"topical_relevance\": \"high\",\n      \"task_fit\": \"direct\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper proposes BrepARG, an autoregressive model that directly generates B-Rep geometry and topology as a holistic token sequence, using a transformer architecture. This matches the request for direct B-Rep output, modern neural architectures (autoregressive/transformer), and end-to-end generation.\"\n    },\n    {\n      \"paper_id\":",
+          "error": ""
+        },
+        {
+          "batch_index": 1,
+          "paper_ids": [
+            "p6",
+            "p7",
+            "p8",
+            "p9",
+            "p10",
+            "p11"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p6\",\n      \"topical_relevance\": \"low\",\n      \"task_fit\": \"weak\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper focuses on evidential deep learning for uncertainty quantification in classification and image restoration tasks. It does not address 3D geometry, B-Reps, or any of the core tasks of generation or reconstruction of structured 3D representations.\"\n    },\n    {\n      \"paper_id\": \"p7\",\n      \"topical_relevance\": \"low\",\n      \"ta",
+          "error": ""
+        },
+        {
+          "batch_index": 2,
+          "paper_ids": [
+            "p12",
+            "p13",
+            "p14",
+            "p15",
+            "p16",
+            "p17"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p12\",\n      \"topical_relevance\": \"low\",\n      \"task_fit\": \"weak\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper is about generating neural network parameters using diffusion models. It does not address 3D geometry, B-Reps, or any form of 3D shape generation or reconstruction. The matched query is misleading; the evidence text confirms the topic is meta-learning for neural network weights, not geometric modeling.\"\n    },\n    {\n      \"p",
+          "error": ""
+        },
+        {
+          "batch_index": 3,
+          "paper_ids": [
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p22",
+            "p23"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p18\",\n      \"topical_relevance\": \"low\",\n      \"task_fit\": \"weak\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper discusses a theoretical framework for neural network signal processing using polynomial chaos expansion. It does not address 3D geometry, B-Rep reconstruction/generation, or any of the required tasks. The matched queries appear to be a mismatch; the evidence text is entirely about mathematical theory and neural network archi",
+          "error": ""
+        }
+      ]
+    },
+    "local_library_debug": {
+      "scanned_count": 0,
+      "missing_count": 0,
+      "read_error_count": 0,
+      "empty_text_count": 0,
+      "token_miss_count": 0,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "entries": []
+    }
+  },
+  "review_output": {
+    "decision": "PASS",
+    "review_summary": "Retrieval successfully captured a core set of high-quality, highly relevant papers (2022-2026) that directly address the goal of neural B-Rep reconstruction and generation. The set includes seminal works (ComplexGen, BrepGen) and recent state-of-the-art (AutoBrep, BrepGPT, HiDiGen, BrepARG) that use modern architectures (diffusion, autoregressive transformers) to directly output B-Rep topology and geometry, strictly avoiding excluded methodologies. While some irrelevant papers were retrieved, the reranking process effectively identified and deprioritized them, leaving a strong core for analysis. The evidence from abstracts is sufficient and credible for follow-on research notes.",
+    "scores": {
+      "coverage_score": 2,
+      "relevance_score": 2,
+      "metadata_score": 1,
+      "diversity_score": 2,
+      "evidence_score": 2
+    },
+    "hard_requirements": {
+      "source_coverage": {
+        "passed": true,
+        "reason": "Multiple sources (arXiv, OpenAlex, Crossref) were queried. Despite Semantic Scholar rate limits, the retrieval from other sources yielded a sufficient and high-quality core result set."
+      },
+      "candidate_depth": {
+        "passed": true,
+        "reason": "The retrieval includes 7 distinct, highly relevant papers (ComplexGen, BrepGen, AutoBrep, BrepGPT, HiDiGen, BrepARG, Hierarchical CADNet) that form a credible foundation for a state-of-the-art analysis. This meets the implicit expectation for a substantive collection."
+      },
+      "relevance": {
+        "passed": true,
+        "reason": "The core papers are a near-perfect match for the interpreted goal: they directly output B-Rep data structures using modern neural architectures (diffusion, transformers, autoregressive models) and explicitly avoid CAD operation sequences, CSG, and program synthesis."
+      },
+      "metadata": {
+        "passed": true,
+        "reason": "Essential metadata (title, authors, year, URL/DOI) is present for all core papers. Venue information is missing for some arXiv preprints, but this is acceptable for the purpose of identifying frontier research."
+      },
+      "query_fit": {
+        "passed": true,
+        "reason": "The executed queries (e.g., \"B-Rep diffusion generation neural\", \"boundary representation reconstruction transformer\") directly targeted the semantic core of the task and successfully retrieved the key papers in the domain."
+      },
+      "core_method_fit": {
+        "passed": true,
+        "reason": "All core papers employ the required modern neural architectures: diffusion models (BrepGen, HiDiGen), autoregressive/transformer models (AutoBrep, BrepGPT, BrepARG, ComplexGen), and graph neural networks (Hierarchical CADNet)."
+      },
+      "time_consistency": {
+        "passed": true,
+        "reason": "All retained core papers are within the resolved time range (2021-2026), with the majority from 2024-2026, capturing the most recent frontier research as requested."
+      },
+      "gaps": {
+        "passed": true,
+        "reason": "The retrieval covers the major known paradigms in direct neural B-Rep generation (diffusion, autoregressive) and reconstruction (from point clouds). While the field is niche, the result set is representative of its current state."
+      }
+    },
+    "key_risks": [
+      "Some core papers are arXiv preprints (e.g., BrepARG, HiDiGen) from 2026; their peer-review status is unknown.",
+      "Venue information is incomplete for several papers, which may complicate assessing their publication pedigree.",
+      "The retrieval is heavily weighted towards unconditional generation; conditional generation (e.g., from point clouds) is less represented, with ComplexGen being the primary example."
+    ],
+    "next_actions": [
+      "Extract the core 7-8 papers for detailed analysis in the synthesis report.",
+      "For the synthesis, categorize methods by representation (holistic token sequence, hierarchical diffusion, chain complex) and architecture.",
+      "Note the clear trend from graph-based (early) to sequence-based (recent) representations enabled by transformers."
+    ],
+    "failure_reasons": [],
+    "reformulation_advice": []
+  }
+}

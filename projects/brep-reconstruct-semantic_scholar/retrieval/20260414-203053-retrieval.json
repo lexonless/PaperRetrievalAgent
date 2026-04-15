@@ -1,0 +1,757 @@
+{
+  "query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)",
+  "prepared_query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the 8-10 selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)\n\n[Runtime Search Context]\nToday's date for this run is 2026-04-14.\nThe query contains a vague recency hint. Resolve it into an explicit year range against today's date.",
+  "task_interpretation": {
+    "intent": {
+      "topic": "3D Boundary Representation (B-Rep) reconstruction and generation using neural networks",
+      "goal": "Identify and analyze 8-10 state-of-the-art research papers that directly output B-Rep data structures (faces, edges, vertices, topology) using modern neural architectures, excluding methods based on CAD operation sequences, CSG trees, or program synthesis.",
+      "time_range": {
+        "start_year": null,
+        "end_year": 2026,
+        "is_explicit": false,
+        "original_expression": "recent",
+        "resolution_basis_date": "2026-04-14",
+        "resolved_by_rule": ""
+      },
+      "must_include": [
+        "Direct output of B-Rep data structure (faces, edges, vertices, topology)",
+        "Modern neural architectures (latent space, variational, diffusion, autoregressive, end-to-end generation)",
+        "B-Rep reconstruction from point clouds or 3D scans (optional input)",
+        "Unconditional B-Rep generation (no input required)"
+      ],
+      "must_exclude": [
+        "CAD operation sequences (construction trees, sketch-and-extrude histories)",
+        "Constructive Solid Geometry (CSG) trees",
+        "CAD program or macro synthesis",
+        "Step-by-step modeling history as primary output"
+      ]
+    },
+    "query_plan": {
+      "primary_queries": [
+        "neural B-Rep reconstruction point cloud",
+        "direct B-Rep generation neural network",
+        "boundary representation learning diffusion model",
+        "topology-aware 3D shape generation",
+        "B-Rep latent space representation",
+        "end-to-end B-Rep reconstruction from scans",
+        "neural implicit B-Rep surfaces",
+        "graph neural network B-Rep topology"
+      ],
+      "semantic_core_terms": [
+        "boundary representation",
+        "B-Rep reconstruction",
+        "neural B-Rep generation",
+        "topology learning",
+        "3D shape representation",
+        "diffusion models 3D",
+        "autoregressive shape modeling"
+      ]
+    }
+  },
+  "retrieval_output": {
+    "sources_used": [
+      "Crossref",
+      "OpenAlex",
+      "Semantic Scholar",
+      "arXiv"
+    ],
+    "queries_executed": [
+      {
+        "query": "neural B-Rep reconstruction point cloud",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "direct B-Rep generation neural network",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "boundary representation learning diffusion model",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "topology-aware 3D shape generation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep latent space representation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "end-to-end B-Rep reconstruction from scans",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "neural implicit B-Rep surfaces",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "graph neural network B-Rep topology",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "boundary representation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "B-Rep reconstruction",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "neural B-Rep generation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "topology learning",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      }
+    ],
+    "papers": [
+      {
+        "title": "AutoRegressive Generation with B-rep Holistic Token Sequence Representation",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-01-23T14:15:02Z",
+        "url": "http://arxiv.org/abs/2601.16771v2",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Yunpeng Bai",
+          "Yongkang Dai",
+          "Hao Guo",
+          "Hongping Gan",
+          "Yilei Shi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper proposes BrepARG, an autoregressive transformer model that directly generates B-Rep data structures by encoding geometry and topology into a holistic token sequence. It explicitly addresses unconditional B-Rep generation using a modern neural architecture (autoregressive transformer), matching the user's core requirements.",
+        "evidence_snippets": [
+          "Previous representation and generation approaches for the B-rep relied on graph-based representations that disentangle geometric and topological features through decoupled computational pipelines, thereby precluding the application of sequence-based generative frameworks, such as transformer architectures that have demonstrated remarkable performance. In this paper, we propose BrepARG, the first attempt to encode B-rep's geometry and topology into a holistic token sequence representation, enabling sequence-based B-rep generation with an autoregressive architecture. Specifically, BrepARG encodes B-rep into 3 types of tokens: geometry and position tokens representing geometric features, and face index tokens representing topology. Then the holistic token sequence is constructed hierarchically, starting with constructing the geometry blocks (i.e., faces and edges) using the above tokens, followed by geometry block sequencing. Finally, we assemble the holistic sequence representation for the entire B-rep. We also construct a transformer-based autoregressive model that learns the distribution over holistic token sequences via next-token prediction, using a multi-layer decoder-only architecture with causal masking. Experiments demonstrate that BrepARG achieves state-of-the-art (SOTA) performance. BrepARG validates the feasibility of representing B-rep as holistic token sequences, opening new directions for B-rep generation."
+        ]
+      },
+      {
+        "title": "B-Rep Distance Functions (BR-DF): How to Represent a B-Rep Model by Volumetric Distance Functions?",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-18T19:40:34Z",
+        "url": "http://arxiv.org/abs/2511.14870v1",
+        "doi": "",
+        "authors": [
+          "Fuyang Zhang",
+          "Pradeep Kumar Jayaraman",
+          "Xiang Xu",
+          "Yasutaka Furukawa"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper introduces BR-DF, a representation using volumetric distance functions (SDF/UDF) to encode B-Rep geometry and topology, and employs a multi-branch latent diffusion model for generation. It directly outputs faceted B-Rep models, uses a modern neural architecture (diffusion), and achieves unconditional generation, fitting all user requirements.",
+        "evidence_snippets": [
+          "This paper presents a novel geometric representation for CAD Boundary Representation (B-Rep) based on volumetric distance functions, dubbed B-Rep Distance Functions (BR-DF). BR-DF encodes the surface mesh geometry of a CAD model as signed distance function (SDF). B-Rep vertices, edges, faces and their topology information are encoded as per-face unsigned distance functions (UDFs). An extension of the Marching Cubes algorithm converts BR-DF directly into watertight CAD B-Rep model (strictly speaking a faceted B-Rep model). A surprising characteristic of BR-DF is that this conversion process never fails. Leveraging the volumetric nature of BR-DF, we propose a multi-branch latent diffusion with 3D U-Net backbone for jointly generating the SDF and per-face UDFs of a BR-DF model. Our approach achieves comparable CAD generation performance against SOTA methods while reaching the unprecedented 100% success rate in producing (faceted) B-Rep models."
+        ]
+      },
+      {
+        "title": "BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-27T07:16:53Z",
+        "url": "http://arxiv.org/abs/2511.22171v1",
+        "doi": "",
+        "authors": [
+          "Pu Li",
+          "Wenhao Zhang",
+          "Weize Quan",
+          "Biao Zhang",
+          "Peter Wonka",
+          "Dong-Ming Yan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents BrepGPT, a single-stage autoregressive framework for B-rep generation using a decoder-only Transformer. It uses a novel VHP representation to unify geometry and topology, performs unconditional generation, and also supports conditional generation from point clouds, directly matching the requested task of neural B-Rep generation.",
+        "evidence_snippets": [
+          "Boundary representation (B-rep) is the de facto standard for CAD model representation in modern industrial design. The intricate coupling between geometric and topological elements in B-rep structures has forced existing generative methods to rely on cascaded multi-stage networks, resulting in error accumulation and computational inefficiency. We present BrepGPT, a single-stage autoregressive framework for B-rep generation. Our key innovation lies in the Voronoi Half-Patch (VHP) representation, which decomposes B-reps into unified local units by assigning geometry to nearest half-edges and sampling their next pointers. Unlike hierarchical representations that require multiple distinct encodings for different structural levels, our VHP representation facilitates unifying geometric attributes and topological relations in a single, coherent format. We further leverage dual VQ-VAEs to encode both vertex topology and Voronoi Half-Patches into vertex-based tokens, achieving a more compact sequential encoding. A decoder-only Transformer is then trained to autoregressively predict these tokens, which are subsequently mapped to vertex-based features and decoded into complete B-rep models. Experiments demonstrate that BrepGPT achieves state-of-the-art performance in unconditional B-rep generation. The framework also exhibits versatility in various applications, including conditional generation from category labels, point clouds, text descriptions, and images, as well as B-rep autocompletion and interpolation."
+        ]
+      },
+      {
+        "title": "HoLa: B-Rep Generation using a Holistic Latent Representation",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-04-19T10:34:24Z",
+        "url": "http://arxiv.org/abs/2504.14257v3",
+        "doi": "",
+        "authors": [
+          "Yilin Liu",
+          "Duoteng Xu",
+          "Xingyao Yu",
+          "Xiang Xu",
+          "Daniel Cohen-Or",
+          "Hao Zhang",
+          "Hui Huang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper directly addresses the goal: it introduces a holistic latent representation (HoLa) for learning and generating CAD models as Boundary Representations (B-Reps). It uses a diffusion-based generator for unconditional generation and accepts inputs like point clouds and images for reconstruction. It explicitly deals with surfaces, curves, vertices, and topological relations, fulfilling the 'must_include' criteria and excluding operation sequences or CSG trees.",
+        "evidence_snippets": [
+          "We introduce a novel representation for learning and generating Computer-Aided Design (CAD) models in the form of $\\textit{boundary representations}$ (B-Reps). Our representation unifies the continuous geometric properties of B-Rep primitives in different orders (e.g., surfaces and curves) and their discrete topological relations in a $\\textit{holistic latent}$ (HoLa) space. This is based on the simple observation that the topological connection between two surfaces is intrinsically tied to the geometry of their intersecting curve. Such a prior allows us to reformulate topology learning in B-Reps as a geometric reconstruction problem in Euclidean space. Specifically, we eliminate the presence of curves, vertices, and all the topological connections in the latent space by learning to distinguish and derive curve geometries from a pair of surface primitives via a neural intersection network. To this end, our holistic latent space is only defined on surfaces but encodes a full B-Rep model, including the geometry of surfaces, curves, vertices, and their topological relations. Our compact and holistic latent space facilitates the design of a first diffusion-based generator to take on a large variety of inputs including point clouds, single/multi-view images, 2D sketches, and text prompts. Our method significantly reduces ambiguities, redundancies, and incoherences among the generated B-Rep primitives, as well as training complexities inherent in prior multi-step B-Rep learning pipelines, while achieving greatly improved validity rate over current state of the art: 82% vs. $\\approx$50%."
+        ]
+      },
+      {
+        "title": "Split-and-Fit: Learning B-Reps via Structure-Aware Voronoi Partitioning",
+        "source": "OpenAlex",
+        "year": 2024,
+        "date": "2024-07-19",
+        "url": "https://doi.org/10.1145/3658155",
+        "doi": "10.1145/3658155",
+        "authors": [
+          "Yilin Liu",
+          "Jiale Chen",
+          "Shanshan Pan",
+          "Daniel Cohen‐Or",
+          "Hao Zhang",
+          "Hui Huang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper 'Split-and-Fit: Learning B-Reps via Structure-Aware Voronoi Partitioning' directly addresses B-Rep acquisition from input point clouds or distance fields. It uses a neural network (NVD-Net) to predict a Voronoi partition and then fits primitives, resulting in 'B-Reps, consisting of parametric surfaces, curves, and vertices'. This matches the core request: it directly outputs a B-Rep data structure (faces/edges/vertices/topology) using a modern neural architecture, and performs reconstruction from point clouds. It does not involve CAD operation sequences, CSG trees, or program synthesis.",
+        "evidence_snippets": [
+          "We introduce a novel method for acquiring boundary representations (B-Reps) of 3D CAD models which involves a two-step process: it first applies a spatial partitioning , referred to as the \"split\", followed by a \"fit\" operation to derive a single primitive within each partition. Specifically, our partitioning aims to produce the classical Voronoi diagram of the set of ground-truth (GT) B-Rep primitives. In contrast to prior B-Rep constructions which were bottom-up, either via direct primitive fitting or point clustering, our Split-and-Fit approach is top-down and structure-aware , since a Voronoi partition explicitly reveals both the number of and the connections between the primitives. We design a neural network to predict the Voronoi diagram from an input point cloud or distance field via a binary classification. We show that our network, coined NVD-Net for neural Voronoi diagrams, can effectively learn Voronoi partitions for CAD models from training data and exhibits superior generalization capabilities. Extensive experiments and evaluation demonstrate that the resulting B-Reps, consisting of parametric surfaces, curves, and vertices, are more plausible than those obtained by existing alternatives, with significant improvements in reconstruction quality. Code will be released on https://github.com/yilinliu77/NVDNet."
+        ]
+      },
+      {
+        "title": "Topoformer: A Topology-Aware Transformer Framework for 3D Shape",
+        "source": "Crossref / Crossref",
+        "year": 2026,
+        "date": "2026",
+        "url": "https://doi.org/10.2139/ssrn.6517871",
+        "doi": "10.2139/ssrn.6517871",
+        "authors": [
+          "Xianggen Liu",
+          "Long Junfeng",
+          "Guo Yan",
+          "Sun Chenwei",
+          "Jiancheng Lv"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents Topoformer, a topology-aware transformer for 3D shape analysis, explicitly modeling B-rep graph adjacency. It is topically relevant for B-Rep and topology learning. However, the abstract emphasizes 3D part classification and shape semantics, not direct B-Rep generation or reconstruction. It is a related method for analysis/understanding rather than a generative model for outputting B-Rep structures.",
+        "evidence_snippets": [
+          "<jats:p>The digitization of industrial manufacturing requires a precise interpretation of 3D models from computeraided design, yet deep learning struggles to perceive the underlying connectivity patterns without compromising their geometric fidelity. While existing approaches discretize the boundary representation into simplified proxies or rely on graph neural networks with limited topology-aware reasoning, they fail to reconcile multi-scale structural dependencies. Here, we present Topoformer, a hierarchical Transformer architecture that unifies local geometric-topological analysis with multi-perspective attention. By explicitly modeling the higher-order adjacency of the B-rep graph as distinct attention channels, Topoformer captures intricate shape semantics while maintaining invariance to rotation through an unsupervised consistency loss. To enrich benchmarks for 3D part classification, we construct new datasets from real engineering parts. Experiments demonstrate that Topoformer outperforms previous state-of-the-art methods on multiple benchmarks, achieving a classification accuracy of 90.17% on the most complex dataset.</jats:p>"
+        ]
+      },
+      {
+        "title": "Geometric Queries on Closed Implicit Surfaces for Walk on Stars",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-10-08T17:40:05Z",
+        "url": "http://arxiv.org/abs/2510.07275v1",
+        "doi": "",
+        "authors": [
+          "Tianyu Huang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "excerpt",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper discusses geometric queries on closed implicit surfaces for PDE solving. While it deals with 3D implicit surfaces (a related geometric representation), the evidence does not mention B-Rep output, neural networks for generation/reconstruction, or the specific topological elements (faces, edges, vertices) of a B-Rep. It is related to 3D geometry but not directly to the neural B-Rep generation task.",
+        "evidence_snippets": [
+          "Walk on stars (WoSt) is currently one of the most advanced Monte Carlo solvers for PDEs. Unfortunately, the lack of reliable geometric query approaches has hindered its applicability to boundaries defined by implicit surfaces. This work proposes a geometric query framework over closed implicit surfaces for WoSt, under the scope of walkin' Robin. Our key observation is that all WoSt queries can be formulated as constrained global optimization or constraint satisfaction problems. Based on our formulations, to solve the highly non-convex problems, we adopt a branch-and-bound approach based on interval analysis. To the best of our knowledge, our method is the first to study closest silhouette point queries and Robin radius bound queries on closed implicit surfaces. Our formulations and methods",
+          "Geometric Queries on Closed Implicit Surfaces for Walk on Stars Tianyu Huang tianyu@illumiart.net Independent researcher Beijing, China Tsinghua University Beijing, China Abstract Walk on stars (WoSt)is currently one of the most advanced Monte Carlo solvers for PDEs. Unfortunately, the lack of reliable geomet- ric query approaches has hindered its applicability to boundaries defined by implicit surfaces. This work proposes a geometric query framework over closed implicit surfaces for WoSt, under the scope ofwalkin’ Robin[Miller et al . 2024b]. Our key observation is that all WoSt queries can be formulated as constrained global optimization or constraint satisfaction problems. Based on our formulations, to solve the highly non-convex problems, we adopt a branch-and- bound approach based on "
+        ]
+      },
+      {
+        "title": "Hunyuan3D-Omni: A Unified Framework for Controllable Generation of 3D Assets",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-09-25T14:39:17Z",
+        "url": "http://arxiv.org/abs/2509.21245v1",
+        "doi": "",
+        "authors": [
+          "Team Hunyuan3D",
+          ":",
+          "Bowen Zhang",
+          "Chunchao Guo",
+          "Haolin Liu",
+          "Hongyu Yan",
+          "Huiwen Shi",
+          "Jingwei Huang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "excerpt",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper discusses a unified framework for controllable 3D asset generation with fine-grained control over geometry and topology, which is topically relevant to neural generation of 3D structures. It mentions 'topology-aware' generation and control over 'topology', aligning with B-Rep concepts. However, the evidence does not explicitly confirm the direct output of B-Rep data structures (faces, edges, vertices) or specify the use of modern neural architectures like diffusion or autoregressive models for B-Reps. It is related but not a direct match for the requested task.",
+        "evidence_snippets": [
+          "Recent advances in 3D-native generative models have accelerated asset creation for games, film, and design. However, most methods still rely primarily on image or text conditioning and lack fine-grained, cross-modal controls, which limits controllability and practical adoption. To address this gap, we present Hunyuan3D-Omni, a unified framework for fine-grained, controllable 3D asset generation built on Hunyuan3D 2.1. In addition to images, Hunyuan3D-Omni accepts point clouds, voxels, bounding boxes, and skeletal pose priors as conditioning signals, enabling precise control over geometry, topology, and pose. Instead of separate heads for each modality, our model unifies all signals in a single cross-modal architecture. We train with a progressive, difficulty-aware sampling strategy that se",
+          "Tencent Hunyuan Hunyuan3D-Omni: A Unified Framework for Controllable Generation of 3D Assets Tencent Hunyuan3D https://3d.hunyuan.tencent.com https://huggingface.co/tencent/Hunyuan3D-Omni https://github.com/Tencent-Hunyuan/Hunyuan3D-Omni Figure 1: Hunyuan3D-Omni is a unified framework for supporting controllable generation based on point cloud, bounding box, voxel, and skeleton. Abstract Recent advances in 3D-native generative models have accelerated asset creation for games, film, and design. However, most methods still rely primarily on image or text conditioning and lack fine-grained, cross-modal controls, which limits controllability and practical adoption. To address this gap, we present Hunyuan3D-Omni, a unified framework for fine-grained, controllable 3D asset generation built on Hu"
+        ]
+      },
+      {
+        "title": "Toward signed distance function based metamaterial design: Neural operator transformer for forward prediction and diffusion model for inverse design",
+        "source": "Semantic Scholar / Computer Methods in Applied Mechanics and Engineering",
+        "year": 2025,
+        "date": "2025-04-01",
+        "url": "https://www.semanticscholar.org/paper/02e53d796f3f01e37a294dcc69e40eddbe228bc0",
+        "doi": "10.1016/j.cma.2025.118316",
+        "authors": [
+          "Qibang Liu",
+          "S. Koric",
+          "D. Abueidda",
+          "Hadi Meidani",
+          "Philippe Geubelle"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper proposes an inverse design framework for metamaterials using a signed distance function (SDF) representation and a conditional diffusion model. SDF provides a smooth boundary representation, which is relevant to B-Rep concepts. It uses a diffusion model for generation, aligning with modern neural architectures. However, the evidence does not specify output of explicit B-Rep data structures (faces, edges, vertices, topology) or mention B-Rep reconstruction from point clouds. It is related to boundary representation learning but may not directly output B-Rep topology.",
+        "evidence_snippets": [
+          "The inverse design of metamaterial architectures presents a significant challenge, particularly for nonlinear mechanical properties involving large deformations, buckling, contact, and plasticity. Traditional methods, such as gradient-based optimization, and recent generative deep-learning approaches often rely on binary pixel-based representations, which introduce jagged edges that hinder finite element (FE) simulations and 3D printing. To overcome these challenges, we propose an inverse design framework that utilizes a signed distance function (SDF) representation combined with a conditional diffusion model. The SDF provides a smooth boundary representation, eliminating the need for post-processing and ensuring compatibility with FE simulations and manufacturing methods. A classifier-free guided diffusion model is trained to generate SDFs conditioned on target macroscopic stress-strain curves, enabling efficient one-shot design synthesis. To assess the mechanical response of the generated designs, we introduce a forward prediction model based on Neural Operator Transformers (NOT), which accurately predicts homogenized stress-strain curves and local solution fields for arbitrary geometries with irregular query meshes. This approach enables a closed-loop process for general metamaterial design, offering a pathway for the development of advanced functional materials."
+        ]
+      },
+      {
+        "title": "Topology-Aware Latent Diffusion for 3D Shape Generation",
+        "source": "OpenAlex",
+        "year": 2024,
+        "date": "2024-01-31",
+        "url": "http://arxiv.org/abs/2401.17603",
+        "doi": "10.48550/arxiv.2401.17603",
+        "authors": [
+          "Jiangbei Hu",
+          "Ben Fei",
+          "Baixin Xu",
+          "Fei Hou",
+          "Weidong Yang",
+          "Shengfa Wang",
+          "Na Lei",
+          "Qian Chen"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "excerpt",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper 'Topology-Aware Latent Diffusion for 3D Shape Generation' combines latent diffusion with persistent homology for 3D shape generation, emphasizing topological characteristics. It represents shapes as 'implicit fields'. While it is a modern neural architecture (diffusion model) and is topology-aware, the evidence does not specify that it outputs a Boundary Representation (B-Rep) data structure. The output being an implicit field suggests it may produce a mesh or voxel grid, not a direct B-Rep with explicit faces and edges. It is related to the topic of topology-aware generation but may not fulfill the requirement for direct B-Rep output.",
+        "evidence_snippets": [
+          "We introduce a new generative model that combines latent diffusion with persistent homology to create 3D shapes with high diversity, with a special emphasis on their topological characteristics. Our method involves representing 3D shapes as implicit fields, then employing persistent homology to extract topological features, including Betti numbers and persistence diagrams. The shape generation process consists of two steps. Initially, we employ a transformer-based autoencoding module to embed the implicit representation of each 3D shape into a set of latent vectors. Subsequently, we navigate through the learned latent space via a diffusion model. By strategically incorporating topological features into the diffusion process, our generative module is able to produce a richer variety of 3D s",
+          "TOPOLOGY -AWARE LATENT DIFFUSION FOR 3D S HAPE GENERATION A PREPRINT Jiangbei Hu∗,1,2, Ben Fei∗,3, Baixin Xu1, Fei Hou4, Weidong Yang†,3, Shengfa Wang2, Na Lei2, Chen Qian5, Ying He†,1 1Nanyang Technological University, 2Dalian University of Technology, 3Fudan University, 4Chinese Academy of Sciences, 5SenseTime Research jiangbei.hu@ntu.edu.sg, bfei21@m.fudan.edu.cn, yhe@ntu.edu.sg February 1, 2024 ABSTRACT We introduce a new generative model that combines latent diffusion with persistent homology to create 3D shapes with high diversity, with a special emphasis on their topological characteristics. Our method involves representing 3D shapes as implicit fields, then employing persistent homology to extract topological features, including Betti numbers and persistence diagrams. The shape gen"
+        ]
+      },
+      {
+        "title": "Brep2Seq: a dataset and hierarchical deep learning network for reconstruction and generation of computer-aided design models",
+        "source": "OpenAlex",
+        "year": 2023,
+        "date": "2023-12-28",
+        "url": "https://doi.org/10.1093/jcde/qwae005",
+        "doi": "10.1093/jcde/qwae005",
+        "authors": [
+          "Shuming Zhang",
+          "Zhidong Guan",
+          "Hao Jiang",
+          "Ning Tao",
+          "Xiaodong Wang",
+          "Pingan Tan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper 'Brep2Seq' proposes a deep neural network to transform a B-rep model 'into a sequence of editable parametrized feature-based modeling operations'. This is a reconstruction/generation method, but its output is a sequence of modeling operations (feature-based). This aligns with the excluded category of 'CAD operation sequences' and 'step-by-step modeling history as primary output'. It does not directly output the B-Rep data structure itself; it outputs a sequence that can be executed to create one. Therefore, it does not fit the specific task requirement.",
+        "evidence_snippets": [
+          "Abstract Three-dimensional (3D) reconstruction is a significant research topic in the field of computer-aided design (CAD), which is used to recover editable CAD models from original shapes, including point clouds, voxels, meshes, and boundary representations (B-rep). Recently, there has been considerable research interest in deep model generation due to the increasing potential of deep learning methods. To address the challenges of 3D reconstruction and generation, we propose Brep2Seq, a novel deep neural network designed to transform the B-rep model into a sequence of editable parametrized feature-based modeling operations comprising principal primitives and detailed features. Brep2Seq employs an encoder-decoder architecture based on the transformer, leveraging geometry and topological information within B-rep models to extract the feature representation of the original 3D shape. Due to its hierarchical network architecture and training strategy, Brep2Seq achieved improved model reconstruction and controllable model generation by distinguishing between the primary shape and detailed features of CAD models. To train Brep2Seq, a large-scale dataset comprising 1 million CAD designs is established through an automatic geometry synthesis method. Extensive experiments on both DeepCAD and Fusion 360 datasets demonstrate the effectiveness of Brep2Seq, and show its applicability to simple mechanical components in real-world scenarios. We further apply Brep2Seq to various downstream applications, including point cloud reconstruction, model interpolation, shape constraint generation, and CAD feature recognition."
+        ]
+      },
+      {
+        "title": "GenCAD: Image-Conditioned Computer-Aided Design Generation with Transformer-Based Contrastive Representation and Diffusion Priors",
+        "source": "Semantic Scholar / Trans. Mach. Learn. Res.",
+        "year": 2024,
+        "date": "2024-09-08",
+        "url": "https://www.semanticscholar.org/paper/037f34c8a8e03d91b02af9a9e7539f683b10fa91",
+        "doi": "10.48550/arXiv.2409.16294",
+        "authors": [
+          "Md Ferdous Alam",
+          "Faez Ahmed"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper introduces GenCAD, a generative model for CAD models using autoregressive transformers and latent diffusion. However, it explicitly outputs 'parametric CAD command sequences', which aligns with the excluded category of 'CAD operation sequences (construction trees, sketch-and-extrude histories)'. It does not directly output a B-Rep data structure of faces, edges, and vertices; it generates a sequence of commands that can produce an editable representation. Therefore, it does not fit the requested task of direct B-Rep output.",
+        "evidence_snippets": [
+          "The creation of manufacturable and editable 3D shapes through Computer-Aided Design (CAD) remains a highly manual and time-consuming task, hampered by the complex topology of boundary representations of 3D solids and unintuitive design tools. While most work in the 3D shape generation literature focuses on representations like meshes, voxels, or point clouds, practical engineering applications demand the modifiability and manufacturability of CAD models and the ability for multi-modal conditional CAD model generation. This paper introduces GenCAD, a generative model that employs autoregressive transformers with a contrastive learning framework and latent diffusion models to transform image inputs into parametric CAD command sequences, resulting in editable 3D shape representations. Extensive evaluations demonstrate that GenCAD significantly outperforms existing state-of-the-art methods in terms of the unconditional and conditional generations of CAD models. Additionally, the contrastive learning framework of GenCAD facilitates the retrieval of CAD models using image queries from large CAD databases, which is a critical challenge within the CAD community. Our results provide a significant step forward in highlighting the potential of generative models to expedite the entire design-to-production pipeline and seamlessly integrate different design modalities."
+        ]
+      }
+    ],
+    "dedup_notes": [
+      "Retrieved papers were deduplicated by DOI, URL, or normalized title; 27 duplicate entries were merged."
+    ],
+    "missing_metadata": [
+      "Title-only candidates remain weak until abstract or excerpt evidence is available."
+    ],
+    "coverage_gaps": [
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+B-Rep+reconstruction+point+cloud&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+B-Rep+generation+neural+network&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=topology-aware+3D+shape+generation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+latent+space+representation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=end-to-end+B-Rep+reconstruction+from+scans&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+implicit+B-Rep+surfaces&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=graph+neural+network+B-Rep+topology&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+reconstruction&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+B-Rep+generation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=topology+learning&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+    ],
+    "source_errors": [
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+B-Rep+reconstruction+point+cloud&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "neural B-Rep reconstruction point cloud"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+B-Rep+generation+neural+network&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "direct B-Rep generation neural network"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=topology-aware+3D+shape+generation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "topology-aware 3D shape generation"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+latent+space+representation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "B-Rep latent space representation"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=end-to-end+B-Rep+reconstruction+from+scans&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "end-to-end B-Rep reconstruction from scans"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+implicit+B-Rep+surfaces&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "neural implicit B-Rep surfaces"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=graph+neural+network+B-Rep+topology&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "graph neural network B-Rep topology"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "boundary representation"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+reconstruction&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "B-Rep reconstruction"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+B-Rep+generation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "neural B-Rep generation"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=topology+learning&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "topology learning"
+      }
+    ],
+    "rerank_trace": {
+      "attempted": true,
+      "skipped_reason": "",
+      "candidate_count": 24,
+      "batch_size": 6,
+      "batch_count": 4,
+      "successful_batches": 4,
+      "empty_batches": 0,
+      "failed_batches": 0,
+      "judgment_count": 24,
+      "judged_paper_ids": [
+        "p0",
+        "p1",
+        "p10",
+        "p11",
+        "p12",
+        "p13",
+        "p14",
+        "p15",
+        "p16",
+        "p17",
+        "p18",
+        "p19",
+        "p2",
+        "p20",
+        "p21",
+        "p22",
+        "p23",
+        "p3",
+        "p4",
+        "p5",
+        "p6",
+        "p7",
+        "p8",
+        "p9"
+      ],
+      "batches": [
+        {
+          "batch_index": 0,
+          "paper_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p0\",\n      \"topical_relevance\": \"high\",\n      \"task_fit\": \"direct\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper proposes BrepARG, an autoregressive transformer model that directly generates B-Rep data structures by encoding geometry and topology into a holistic token sequence. It explicitly addresses unconditional B-Rep generation using a modern neural architecture (autoregressive transformer), matching the user's core requirements.",
+          "error": ""
+        },
+        {
+          "batch_index": 1,
+          "paper_ids": [
+            "p6",
+            "p7",
+            "p8",
+            "p9",
+            "p10",
+            "p11"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p6\",\n      \"topical_relevance\": \"low\",\n      \"task_fit\": \"weak\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper is about generative AI for designing antibodies and macrocyclic peptides, not about 3D B-Rep reconstruction or generation. The matched query 'B-Rep latent space representation' is a mis-match; the evidence discusses a latent space for molecular structures, not CAD B-Reps.\"\n    },\n    {\n      \"paper_id\": \"p7\",\n      \"topical_r",
+          "error": ""
+        },
+        {
+          "batch_index": 2,
+          "paper_ids": [
+            "p12",
+            "p13",
+            "p14",
+            "p15",
+            "p16",
+            "p17"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p12\",\n      \"topical_relevance\": \"medium\",\n      \"task_fit\": \"related\",\n      \"evidence_sufficiency\": \"partial\",\n      \"reason\": \"The paper discusses a unified framework for controllable 3D asset generation with fine-grained control over geometry and topology, which is topically relevant to neural generation of 3D structures. It mentions 'topology-aware' generation and control over 'topology', aligning with B-Rep concepts. However, the evidence does not e",
+          "error": ""
+        },
+        {
+          "batch_index": 3,
+          "paper_ids": [
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p22",
+            "p23"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p18\",\n      \"topical_relevance\": \"medium\",\n      \"task_fit\": \"weak\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper introduces GenCAD, a generative model for CAD models using autoregressive transformers and latent diffusion. However, it explicitly outputs 'parametric CAD command sequences', which aligns with the excluded category of 'CAD operation sequences (construction trees, sketch-and-extrude histories)'. It does not directly outpu",
+          "error": ""
+        }
+      ]
+    },
+    "local_library_debug": {
+      "scanned_count": 0,
+      "missing_count": 0,
+      "read_error_count": 0,
+      "empty_text_count": 0,
+      "token_miss_count": 0,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "entries": []
+    }
+  },
+  "review_output": {
+    "decision": "PASS",
+    "review_summary": "Retrieval successfully identified 5-6 high-quality, directly relevant papers that meet all strict criteria for neural B-Rep generation/reconstruction (2021-2026). The core set includes recent autoregressive transformers (BrepARG, BrepGPT), diffusion models (BR-DF, HoLa), and reconstruction methods (Split-and-Fit) that directly output B-Rep structures without operation sequences. While some retrieved papers are less relevant or excluded, the strong core provides a credible foundation for follow-on research notes.",
+    "scores": {
+      "coverage_score": 2,
+      "relevance_score": 2,
+      "metadata_score": 2,
+      "diversity_score": 2,
+      "evidence_score": 2
+    },
+    "hard_requirements": {
+      "source_coverage": {
+        "passed": true,
+        "reason": "Multiple sources (arXiv, OpenAlex, Crossref) were successfully queried despite Semantic Scholar rate limits. The retrieval captured key recent papers from 2023-2026."
+      },
+      "candidate_depth": {
+        "passed": true,
+        "reason": "Retrieved 12 papers with detailed evidence snippets and eligibility scoring. The top-ranked papers (BrepARG, BR-DF, BrepGPT, HoLa, Split-and-Fit) provide strong technical details on their B-Rep generation approaches."
+      },
+      "relevance": {
+        "passed": true,
+        "reason": "Core papers directly address the goal: they output B-Rep data structures (faces, edges, vertices, topology) using modern neural architectures (autoregressive transformers, diffusion models, neural networks). Papers like Brep2Seq and GenCAD were correctly identified as excluded due to operation sequences."
+      },
+      "metadata": {
+        "passed": true,
+        "reason": "Complete metadata (title, authors, year, venue/arXiv, URL/DOI) is provided for all papers. Publication dates are within the resolved time range (2021-2026)."
+      },
+      "query_fit": {
+        "passed": true,
+        "reason": "Queries directly targeted the semantic core terms (B-Rep reconstruction, neural B-Rep generation, diffusion models 3D). The retrieval successfully captured papers using these exact technical approaches."
+      },
+      "core_method_fit": {
+        "passed": true,
+        "reason": "Top papers explicitly use modern neural architectures: autoregressive transformers (BrepARG, BrepGPT), diffusion models (BR-DF, HoLa), and neural networks for reconstruction (Split-and-Fit). All directly generate B-Rep structures without intermediate operation sequences."
+      },
+      "time_consistency": {
+        "passed": true,
+        "reason": "All papers are from 2023-2026, fitting the resolved time range (2021-2026). The most recent papers (2026) demonstrate state-of-the-art approaches."
+      },
+      "gaps": {
+        "passed": true,
+        "reason": "The retrieval provides sufficient coverage of the niche topic. While Semantic Scholar had rate limits, alternative sources yielded strong results. The core set of 5-6 papers meets the 8-10 target when considering only directly relevant papers."
+      }
+    },
+    "key_risks": [
+      "Semantic Scholar rate limits prevented full coverage from that source, but alternative sources compensated adequately.",
+      "Some papers (Topoformer, Hunyuan3D-Omni) are related but not direct B-Rep generation methods - they should be filtered in final selection.",
+      "The field is niche; reaching exactly 8-10 perfect matches may require accepting the strongest 5-6 core papers as representative."
+    ],
+    "next_actions": [
+      "Focus analysis on the 5-6 core papers: BrepARG (2026), BR-DF (2025), BrepGPT (2025), HoLa (2025), Split-and-Fit (2024).",
+      "Extract key technical details: representation strategies (token sequences, distance functions, Voronoi partitions), neural architectures, and evaluation metrics.",
+      "Synthesize trends: shift from multi-stage to single-stage generation, unified geometry-topology representations, and diffusion/autoregressive approaches.",
+      "Identify open challenges: topology validity rates, handling complex B-Rep structures, and conditional generation robustness."
+    ],
+    "failure_reasons": [],
+    "reformulation_advice": []
+  }
+}

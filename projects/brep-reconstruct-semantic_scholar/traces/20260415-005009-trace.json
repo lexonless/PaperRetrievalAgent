@@ -1,0 +1,324 @@
+{
+  "project_slug": "brep-reconstruct-semantic_scholar",
+  "query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze at least 10 core research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)",
+  "prepared_query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze at least 10 core research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)\n\n[Runtime Search Context]\nToday's date for this run is 2026-04-15.\nResolve all explicit and relative time expressions from the user request yourself. Do not rely on pre-resolved time windows.",
+  "generated_at": "2026-04-15T00:50:09",
+  "run_id": "e85031f3060a4270b3be7e393f206159",
+  "revision_count": 3,
+  "forced_write": true,
+  "stop_reason": "review_budget_exhausted",
+  "artifacts": {
+    "note_path": "projects\\brep-reconstruct-semantic_scholar\\notes\\20260415-005009-research-note.md",
+    "retrieval_path": "projects\\brep-reconstruct-semantic_scholar\\retrieval\\20260415-005009-retrieval.json",
+    "trace_path": "projects\\brep-reconstruct-semantic_scholar\\traces\\20260415-005009-trace.json"
+  },
+  "errors": [],
+  "events": [
+    {
+      "timestamp": "2026-04-15T00:37:17",
+      "step": "prepare_run_context",
+      "event_type": "state_update",
+      "message": "Initialized project paths, manifest, and runtime search context.",
+      "payload": {
+        "project_root": "projects\\brep-reconstruct-semantic_scholar",
+        "local_pdf_count": 0
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:37:34",
+      "step": "task_interpretation_node",
+      "event_type": "structured_output",
+      "message": "Task interpretation produced structured intent and query planning output.",
+      "payload": {
+        "query_count": 8,
+        "semantic_core_term_count": 5,
+        "minimum_paper_count": 10,
+        "maximum_paper_count": null,
+        "revision_count": 0
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:40:23",
+      "step": "retrieval_node",
+      "event_type": "tool_result",
+      "message": "Retrieval node produced candidate papers.",
+      "payload": {
+        "tool_calls": [
+          {
+            "name": "retrieve_candidates_from_plan",
+            "args": {
+              "top_k": 15,
+              "max_results_per_source": 20
+            }
+          }
+        ],
+        "paper_count": 15,
+        "source_count": 4,
+        "local_library_debug": {
+          "scanned_count": 0,
+          "missing_count": 0,
+          "read_error_count": 0,
+          "empty_text_count": 0,
+          "token_miss_count": 0,
+          "candidate_count": 0,
+          "retained_count": 0
+        },
+        "rerank_trace": {
+          "attempted": true,
+          "skipped_reason": "",
+          "candidate_count": 24,
+          "batch_count": 4,
+          "successful_batches": 4,
+          "empty_batches": 0,
+          "failed_batches": 0,
+          "judgment_count": 24
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:41:10",
+      "step": "reviewer_node",
+      "event_type": "structured_output",
+      "message": "Reviewer returned a structured quality decision.",
+      "payload": {
+        "decision": "REVISE",
+        "failure_reason_count": 4,
+        "reformulation_advice_count": 5
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:41:10",
+      "step": "validate_review_gate_node",
+      "event_type": "decision",
+      "message": "Review gate requested another revision cycle.",
+      "payload": {
+        "decision": "REVISE",
+        "validated_pass": false,
+        "revision_count": 1,
+        "forced_write": false
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:41:30",
+      "step": "task_interpretation_node",
+      "event_type": "structured_output",
+      "message": "Task interpretation produced structured intent and query planning output.",
+      "payload": {
+        "query_count": 8,
+        "semantic_core_term_count": 6,
+        "minimum_paper_count": 10,
+        "maximum_paper_count": null,
+        "revision_count": 1
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:44:08",
+      "step": "retrieval_node",
+      "event_type": "tool_result",
+      "message": "Retrieval node produced candidate papers.",
+      "payload": {
+        "tool_calls": [
+          {
+            "name": "retrieve_candidates_from_plan",
+            "args": {
+              "top_k": 15,
+              "max_results_per_source": 20
+            }
+          }
+        ],
+        "paper_count": 15,
+        "source_count": 4,
+        "local_library_debug": {
+          "scanned_count": 0,
+          "missing_count": 0,
+          "read_error_count": 0,
+          "empty_text_count": 0,
+          "token_miss_count": 0,
+          "candidate_count": 0,
+          "retained_count": 0
+        },
+        "rerank_trace": {
+          "attempted": true,
+          "skipped_reason": "",
+          "candidate_count": 24,
+          "batch_count": 4,
+          "successful_batches": 4,
+          "empty_batches": 0,
+          "failed_batches": 0,
+          "judgment_count": 24
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:44:54",
+      "step": "reviewer_node",
+      "event_type": "structured_output",
+      "message": "Reviewer returned a structured quality decision.",
+      "payload": {
+        "decision": "REVISE",
+        "failure_reason_count": 3,
+        "reformulation_advice_count": 5
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:44:54",
+      "step": "validate_review_gate_node",
+      "event_type": "decision",
+      "message": "Review gate requested another revision cycle.",
+      "payload": {
+        "decision": "REVISE",
+        "validated_pass": false,
+        "revision_count": 2,
+        "forced_write": false
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:45:17",
+      "step": "task_interpretation_node",
+      "event_type": "structured_output",
+      "message": "Task interpretation produced structured intent and query planning output.",
+      "payload": {
+        "query_count": 8,
+        "semantic_core_term_count": 8,
+        "minimum_paper_count": 10,
+        "maximum_paper_count": null,
+        "revision_count": 2
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:48:25",
+      "step": "retrieval_node",
+      "event_type": "tool_result",
+      "message": "Retrieval node produced candidate papers.",
+      "payload": {
+        "tool_calls": [
+          {
+            "name": "retrieve_candidates_from_plan",
+            "args": {
+              "top_k": 15,
+              "max_results_per_source": 5
+            }
+          }
+        ],
+        "paper_count": 15,
+        "source_count": 4,
+        "local_library_debug": {
+          "scanned_count": 0,
+          "missing_count": 0,
+          "read_error_count": 0,
+          "empty_text_count": 0,
+          "token_miss_count": 0,
+          "candidate_count": 0,
+          "retained_count": 0
+        },
+        "rerank_trace": {
+          "attempted": true,
+          "skipped_reason": "",
+          "candidate_count": 24,
+          "batch_count": 4,
+          "successful_batches": 4,
+          "empty_batches": 0,
+          "failed_batches": 0,
+          "judgment_count": 24
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:49:06",
+      "step": "reviewer_node",
+      "event_type": "structured_output",
+      "message": "Reviewer returned a structured quality decision.",
+      "payload": {
+        "decision": "REVISE",
+        "failure_reason_count": 3,
+        "reformulation_advice_count": 4
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:49:06",
+      "step": "validate_review_gate_node",
+      "event_type": "decision",
+      "message": "Review gate failed and the revision budget was exhausted.",
+      "payload": {
+        "decision": "REVISE",
+        "validated_pass": false,
+        "revision_count": 3,
+        "forced_write": true
+      }
+    },
+    {
+      "timestamp": "2026-04-15T00:50:09",
+      "step": "generate_research_note",
+      "event_type": "structured_output",
+      "message": "Generated a structured research note draft.",
+      "payload": {
+        "core_paper_count": 4,
+        "supporting_paper_count": 2
+      }
+    }
+  ],
+  "task_interpretation": {
+    "intent": {
+      "topic": "3D Boundary Representation (B-Rep) reconstruction and generation using neural networks",
+      "goal": "Identify and analyze at least 10 core research papers on direct neural generation or reconstruction of B-Rep data structures (faces, edges, vertices, topology), excluding methods based on CAD operation sequences, CSG trees, or program synthesis.",
+      "time_range": {
+        "start_year": 2021,
+        "end_year": 2026,
+        "is_explicit": true,
+        "original_expression": "published between 2021-2026",
+        "resolution_basis_date": "2026-04-15",
+        "resolved_by_rule": "explicit year range"
+      },
+      "must_include": [
+        "primary output is B-Rep data structure (faces, edges, vertices, topology)",
+        "direct B-Rep reconstruction or generation",
+        "modern neural architectures (latent space, variational, diffusion, autoregressive, end-to-end)"
+      ],
+      "must_exclude": [
+        "CAD operation sequences (construction trees, sketch-and-extrude histories)",
+        "Constructive Solid Geometry (CSG) trees",
+        "CAD program or macro synthesis",
+        "step-by-step modeling history as output"
+      ]
+    },
+    "query_plan": {
+      "primary_queries": [
+        "BRepNet topological message passing boundary representation",
+        "boundary representation generation neural network",
+        "CAD B-Rep learning transformer architecture",
+        "solid model reconstruction neural network diffusion",
+        "B-Rep graph neural network generation",
+        "neural boundary representation reconstruction point cloud",
+        "direct B-Rep prediction variational autoencoder",
+        "B-Rep implicit neural representation continuous surface"
+      ],
+      "semantic_core_terms": [
+        "neural B-Rep generation",
+        "boundary representation reconstruction",
+        "topology-geometry joint modeling",
+        "direct shape output",
+        "graph-based shape representation",
+        "continuous surface learning",
+        "CAD boundary learning",
+        "solid model neural representation"
+      ]
+    },
+    "hard_requirements": {
+      "minimum_paper_count": 10,
+      "maximum_paper_count": null,
+      "required_paper_types": [
+        "conference paper",
+        "journal article",
+        "preprint"
+      ],
+      "forbidden_paper_types": [],
+      "required_source_families": []
+    }
+  },
+  "final_state_summary": {
+    "task_interpretation_present": true,
+    "retrieval_present": true,
+    "review_present": true,
+    "note_present": true
+  }
+}

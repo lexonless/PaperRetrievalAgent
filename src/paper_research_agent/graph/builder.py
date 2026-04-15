@@ -13,6 +13,8 @@ from ..core.models import RetrievalOutput
 from ..core.models import ResearchNoteOutput
 from ..core.models import ReviewOutput
 from ..core.models import TaskInterpretation
+from ..core.models import TaskQueryIRUpdate
+from ..core.models import TaskQueryPlan
 from ..core.models import TimeRangeResolution
 from ..core.models import TraceEvent
 from ..core.normalization import normalize_string_list, normalize_text
@@ -26,11 +28,11 @@ from ..project.store import load_manifest
 from ..project.store import merge_manifest_sources
 from ..project.store import persist_manifest
 from ..project.store import write_json
+from ..retrieval.query_planning import apply_query_ir_update
+from ..retrieval.query_planning import build_query_plan
 from ..retrieval.toolkit import PaperSearchToolkit
 
 
-RELATIVE_YEAR_PATTERN = re.compile(r"\b(?:last|past)\s+(?P<count>\d{1,2})\s+years?\b", re.IGNORECASE)
-RECENCY_HINT_PATTERN = re.compile(r"\b(recent|latest|newest|current)\b", re.IGNORECASE)
 YEAR_TOKEN_PATTERN = re.compile(r"\b(?:19|20)\d{2}\b")
 VENUE_TOKEN_PATTERN = re.compile(r"\b(?:cvpr|iccv|eccv|siggraph|neurips|nips|iclr|aaai)\b", re.IGNORECASE)
 MAX_REVIEW_REVISIONS = 3
@@ -52,6 +54,7 @@ Your job:
 2. Return only these top-level fields:
    - intent
    - query_plan
+   - hard_requirements
 3. intent must contain:
    - topic
    - goal
@@ -59,15 +62,65 @@ Your job:
    - must_include
    - must_exclude
 4. query_plan must contain:
+   - query_ir
+   - rendered_queries
    - primary_queries
    - semantic_core_terms
-5. primary_queries should be high-quality search queries, not natural-language summaries.
-6. semantic_core_terms should be compact domain concepts or phrases that stabilize retrieval semantics.
-7. semantic_core_terms must not be paper titles, venue names, years, or citation seeds.
-8. must_include and must_exclude are user-facing hard constraints, not retrieval metadata.
-9. If reviewer feedback exists, use failure_reasons and reformulation_advice to revise the interpretation.
-10. Do not repeat weak prior query patterns from the previous interpretation.
-11. Avoid venue names and explicit year tokens in primary_queries and semantic_core_terms.
+5. query_ir must contain:
+   - topic_phrases
+   - method_terms
+   - optional_terms
+   - excluded_terms
+   - alias_groups
+5. hard_requirements must contain:
+   - minimum_paper_count
+   - maximum_paper_count
+   - required_paper_types
+   - forbidden_paper_types
+   - required_source_families
+6. Extract any explicit output-count or paper-type constraints from the user request into hard_requirements.
+7. If the user asks for a range like "8-10 papers", set minimum_paper_count=8 and maximum_paper_count=10.
+8. primary_queries should be high-quality search queries, not natural-language summaries.
+9. query_ir should capture the stable retrieval semantics, not source-specific syntax.
+10. Keep rendered_queries, primary_queries, and semantic_core_terms lightweight. The program may normalize or rerender them.
+11. must_include and must_exclude are user-facing hard constraints, not retrieval metadata.
+12. If reviewer feedback exists, use failure_reasons and reformulation_advice to revise the interpretation.
+13. Do not repeat weak prior query patterns from the previous interpretation.
+14. Avoid venue names and explicit year tokens in query_ir, primary_queries, and semantic_core_terms.
+15. topic_phrases, method_terms, and optional_terms are ordered lists, not unordered bags of terms.
+16. Put the most essential, highest-precision, and most discriminative concepts first in each ordered list.
+17. Earlier items are treated as higher-priority during query rendering.
+18. Precision queries are built from the earliest positive groups.
+19. Recall queries use only the earliest broad but still task-faithful groups.
+"""
+
+
+QUERY_REWRITE_SYSTEM_MESSAGE_TEMPLATE = """You are the query rewrite agent for a project-centered research assistant.
+
+Today is {today}.
+For year-bucketed planning, resolve relative time expressions against today's date only if needed for query wording.
+
+Your job:
+1. Revise only the query plan after a failed retrieval-review cycle.
+2. Return only these top-level fields:
+   - topic_phrases
+   - method_terms
+   - optional_terms
+   - excluded_terms
+   - alias_groups
+3. Return only the query IR update fields that need to change. Leave untouched fields as null or omit them.
+4. Keep the existing task intent and hard requirements unchanged. Do not reinterpret the task.
+4. Use the previous failed query plan, the actual executed queries, and the reviewer failure_reasons and reformulation_advice.
+5. Make targeted fixes to the queries instead of regenerating a brand-new task interpretation.
+6. Replace weak or failed query patterns with sharper alternatives; do not simply restate them.
+7. Focus on fixing the query IR buckets that caused failure.
+8. Avoid venue names and explicit year tokens in all rewritten fields.
+9. excluded_terms should contain concepts to suppress in retrieval, not source-specific boolean syntax.
+10. topic_phrases, method_terms, and optional_terms are ordered lists, not unordered bags of terms.
+11. Reorder surviving terms by expected retrieval value when necessary.
+12. Move sharper, more discriminative terms earlier; move weaker or broader terms later.
+13. Earlier items are treated as higher-priority during query rendering.
+14. Precision queries are built from the earliest positive groups, and recall queries use only the earliest broad but still task-faithful groups.
 """
 
 
@@ -88,7 +141,9 @@ Today is {today}. Use the task interpretation's resolved time range as the refer
 
 Return PASS only when the retrieval result is credibly useful for follow-on research notes.
 If evidence is thin, missing, or inconsistent, return REVISE with concrete next actions.
-Evaluate the retrieval against the interpreted goal, required inclusions, required exclusions, and resolved time range.
+Evaluate the retrieval against the interpreted goal, required inclusions, required exclusions, resolved time range, and hard_requirements.
+Treat hard_requirements as binding. If the user explicitly requested a minimum number of papers, do not return PASS unless the retrieval credibly supports that minimum.
+If required_paper_types or forbidden_paper_types are present, explicitly assess whether the retained papers satisfy them.
 If the decision is REVISE, populate:
 - failure_reasons: concise statements of what went wrong
 - reformulation_advice: concrete guidance for the next interpretation cycle, especially query and semantic-term improvements
@@ -104,6 +159,7 @@ Use the project context, retrieval output, and review outcome to produce a conci
 Rules:
 - If review passed, treat the core papers as reasonably credible.
 - If review did not pass or the revision budget was exhausted, explicitly frame the note as tentative and list limitations.
+- Respect hard_requirements from the task interpretation. If a minimum paper count is specified and retrieval supports it, include at least that many papers across core_papers and supporting_papers.
 - Do not fabricate citations or evidence.
 - Keep the note useful for continued research work on this project.
 """
@@ -235,23 +291,63 @@ def _make_prepare_run_context_node(resources: GraphResources):
 
 def _make_task_interpretation_node(resources: GraphResources):
     async def task_interpretation_node(state: ResearchProjectState) -> dict[str, Any]:
+        previous_task_interpretation_payload = state["retrieval"]["task_interpretation"] or {}
+        review_feedback_payload = state["retrieval"]["review_output"] or {}
+        retrieval_output_payload = state["retrieval"]["retrieval_output"] or {}
+        revision_count = state["retrieval"]["revision_count"]
         task_input = {
             "project_slug": state["project"]["slug"],
             "query": state["request"]["raw_query"],
             "prepared_query": state["request"]["prepared_query"],
             "time_resolution": state["request"]["time_resolution"],
             "runtime_notes": state["request"]["runtime_notes"],
-            "revision_count": state["retrieval"]["revision_count"],
-            "previous_task_interpretation": state["retrieval"]["task_interpretation"] or {},
-            "review_feedback": state["retrieval"]["review_output"] or {},
+            "revision_count": revision_count,
+            "previous_task_interpretation": previous_task_interpretation_payload,
+            "review_feedback": review_feedback_payload,
             "local_source_hints": summarize_manifest_sources(state["project"]["source_manifest"]),
         }
-        task_interpretation = await invoke_structured_output(
-            model=resources.task_interpretation_model,
-            schema=TaskInterpretation,
-            system_prompt=TASK_INTERPRETATION_SYSTEM_MESSAGE_TEMPLATE.format(today=date.today().isoformat()),
-            user_prompt=json.dumps(task_input, ensure_ascii=False, indent=2),
-        )
+
+        if _should_target_query_rewrite(revision_count, previous_task_interpretation_payload):
+            previous_task_interpretation = TaskInterpretation.model_validate(previous_task_interpretation_payload)
+            rewrite_input = {
+                "project_slug": state["project"]["slug"],
+                "query": state["request"]["raw_query"],
+                "prepared_query": state["request"]["prepared_query"],
+                "revision_count": revision_count,
+                "intent": previous_task_interpretation.intent.model_dump(),
+                "hard_requirements": previous_task_interpretation.hard_requirements.model_dump(),
+                "previous_query_plan": previous_task_interpretation.query_plan.model_dump(),
+                "failed_queries": _collect_failed_queries(
+                    previous_task_interpretation_payload,
+                    retrieval_output_payload,
+                ),
+                "review_feedback": review_feedback_payload,
+                "local_source_hints": summarize_manifest_sources(state["project"]["source_manifest"]),
+            }
+            rewritten_query_ir_update = await invoke_structured_output(
+                model=resources.task_interpretation_model,
+                schema=TaskQueryIRUpdate,
+                system_prompt=QUERY_REWRITE_SYSTEM_MESSAGE_TEMPLATE.format(today=date.today().isoformat()),
+                user_prompt=json.dumps(rewrite_input, ensure_ascii=False, indent=2),
+            )
+            rewritten_query_ir = apply_query_ir_update(
+                previous_task_interpretation.query_plan.query_ir,
+                rewritten_query_ir_update,
+            )
+            task_interpretation = previous_task_interpretation.model_copy(
+                update={
+                    "query_plan": build_query_plan(
+                        previous_task_interpretation.query_plan.model_copy(update={"query_ir": rewritten_query_ir})
+                    )
+                }
+            )
+        else:
+            task_interpretation = await invoke_structured_output(
+                model=resources.task_interpretation_model,
+                schema=TaskInterpretation,
+                system_prompt=TASK_INTERPRETATION_SYSTEM_MESSAGE_TEMPLATE.format(today=date.today().isoformat()),
+                user_prompt=json.dumps(task_input, ensure_ascii=False, indent=2),
+            )
         task_interpretation = _clean_task_interpretation_output(task_interpretation)
         return {
             "retrieval": {
@@ -268,6 +364,8 @@ def _make_task_interpretation_node(resources: GraphResources):
                     payload={
                         "query_count": len(task_interpretation.query_plan.primary_queries),
                         "semantic_core_term_count": len(task_interpretation.query_plan.semantic_core_terms),
+                        "minimum_paper_count": task_interpretation.hard_requirements.minimum_paper_count,
+                        "maximum_paper_count": task_interpretation.hard_requirements.maximum_paper_count,
                         "revision_count": state["retrieval"]["revision_count"],
                     },
                 ),
@@ -432,7 +530,8 @@ def _make_validate_review_gate_node(resources: GraphResources):
     async def validate_review_gate_node(state: ResearchProjectState) -> dict[str, Any]:
         retrieval_output = RetrievalOutput.model_validate(state["retrieval"]["retrieval_output"] or {})
         review_output = ReviewOutput.model_validate(state["retrieval"]["review_output"] or {})
-        is_pass = _review_passes_programmatic_validation(review_output, retrieval_output)
+        task_interpretation = TaskInterpretation.model_validate(state["retrieval"]["task_interpretation"] or {})
+        is_pass = _review_passes_programmatic_validation(review_output, retrieval_output, task_interpretation)
         revision_count = state["retrieval"]["revision_count"]
         forced_write = False
         stop_reason = "review_passed"
@@ -488,6 +587,7 @@ def _make_generate_research_note_node(resources: GraphResources):
             "prepared_query": state["request"]["prepared_query"],
             "project_context": project_context,
             "source_manifest_summary": summarize_manifest_sources(state["project"]["source_manifest"], max_items=8),
+            "task_interpretation": state["retrieval"]["task_interpretation"] or {},
             "retrieval_output": state["retrieval"]["retrieval_output"] or {},
             "review_output": state["retrieval"]["review_output"] or {},
             "forced_write": state["retrieval"]["forced_write"],
@@ -628,41 +728,12 @@ def _next_after_review_validation(state: ResearchProjectState):
 
 def _prepare_task(task: str) -> tuple[str, dict[str, Any], list[str]]:
     today = date.today()
-    notes = [f"Today's date for this run is {today.isoformat()}."]
-    relative_notes: list[str] = []
-    seen_phrases: set[str] = set()
-    time_resolution: dict[str, Any] = {}
-
-    for match in RELATIVE_YEAR_PATTERN.finditer(task):
-        phrase = match.group(0)
-        if phrase.lower() in seen_phrases:
-            continue
-        seen_phrases.add(phrase.lower())
-        count = int(match.group("count"))
-        start_year = today.year - count + 1
-        end_year = today.year
-        relative_notes.append(f'Resolve "{phrase}" as the inclusive year window {start_year}-{end_year}.')
-        time_resolution = {
-            "start_year": start_year,
-            "end_year": end_year,
-            "original_expression": phrase,
-            "resolution_basis_date": today.isoformat(),
-        }
-
-    if relative_notes:
-        notes.extend(relative_notes)
-        notes.append("Treat that resolved year window as authoritative unless a later agent labels a broader range as an explicit extra.")
-    elif RECENCY_HINT_PATTERN.search(task):
-        notes.append("The query contains a vague recency hint. Resolve it into an explicit year range against today's date.")
-        time_resolution = {
-            "start_year": None,
-            "end_year": today.year,
-            "original_expression": "recent",
-            "resolution_basis_date": today.isoformat(),
-        }
-
+    notes = [
+        f"Today's date for this run is {today.isoformat()}.",
+        "Resolve all explicit and relative time expressions from the user request yourself. Do not rely on pre-resolved time windows.",
+    ]
     runtime_context = "\n".join(notes)
-    return f"{task}\n\n[Runtime Search Context]\n{runtime_context}", time_resolution, notes
+    return f"{task}\n\n[Runtime Search Context]\n{runtime_context}", {}, notes
 
 
 def _append_trace(
@@ -699,16 +770,52 @@ def _resolve_task_interpretation_for_execution(
     return task_interpretation.model_copy(update={"intent": intent})
 
 
-def _clean_task_interpretation_output(task_interpretation: TaskInterpretation) -> TaskInterpretation:
-    cleaned_queries = _clean_primary_queries(task_interpretation.query_plan.primary_queries)
-    cleaned_terms = _clean_semantic_core_terms(task_interpretation.query_plan.semantic_core_terms)
-    cleaned_query_plan = task_interpretation.query_plan.model_copy(
-        update={
-            "primary_queries": cleaned_queries,
-            "semantic_core_terms": cleaned_terms,
+def _should_target_query_rewrite(revision_count: int, previous_task_interpretation_payload: dict[str, Any]) -> bool:
+    if revision_count <= 0:
+        return False
+    if not isinstance(previous_task_interpretation_payload, dict) or not previous_task_interpretation_payload:
+        return False
+    query_plan = previous_task_interpretation_payload.get("query_plan", {})
+    if not isinstance(query_plan, dict):
+        return False
+    return bool(query_plan.get("primary_queries") or query_plan.get("semantic_core_terms"))
+
+
+def _collect_failed_queries(
+    previous_task_interpretation_payload: dict[str, Any],
+    retrieval_output_payload: dict[str, Any],
+) -> dict[str, Any]:
+    previous_task_interpretation = TaskInterpretation.model_validate(previous_task_interpretation_payload or {})
+    retrieval_output = RetrievalOutput.model_validate(retrieval_output_payload or {})
+    planned_primary_queries = list(previous_task_interpretation.query_plan.primary_queries)
+    planned_semantic_core_terms = list(previous_task_interpretation.query_plan.semantic_core_terms)
+    executed_queries = [
+        {
+            "query": item.query,
+            "sources": list(item.sources),
+            "notes": item.notes,
         }
-    )
-    return task_interpretation.model_copy(update={"query_plan": cleaned_query_plan})
+        for item in retrieval_output.queries_executed
+        if normalize_text(item.query)
+    ]
+    return {
+        "planned_primary_queries": planned_primary_queries,
+        "planned_semantic_core_terms": planned_semantic_core_terms,
+        "all_failed_queries": list(
+            dict.fromkeys(
+                [
+                    *planned_primary_queries,
+                    *planned_semantic_core_terms,
+                    *[item["query"] for item in executed_queries],
+                ]
+            )
+        ),
+        "executed_queries": executed_queries,
+    }
+
+
+def _clean_task_interpretation_output(task_interpretation: TaskInterpretation) -> TaskInterpretation:
+    return task_interpretation.model_copy(update={"query_plan": build_query_plan(task_interpretation.query_plan)})
 
 
 def _clean_primary_queries(values: list[str]) -> list[str]:
@@ -754,7 +861,11 @@ def _sanitize_retrieval_tool_args(args: dict[str, Any]) -> dict[str, Any]:
     return sanitized
 
 
-def _review_passes_programmatic_validation(review: ReviewOutput, retrieval: RetrievalOutput | None) -> bool:
+def _review_passes_programmatic_validation(
+    review: ReviewOutput,
+    retrieval: RetrievalOutput | None,
+    task_interpretation: TaskInterpretation | None,
+) -> bool:
     if review.decision != "PASS":
         return False
 
@@ -786,10 +897,10 @@ def _review_passes_programmatic_validation(review: ReviewOutput, retrieval: Retr
 
     if retrieval is None:
         return False
-    return _retrieval_supports_pass(retrieval)
+    return _retrieval_supports_pass(retrieval, task_interpretation)
 
 
-def _retrieval_supports_pass(retrieval: RetrievalOutput) -> bool:
+def _retrieval_supports_pass(retrieval: RetrievalOutput, task_interpretation: TaskInterpretation | None) -> bool:
     distinct_sources = {source.strip() for source in retrieval.sources_used if source.strip()}
     if len(distinct_sources) < 2:
         return False
@@ -831,5 +942,9 @@ def _retrieval_supports_pass(retrieval: RetrievalOutput) -> bool:
     if supported_evidence_count < 3:
         return False
     if verified_count < 1:
+        return False
+    hard_requirements = task_interpretation.hard_requirements if task_interpretation is not None else None
+    minimum_paper_count = hard_requirements.minimum_paper_count if hard_requirements is not None else 0
+    if minimum_paper_count > 0 and task_fit_count < minimum_paper_count:
         return False
     return True

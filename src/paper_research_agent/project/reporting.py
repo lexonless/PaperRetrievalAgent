@@ -36,6 +36,23 @@ def render_research_note_markdown(note: ResearchNoteOutput, *, project_slug: str
     return "\n".join(lines).rstrip() + "\n"
 
 
+def render_markdown_to_safe_html(markdown_text: str, *, strip_query_metadata: bool = False) -> str:
+    from markdown_it import MarkdownIt
+
+    if strip_query_metadata:
+        markdown_text = strip_query_metadata_from_markdown(markdown_text)
+    renderer = MarkdownIt("commonmark", {"html": False})
+    return renderer.render(markdown_text)
+
+
+def strip_query_metadata_from_markdown(markdown_text: str) -> str:
+    lines = markdown_text.splitlines()
+    filtered_lines = [line for line in lines if not line.startswith("**Query:**")]
+    cleaned = "\n".join(filtered_lines)
+    cleaned = cleaned.replace("\n\n\n", "\n\n")
+    return cleaned.strip() + "\n" if cleaned.strip() else ""
+
+
 def build_trace_payload(state: dict[str, Any]) -> dict[str, Any]:
     project = state.get("project", {})
     request = state.get("request", {})

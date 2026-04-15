@@ -7,6 +7,7 @@ from typing import Any
 
 from ..core.config import Settings
 from ..core.models import PaperRecord
+from ..core.models import SourceQuerySpec
 from ..core.normalization import normalize_string_list, normalize_text
 from .utils import DEFAULT_SOURCE_ORDER, TOPIC_FALLBACK_STAGE, extract_year, normalize_pdf_url
 
@@ -23,8 +24,19 @@ class PaperSourceCollector:
     def clear_local_pdf_paths(self) -> None:
         self._local_pdf_paths = []
 
-    def build_retrieval_plan(self, task_interpretation: dict[str, Any]) -> list[tuple[str, list[str]]]:
+    def build_retrieval_plan(self, task_interpretation: dict[str, Any]) -> list[tuple[str, list[dict[str, Any]]]]:
         query_plan = task_interpretation.get("query_plan", {}) if isinstance(task_interpretation, dict) else {}
+        rendered_queries = [
+            SourceQuerySpec.model_validate(item).model_dump()
+            for item in query_plan.get("rendered_queries", [])
+            if isinstance(item, dict)
+        ]
+        if rendered_queries:
+            grouped_specs: dict[str, list[dict[str, Any]]] = {}
+            for spec in rendered_queries:
+                grouped_specs.setdefault(normalize_text(spec.get("stage", "")) or "primary", []).append(spec)
+            return list(grouped_specs.items())
+
         primary_queries = normalize_string_list(query_plan.get("primary_queries"))
         semantic_core_terms = normalize_string_list(query_plan.get("semantic_core_terms"))
 
@@ -37,14 +49,21 @@ class PaperSourceCollector:
             if term and term not in primary_query_texts
         ]
 
-        retrieval_plan: list[tuple[str, list[str]]] = [("primary", primary_queries)]
+        retrieval_plan: list[tuple[str, list[dict[str, Any]]]] = [
+            ("primary", [{"query": query, "source": "", "purpose": "precision", "stage": "primary", "notes": ""} for query in primary_queries])
+        ]
         if semantic_queries:
-            retrieval_plan.append((f"{TOPIC_FALLBACK_STAGE}_semantic_core_terms", semantic_queries[:4]))
+            retrieval_plan.append(
+                (
+                    f"{TOPIC_FALLBACK_STAGE}_semantic_core_terms",
+                    [{"query": query, "source": "", "purpose": "recall", "stage": f"{TOPIC_FALLBACK_STAGE}_semantic_core_terms", "notes": ""} for query in semantic_queries[:4]],
+                )
+            )
         return retrieval_plan
 
     async def collect_records_for_query_specs(
         self,
-        query_specs: list[str],
+        query_specs: list[str] | list[dict[str, Any]],
         stage_name: str,
         max_results_per_source: int | None,
         from_year: int | None,
@@ -53,8 +72,17 @@ class PaperSourceCollector:
         source_errors: list[dict[str, str]] = []
         executed_specs: list[dict[str, Any]] = []
 
-        for query_text in query_specs:
-            query = normalize_text(query_text)
+        for query_spec in query_specs:
+            if isinstance(query_spec, dict):
+                query = normalize_text(query_spec.get("query", ""))
+                target_source = normalize_text(query_spec.get("source", ""))
+                purpose = normalize_text(query_spec.get("purpose", "")) or "precision"
+                notes = normalize_text(query_spec.get("notes", ""))
+            else:
+                query = normalize_text(query_spec)
+                target_source = ""
+                purpose = "precision"
+                notes = ""
             if not query:
                 continue
             query_records, query_errors = await self.collect_all_source_records(
@@ -62,10 +90,12 @@ class PaperSourceCollector:
                 stage_name=stage_name,
                 max_results_per_source=max_results_per_source,
                 from_year=from_year,
+                target_source=target_source,
             )
             records.extend(query_records)
             source_errors.extend(query_errors)
-            executed_specs.append({"query": query, "sources": list(DEFAULT_SOURCE_ORDER), "stage": stage_name})
+            sources = [target_source] if target_source else list(DEFAULT_SOURCE_ORDER)
+            executed_specs.append({"query": query, "sources": sources, "stage": stage_name, "purpose": purpose, "notes": notes})
         return records, source_errors, executed_specs
 
     async def collect_all_source_records(
@@ -74,9 +104,12 @@ class PaperSourceCollector:
         stage_name: str,
         max_results_per_source: int | None = None,
         from_year: int | None = None,
+        target_source: str = "",
     ) -> tuple[list[PaperRecord], list[dict[str, str]]]:
         tasks: list[tuple[str, Any]] = []
         for source_name in DEFAULT_SOURCE_ORDER:
+            if target_source and source_name != target_source:
+                continue
             if source_name == "arXiv":
                 tasks.append(("arXiv", self.search_arxiv_records(query, max_results=max_results_per_source)))
             elif source_name == "Crossref":

@@ -38,14 +38,54 @@ class TaskIntent(BaseModel):
     must_exclude: list[str] = Field(default_factory=list)
 
 
+class QueryAliasGroup(BaseModel):
+    canonical: str = ""
+    aliases: list[str] = Field(default_factory=list)
+
+
+class TaskQueryIR(BaseModel):
+    topic_phrases: list[str] = Field(default_factory=list)
+    method_terms: list[str] = Field(default_factory=list)
+    optional_terms: list[str] = Field(default_factory=list)
+    excluded_terms: list[str] = Field(default_factory=list)
+    alias_groups: list[QueryAliasGroup] = Field(default_factory=list)
+
+
+class TaskQueryIRUpdate(BaseModel):
+    topic_phrases: list[str] | None = None
+    method_terms: list[str] | None = None
+    optional_terms: list[str] | None = None
+    excluded_terms: list[str] | None = None
+    alias_groups: list[QueryAliasGroup] | None = None
+
+
+class SourceQuerySpec(BaseModel):
+    source: Literal["arXiv", "Crossref", "OpenAlex"]
+    query: str
+    purpose: Literal["precision", "recall"] = "precision"
+    stage: str = "primary"
+    notes: str = ""
+
+
 class TaskQueryPlan(BaseModel):
+    query_ir: TaskQueryIR = Field(default_factory=TaskQueryIR)
+    rendered_queries: list[SourceQuerySpec] = Field(default_factory=list)
     primary_queries: list[str] = Field(default_factory=list)
     semantic_core_terms: list[str] = Field(default_factory=list)
+
+
+class TaskHardRequirements(BaseModel):
+    minimum_paper_count: int = Field(default=0, ge=0, le=50)
+    maximum_paper_count: int | None = Field(default=None, ge=1, le=50)
+    required_paper_types: list[str] = Field(default_factory=list)
+    forbidden_paper_types: list[str] = Field(default_factory=list)
+    required_source_families: list[str] = Field(default_factory=list)
 
 
 class TaskInterpretation(BaseModel):
     intent: TaskIntent = Field(default_factory=TaskIntent)
     query_plan: TaskQueryPlan = Field(default_factory=TaskQueryPlan)
+    hard_requirements: TaskHardRequirements = Field(default_factory=TaskHardRequirements)
 
 
 class QueryExecution(BaseModel):

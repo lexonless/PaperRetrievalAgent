@@ -1,5 +1,5 @@
 **Role & Task:**
-Act as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze 8-10 state-of-the-art frontier research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. 
+Act as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze at least 15 core research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. 
 
 **Primary Focus (What to INCLUDE):**
 * **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).
@@ -14,7 +14,7 @@ You MUST STRICTLY EXCLUDE any paper that falls into these categories:
 *If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*
 
 **Output Format:**
-For each of the 8-10 selected papers, provide:
+For each of the selected papers, provide:
 * **Title & Year:**
 * **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)
 * **Link:**

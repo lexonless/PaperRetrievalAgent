@@ -1,0 +1,828 @@
+{
+  "query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze at least 10 core research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)",
+  "prepared_query": "**Role & Task:**\nAct as an expert 3D computer vision and geometric deep learning researcher. Your task is to search for and analyze at least 10 core research papers (published between 2021-2026) focused explicitly on 3D Boundary Representation (B-Rep) reconstruction and generation. \n\n**Primary Focus (What to INCLUDE):**\n* **Target Output:** The primary output of the model MUST be the B-Rep data structure itself (faces, edges, vertices, and their topological relationships).\n* **Target Input / Setting:** Direct B-Rep reconstruction or generation is the priority. Point cloud or 3D scan input is welcome, but it is **not mandatory**. End-to-end direct B-Rep generation methods are also in scope even when they are not conditioned on point clouds.\n* **Methodology:** Highly prioritize modern neural architectures, including latent space representations, variational approaches, diffusion or autoregressive models, and end-to-end direct neural generation of continuous B-Rep geometry and topology.\n\n**CRITICAL EXCLUSIONS (What to strictly AVOID):**\nYou MUST STRICTLY EXCLUDE any paper that falls into these categories:\n1.  **NO CAD Operation Sequences:** Do not include papers where the goal is to reconstruct CAD construction trees, sketch-and-extrude histories, or sequential modeling steps (e.g., DeepCAD, Sketex).\n2.  **NO CSG Trees:** Exclude papers focusing on Constructive Solid Geometry (CSG) primitive combinations.\n3.  **NO Program Synthesis:** Exclude papers that generate CAD programs or macros.\n*If the model outputs a step-by-step modeling history rather than directly outputting the final B-Rep topological/geometric data structure, it is a hard fail. Discard it.*\n\n**Output Format:**\nFor each of the selected papers, provide:\n* **Title & Year:**\n* **Source/Venue:** (e.g., CVPR, SIGGRAPH, NeurIPS)\n* **Link:**\n* **Core Contribution:** (1-2 sentences on their specific technical breakthrough)\n* **Relevance Note:** (Explain exactly how it tackles direct B-Rep reconstruction or generation, clarify the input setting if one is used, and confirm it does not rely on step-by-step operation sequences).\n\n**Synthesis Report:**\nAfter listing the papers, provide a concise summary covering:\n1.  **Major Method Categories:** (How are current models representing B-Rep natively for neural networks?)\n2.  **Recent Trends:** (e.g., shifts in handling topology vs. geometry)\n3.  **Open Challenges:** (Specific bottlenecks in direct B-Rep reconstruction and generation, especially when topology and geometry must be produced jointly)\n\n[Runtime Search Context]\nToday's date for this run is 2026-04-15.\nResolve all explicit and relative time expressions from the user request yourself. Do not rely on pre-resolved time windows.",
+  "task_interpretation": {
+    "intent": {
+      "topic": "3D Boundary Representation (B-Rep) reconstruction and generation using neural networks",
+      "goal": "Identify and analyze at least 10 core research papers on direct neural generation or reconstruction of B-Rep data structures (faces, edges, vertices, topology), excluding methods based on CAD operation sequences, CSG trees, or program synthesis.",
+      "time_range": {
+        "start_year": 2021,
+        "end_year": 2026,
+        "is_explicit": true,
+        "original_expression": "published between 2021-2026",
+        "resolution_basis_date": "2026-04-15",
+        "resolved_by_rule": "explicit year range"
+      },
+      "must_include": [
+        "primary output is B-Rep data structure (faces, edges, vertices, topology)",
+        "direct B-Rep reconstruction or generation",
+        "modern neural architectures (latent space, variational, diffusion, autoregressive, end-to-end)"
+      ],
+      "must_exclude": [
+        "CAD operation sequences (construction trees, sketch-and-extrude histories)",
+        "Constructive Solid Geometry (CSG) trees",
+        "CAD program or macro synthesis",
+        "step-by-step modeling history as output"
+      ]
+    },
+    "query_plan": {
+      "primary_queries": [
+        "BRepNet topological message passing boundary representation",
+        "boundary representation generation neural network",
+        "CAD B-Rep learning transformer architecture",
+        "solid model reconstruction neural network diffusion",
+        "B-Rep graph neural network generation",
+        "neural boundary representation reconstruction point cloud",
+        "direct B-Rep prediction variational autoencoder",
+        "B-Rep implicit neural representation continuous surface"
+      ],
+      "semantic_core_terms": [
+        "neural B-Rep generation",
+        "boundary representation reconstruction",
+        "topology-geometry joint modeling",
+        "direct shape output",
+        "graph-based shape representation",
+        "continuous surface learning",
+        "CAD boundary learning",
+        "solid model neural representation"
+      ]
+    },
+    "hard_requirements": {
+      "minimum_paper_count": 10,
+      "maximum_paper_count": null,
+      "required_paper_types": [
+        "conference paper",
+        "journal article",
+        "preprint"
+      ],
+      "forbidden_paper_types": [],
+      "required_source_families": []
+    }
+  },
+  "retrieval_output": {
+    "sources_used": [
+      "Crossref",
+      "OpenAlex",
+      "Semantic Scholar",
+      "arXiv"
+    ],
+    "queries_executed": [
+      {
+        "query": "BRepNet topological message passing boundary representation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "boundary representation generation neural network",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "CAD B-Rep learning transformer architecture",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "solid model reconstruction neural network diffusion",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep graph neural network generation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "neural boundary representation reconstruction point cloud",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "direct B-Rep prediction variational autoencoder",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "B-Rep implicit neural representation continuous surface",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Primary query executed from the latest task interpretation."
+      },
+      {
+        "query": "neural B-Rep generation",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "boundary representation reconstruction",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "topology-geometry joint modeling",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      },
+      {
+        "query": "direct shape output",
+        "sources": [
+          "arXiv",
+          "Crossref",
+          "OpenAlex",
+          "Semantic Scholar"
+        ],
+        "notes": "Semantic core term expansion executed because earlier retrieval remained sparse."
+      }
+    ],
+    "papers": [
+      {
+        "title": "AutoRegressive Generation with B-rep Holistic Token Sequence Representation",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-01-23T14:15:02Z",
+        "url": "http://arxiv.org/abs/2601.16771v2",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Yunpeng Bai",
+          "Yongkang Dai",
+          "Hao Guo",
+          "Hongping Gan",
+          "Yilei Shi"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper directly addresses neural B-Rep generation by proposing BrepARG, an autoregressive model that encodes B-Rep geometry and topology into a holistic token sequence for generation. It uses a transformer architecture (a modern neural architecture) and outputs the B-Rep data structure directly, fitting all 'must_include' criteria and none of the exclusions.",
+        "evidence_snippets": [
+          "Previous representation and generation approaches for the B-rep relied on graph-based representations that disentangle geometric and topological features through decoupled computational pipelines, thereby precluding the application of sequence-based generative frameworks, such as transformer architectures that have demonstrated remarkable performance. In this paper, we propose BrepARG, the first attempt to encode B-rep's geometry and topology into a holistic token sequence representation, enabling sequence-based B-rep generation with an autoregressive architecture. Specifically, BrepARG encodes B-rep into 3 types of tokens: geometry and position tokens representing geometric features, and face index tokens representing topology. Then the holistic token sequence is constructed hierarchically, starting with constructing the geometry blocks (i.e., faces and edges) using the above tokens, followed by geometry block sequencing. Finally, we assemble the holistic sequence representation for the entire B-rep. We also construct a transformer-based autoregressive model that learns the distribution over holistic token sequences via next-token prediction, using a multi-layer decoder-only architecture with causal masking. Experiments demonstrate that BrepARG achieves state-of-the-art (SOTA) performance. BrepARG validates the feasibility of representing B-rep as holistic token sequences, opening new directions for B-rep generation."
+        ]
+      },
+      {
+        "title": "BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-11-27T07:16:53Z",
+        "url": "http://arxiv.org/abs/2511.22171v1",
+        "doi": "",
+        "authors": [
+          "Pu Li",
+          "Wenhao Zhang",
+          "Weize Quan",
+          "Biao Zhang",
+          "Peter Wonka",
+          "Dong-Ming Yan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents 'BrepGPT', an autoregressive framework for direct B-rep generation using a Voronoi Half-Patch representation and a decoder-only Transformer. The abstract explicitly states it is for 'B-rep generation', addresses the 'intricate coupling between geometric and topological elements', and outputs 'complete B-rep models'. It uses a modern neural architecture (autoregressive Transformer with VQ-VAEs) and its primary output is the B-Rep data structure, fitting all must_include criteria and excluding the must_exclude methods.",
+        "evidence_snippets": [
+          "Boundary representation (B-rep) is the de facto standard for CAD model representation in modern industrial design. The intricate coupling between geometric and topological elements in B-rep structures has forced existing generative methods to rely on cascaded multi-stage networks, resulting in error accumulation and computational inefficiency. We present BrepGPT, a single-stage autoregressive framework for B-rep generation. Our key innovation lies in the Voronoi Half-Patch (VHP) representation, which decomposes B-reps into unified local units by assigning geometry to nearest half-edges and sampling their next pointers. Unlike hierarchical representations that require multiple distinct encodings for different structural levels, our VHP representation facilitates unifying geometric attributes and topological relations in a single, coherent format. We further leverage dual VQ-VAEs to encode both vertex topology and Voronoi Half-Patches into vertex-based tokens, achieving a more compact sequential encoding. A decoder-only Transformer is then trained to autoregressively predict these tokens, which are subsequently mapped to vertex-based features and decoded into complete B-rep models. Experiments demonstrate that BrepGPT achieves state-of-the-art performance in unconditional B-rep generation. The framework also exhibits versatility in various applications, including conditional generation from category labels, point clouds, text descriptions, and images, as well as B-rep autocompletion and interpolation."
+        ]
+      },
+      {
+        "title": "GraphBrep: Learning B-Rep in Graph Structure for Efficient CAD Generation",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-07-07T08:43:46Z",
+        "url": "http://arxiv.org/abs/2507.04765v1",
+        "doi": "",
+        "authors": [
+          "Weilin Lai",
+          "Tie Xu",
+          "Hu Wang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents 'GraphBrep', a model for 'Direct B-Rep generation' that learns B-Rep in a graph structure. The abstract explicitly states it addresses 'modeling joint distribution of the misaligned geometry and topology' and uses a 'graph diffusion model' to learn topology. It outputs CAD generation from the B-Rep structure, fits the time range, and uses a modern neural architecture (diffusion model). It directly matches the requested task of neural B-Rep generation.",
+        "evidence_snippets": [
+          "Direct B-Rep generation is increasingly important in CAD workflows, eliminating costly modeling sequence data and supporting complex features. A key challenge is modeling joint distribution of the misaligned geometry and topology. Existing methods tend to implicitly embed topology into the geometric features of edges. Although this integration ensures feature alignment, it also causes edge geometry to carry more redundant structural information compared to the original B-Rep, leading to significantly higher computational cost. To reduce redundancy, we propose GraphBrep, a B-Rep generation model that explicitly represents and learns compact topology. Following the original structure of B-Rep, we construct an undirected weighted graph to represent surface topology. A graph diffusion model is employed to learn topology conditioned on surface features, serving as the basis for determining connectivity between primitive surfaces. The explicit representation ensures a compact data structure, effectively reducing computational cost during both training and inference. Experiments on two large-scale unconditional datasets and one category-conditional dataset demonstrate the proposed method significantly reduces training and inference times (up to 31.3% and 56.3% for given datasets, respectively) while maintaining high-quality CAD generation compared with SOTA."
+        ]
+      },
+      {
+        "title": "HoLa: B-Rep Generation using a Holistic Latent Representation",
+        "source": "Semantic Scholar / ACM Transactions on Graphics",
+        "year": 2025,
+        "date": "2025-04-19",
+        "url": "https://www.semanticscholar.org/paper/6629d249c1e35fbd5053208cf975e9c2bae98305",
+        "doi": "10.1145/3730842",
+        "authors": [
+          "Yilin Liu",
+          "Duoteng Xu",
+          "Xingyao Yu",
+          "Xiang Xu",
+          "D. Cohen-Or",
+          "Hao Zhang",
+          "Hui Huang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "high",
+        "task_fit": "direct",
+        "evidence_sufficiency": "strong",
+        "verification_status": "verified",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper explicitly introduces a method for learning and generating CAD models as B-Reps, unifying geometry and topology in a holistic latent space. It describes a diffusion-based generator for B-Reps from various inputs, directly addressing neural B-Rep generation and reconstruction. The evidence clearly matches the required criteria: primary output is a B-Rep data structure, it is a direct generation method, and it uses a modern neural architecture (diffusion).",
+        "evidence_snippets": [
+          "We introduce a novel representation for learning and generating Computer-Aided Design (CAD) models in the form of boundary representations (B-Reps). Our representation unifies the continuous geometric properties of B-Rep primitives in different orders (e.g., surfaces and curves) and their discrete topological relations in a holistic latent (HoLa) space. This is based on the simple observation that the topological connection between two surfaces is intrinsically tied to the geometry of their intersecting curve. Such a prior allows us to reformulate topology learning in B-Reps as a geometric reconstruction problem in Euclidean space. Specifically, we eliminate the presence of curves, vertices, and all the topological connections in the latent space by learning to distinguish and derive curve geometries from a pair of surface primitives via a neural intersection network. To this end, our holistic latent space is only defined on surfaces but encodes a full B-Rep model, including the geometry of surfaces, curves, vertices, and their topological relations. Our compact and holistic latent space facilitates the design of a first diffusion-based generator to take on a large variety of inputs including point clouds, single/multi-view images, 2D sketches, and text prompts. Our method significantly reduces ambiguities, redundancies, and incoherences among the generated B-Rep primitives, as well as training complexities inherent in prior multi-step B-Rep learning pipelines, while achieving greatly improved validity rate over current state of the art: 82% vs. ≈50%."
+        ]
+      },
+      {
+        "title": "Towards High-Fidelity CAD Generation via LLM-Driven Program Generation and Text-Based B-Rep Primitive Grounding",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-03-12T11:54:29Z",
+        "url": "http://arxiv.org/abs/2603.11831v1",
+        "doi": "",
+        "authors": [
+          "Jiahao Li",
+          "Qingwang Zhang",
+          "Qiuyu Chen",
+          "Guozhan Qiu",
+          "Yunzhong Lou",
+          "Xiangdong Zhou"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "excerpt",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper presents a text-to-CAD framework that generates CadQuery scripts and uses a transformer to ground text to B-Rep primitives. It involves direct B-Rep synthesis and modern neural architectures. However, the primary output is a parametric script (CadQuery), and it's unclear if the B-Rep is generated directly by a neural network or is a result of executing the script. This ambiguity places it as 'related' rather than 'direct'.",
+        "evidence_snippets": [
+          "The field of Computer-Aided Design (CAD) generation has made significant progress in recent years. Existing methods typically fall into two separate categorie: parametric CAD modeling and direct boundary representation (B-Rep) synthesis. In modern feature-based CAD systems, parametric modeling and B-Rep are inherently intertwined, as advanced parametric operations (e.g., fillet and chamfer) require explicit selection of B-Rep geometric primitives, and the B-Rep itself is derived from parametric operations. Consequently, this paradigm gap remains a critical factor limiting AI-driven CAD modeling for complex industrial product design. This paper present FutureCAD, a novel text-to-CAD framework that leverages large language models (LLMs) and a B-Rep grounding transformer (BRepGround) for high",
+          "Towards High-Fidelity CAD Generation via LLM-Driven Program Generation and Text-Based B-Rep Primitive Grounding Jiahao Li 1 Qingwang Zhang 1 Qiuyu Chen 2 Guozhan Qiu 1 Yunzhong Lou1 Xiangdong Zhou 1 Abstract The field of Computer-Aided Design (CAD) gen- eration has made significant progress in recent years. Existing methods typically fall into two separate categories: parametric CAD modeling and direct boundary representation (B-Rep) syn- thesis. In modern feature-based CAD systems, parametric modeling and B-Rep are inherently intertwined, as advanced parametric operations (e.g.,filletandchamfer) require explicit selection of B-Rep geometric primitives, and the B-Rep itself is derived from parametric operations. Con- sequently, this paradigm gap remains a critical fac- tor limiting AI-driv"
+        ]
+      },
+      {
+        "title": "Herglotz-NET: Implicit Neural Representation of Spherical Data with Harmonic Positional Encoding",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-02-19T14:40:02Z",
+        "url": "http://arxiv.org/abs/2502.13777v3",
+        "doi": "",
+        "authors": [
+          "Théo Hanon",
+          "Nicolas Mil-Homens Cavaco",
+          "John Kiely",
+          "Laurent Jacques"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "partial",
+        "verification_status": "partial",
+        "evidence_level": "excerpt",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper proposes 'Herglotz-NET', an implicit neural representation (INR) for spherical data. While it deals with neural representation of geometric domains (spheres) and could be relevant for representing continuous surfaces, the abstract does not mention B-Reps, CAD, topology, or the reconstruction/generation of boundary representation data structures. It is related to continuous surface learning (a semantic core term) but the evidence is insufficient to confirm it addresses direct B-Rep output. It is a potentially useful method for geometry representation within a B-Rep pipeline.",
+        "evidence_snippets": [
+          "Representing and processing data in spherical domains presents unique challenges, primarily due to the curvature of the domain, which complicates the application of classical Euclidean techniques. Implicit neural representations (INRs) have emerged as a promising alternative for high-fidelity data representation; however, to effectively handle spherical domains, these methods must be adapted to the inherent geometry of the sphere to maintain both accuracy and stability. In this context, we propose Herglotz-NET (HNET), a novel INR architecture that employs a harmonic positional encoding based on complex Herglotz mappings. This encoding yields a well-posed representation on the sphere with interpretable and robust spectral properties. Moreover, we present a unified expressivity analysis show",
+          "Herglotz-NET: Implicit Neural Representation of Spherical Data with Harmonic Positional Encoding Théo Hanon1, Nicolas Mil-Homens Cavaco 1, John Kiely 2, Laurent Jacques 1 1: INMA/ICTEAM, ULouvain, Belgium; 2: Yale University, CT, USA. Abstract—Representing and processing data in spherical do- mains presents unique challenges, primarily due to the curvature of the domain, which complicates the application of classical Euclidean techniques. Implicit neural representations (INRs) have emerged as a promising alternative for high-fidelity data representation; however, to effectively handle spherical domains, these methods must be adapted to the inherent geometry of the sphere to maintain both accuracy and stability. In this context, we propose Herglotz-NET (HNET), a novel INR architecture that "
+        ]
+      },
+      {
+        "title": "Shape My Moves: Text-Driven Shape-Aware Synthesis of Human Motions",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-04-04T17:59:10Z",
+        "url": "http://arxiv.org/abs/2504.03639v1",
+        "doi": "",
+        "authors": [
+          "Ting-Hsuan Liao",
+          "Yi Zhou",
+          "Yu Shen",
+          "Chun-Hao Paul Huang",
+          "Saayan Mitra",
+          "Jia-Bin Huang",
+          "Uttaran Bhattacharya"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "related",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper generates human motions conditioned on body shape and text, using a VAE-based architecture. While it involves 'shape-aware' synthesis and a modern neural method (FSQ-VAE), the 'shape' refers to human body parameters (likely a skeleton or mesh), not a CAD B-Rep data structure of faces, edges, and vertices. It is related to neural generation of 3D-adjacent data but is not directly about B-Rep reconstruction/generation for CAD models.",
+        "evidence_snippets": [
+          "We explore how body shapes influence human motion synthesis, an aspect often overlooked in existing text-to-motion generation methods due to the ease of learning a homogenized, canonical body shape. However, this homogenization can distort the natural correlations between different body shapes and their motion dynamics. Our method addresses this gap by generating body-shape-aware human motions from natural language prompts. We utilize a finite scalar quantization-based variational autoencoder (FSQ-VAE) to quantize motion into discrete tokens and then leverage continuous body shape information to de-quantize these tokens back into continuous, detailed motion. Additionally, we harness the capabilities of a pretrained language model to predict both continuous shape parameters and motion tokens, facilitating the synthesis of text-aligned motions and decoding them into shape-aware motions. We evaluate our method quantitatively and qualitatively, and also conduct a comprehensive perceptual study to demonstrate its efficacy in generating shape-aware motions."
+        ]
+      },
+      {
+        "title": "A Self-Supervised CAD Sequence Generation Framework for Modeling Process Discovery",
+        "source": "Semantic Scholar / IEEE Transactions on Industrial Informatics",
+        "year": 2026,
+        "date": "2026-03-01",
+        "url": "https://www.semanticscholar.org/paper/618ac91275b432dfc3031515a5b1dd80af6616e3",
+        "doi": "10.1109/TII.2025.3640846",
+        "authors": [
+          "Yuqing Wang",
+          "Lei Ren",
+          "Haiteng Wang"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper uses neural networks to infer modeling sequences (CAD operation histories) from boundary representation models. The core task is history reconstruction, not direct B-Rep generation. The output is a sequence of modeling operations, which is explicitly excluded by the user's 'must_exclude' criteria (CAD operation sequences).",
+        "evidence_snippets": [
+          "3-D modeling technologies play a crucial role in modern manufacturing. 3-D models are often exported as boundary representations for compatibility and data protection, which remove the modeling history and limit editability. To restore modeling sequences from such models, researchers employ neural networks to infer the possible modeling steps. This approach needs a large amount of labeled sequence data, and annotating such data is time-consuming. To address this issue, we propose a self-supervised pretraining method that generates modeling sequences directly from boundary representation models. Training data are first generated using a heuristic modeling sequences generation algorithm. Before training, each B-rep model is preprocessed into a zone graph representation. We then introduce the modeling operation evaluation network, which extracts features and scores each candidate operation to sequentially reconstruct the model. By selecting the most suitable operation at each step, the network progressively reconstructs the modeling sequence. This approach effectively reconstructs modeling sequences, restores the editability of B-rep models, and significantly reduces the reliance on labeled data."
+        ]
+      },
+      {
+        "title": "Vectorial boundary representation of 3D layout in human visual cortex",
+        "source": "Crossref / Crossref",
+        "year": 2025,
+        "date": "2025-11-17",
+        "url": "https://doi.org/10.1101/2025.11.17.688791",
+        "doi": "10.1101/2025.11.17.688791",
+        "authors": [
+          "Yichen Wu",
+          "Sheng Li"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "medium",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper studies neural representation of 3D environmental layout in the human visual cortex, using the term 'boundary representation'. However, this is a cognitive neuroscience study about biological vision and spatial navigation, not about computer-aided design (CAD) or neural network methods for generating/reconstructing B-Rep data structures for solid models.",
+        "evidence_snippets": [
+          "<jats:title>Abstract</jats:title> <jats:p>Human spatial navigation relies on the brain’s ability to visually represent the 3D layout of the environment. To understand how the brain encodes the layout information, it is crucial to identify the key features of environmental layout and how they are processed in the human brain. The vector coding principle, which highlight the role of boundary distance and orientation, provides a theoretical framework supported by physiological evidence from rodents. In this study, we developed a reconstruction approach to quantitatively estimate 3D layout information from natural indoor scene images. This approach enabled analyses of fMRI data from the large-scale Natural Scenes Dataset (NSD) using vector-based models of 3D layout. To validate the NSD-based results and examine task-related dynamics, we further conducted fMRI and MEG experiments with navigation-related and non-navigational tasks. Controlling for low-, mid-, and high-level visual and semantic features of natural indoor scenes, we found a spatiotemporal dissociation between boundary distance and orientation representations in the human brain. Relative distance was encoded in the early visual cortex during early processing in a task-invariant manner, whereas orientation was represented in scene-selective higher visual areas during later processing and was modulated by navigation-related tasks. Importantly, task modulation manifested as feedback-induced enhancement of orientation coding in the early visual cortex. Together, these findings provide a novel perspective on how the human brain represents navigation-relevant information about the immediate surrounding environment, advancing our understanding of the neural mechanisms that link perception to action in spatial navigation.</jats:p>"
+        ]
+      },
+      {
+        "title": "A Continuous Implicit Neural Representation Framework with Gradient Regularization for Sea Surface Height Reconstruction From Satellite Altimetry",
+        "source": "Crossref / Crossref",
+        "year": 2026,
+        "date": "2026-2-24",
+        "url": "https://doi.org/10.5194/egusphere-2025-6389",
+        "doi": "10.5194/egusphere-2025-6389",
+        "authors": [
+          "Dongshuang Li",
+          "Liming Pan",
+          "Zhaoyuan Yu",
+          "Linwang Yuan"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper is about reconstructing sea surface height fields using implicit neural representations for oceanographic data. It does not address B-Rep data structures, CAD models, or solid geometry. The matched query is misleading; the work is unrelated to boundary representation reconstruction or generation for CAD.",
+        "evidence_snippets": [
+          "<jats:p>Abstract. Satellite altimetry provides valuable measurements of sea surface height (SSH) but is characterized by irregular spatiotemporal sampling and substantial data gaps arising from orbital configurations, sensor limitations, and environmental conditions. These sampling properties pose challenges for constructing continuous and dynamically consistent SSH fields. In this study, we develop an interpolation framework based on implicit neural representations (INRs), in which SSH is represented as a continuous function of space and time. The framework employs sinusoidal representation networks (SIREN) to enable smooth gradients and efficient spectral representation. To improve reconstruction in regions with sharp spatial transitions, such as fronts and eddy boundaries, we incorporate a total variation (TV) regularization term, allowing the model to preserve abrupt features while maintaining global smoothness. The combination of a continuous, differentiable INR formulation with gradient-based regularization provides a compact and flexible approach for SSH reconstruction. We evaluate the proposed framework using both multi-mission satellite altimetry observations and high-resolution numerical simulations. Experiments conducted indicate that the proposed SIREN–TV framework can recover fine-scale and locally sharp structures while preserving the large-scale variability of the SSH field. The method maintains a level of global accuracy comparable to existing interpolation and data-assimilation approaches, but provides enhanced spatial detail in regions affected by strong gradients, fronts, or mesoscale activity. In addition, the continuous and fully differentiable representation enables direct computation of spatial derivatives, facilitating higher-order oceanographic diagnostics. These results suggest that INR-based formulations offer a promising complementary avenue for SSH interpolation under sparse and irregular sampling configurations.</jats:p>"
+        ]
+      },
+      {
+        "title": "Multi-Joint Topology Optimization Method with Interface Geometry Control",
+        "source": "Crossref / SAE Technical Paper Series",
+        "year": 2026,
+        "date": "2026-4-7",
+        "url": "https://doi.org/10.4271/2026-01-0503",
+        "doi": "10.4271/2026-01-0503",
+        "authors": [
+          "Yifan Shi",
+          "Yuhao Huang",
+          "Il Yong Kim"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper is about multi-joint topology optimization for material design, focusing on controlling interface geometry between materials. It does not involve neural networks, B-Rep reconstruction, generation, or learning of CAD data structures. The matched query is unrelated to the core task.",
+        "evidence_snippets": [
+          "<jats:p>&lt;div class=\"section abstract\"&gt;&lt;div class=\"htmlview paragraph\"&gt;Topology optimization (TO) has become a reliable and lightweight design approach which was widely adopted in multiple industrial applications. Over the past decades, TO has advanced through three major development stages to increase its practicality and application scope: single-material topology optimization (SMTO), multi-material topology optimization (MMTO), and multi-joint topology optimization (MJTO). SMTO involves only one candidate material, whereas MMTO takes multiple candidate materials into consideration, which widen the application scope of TO. In terms of MJTO, it not only considers multiple candidate materials but also considers the bonding material between dissimilar candidate materials, improving practicality over MMTO. However, prior MJTO methods overlook the geometry of dissimilar material interfaces, a factor that may impact material bonding effect. In this paper, a novel MJTO algorithm is introduced to enable explicit control over interface geometry in MJTO. Central to the method is a Newton’s law of gravitation-inspired dissimilar material interface orientation detection approach, which accurately calculates the bonding material’s orientation. Using the orientation detection approach, the bonding material’s Young’s modulus can be penalized when undesired orientations occur, thus enforcing geometric control of the interface. In this paper, the proposed algorithm is evaluated through multiple academic models to demonstrate its effectiveness. Numerical study results demonstrate that the horizontal dissimilar material interface can be effectively controlled using the proposed method, leading to improved producibility of TO-derived designs.&lt;/div&gt;&lt;/div&gt;</jats:p>"
+        ]
+      },
+      {
+        "title": "VAE-MS: An Asymmetric Variational Autoencoder for Mutational Signature Extraction",
+        "source": "arXiv",
+        "year": 2026,
+        "date": "2026-02-24T08:08:38Z",
+        "url": "http://arxiv.org/abs/2602.22239v1",
+        "doi": "",
+        "authors": [
+          "Ida Egendal",
+          "Rasmus Froberg Brøndum",
+          "Dan J Woodcock",
+          "Christopher Yau",
+          "Martin Bøgsted"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper is about a variational autoencoder for extracting mutational signatures in cancer genomics. It has no relation to B-Rep, CAD, geometry, or 3D shape generation. The matched query appears to be a mismatch.",
+        "evidence_snippets": [
+          "Mutational signature analysis has emerged as a powerful method for uncovering the underlying biological processes driving cancer development. However, the signature extraction process, typically performed using non-negative matrix factorization (NMF), often lacks reliability and clinical applicability. To address these limitations, several solutions have been introduced, including the use of neural networks to achieve more accurate estimates and probabilistic methods to better capture natural variation in the data. In this work, we introduce a Variational Autoencoder for Mutational Signatures (VAE-MS), a novel model that leverages both an asymmetric architecture and probabilistic methods for the extraction of mutational signatures. VAE-MS is compared to with three state-of-the-art models for mutational signature extraction: SigProfilerExtractor, the NMF-based gold standard; MUSE-XAE, an autoencoder that employs an asymmetric design without probabilistic components; and SigneR, a Bayesian NMF model, to illustrate the strength in combining a nonlinear extraction with a probabilistic model. In the ability to reconstruct input data and generalize to unseen data, models with probabilistic components (VAE-MS, SigneR) dramatically outperformed models without (SigProfilerExtractor, MUSE-XAE). The NMF-baed models (SigneR, SigProfilerExtractor) had the most accurate reconstructions in simulated data, while VAE-MS reconstructed more accurately on real cancer data. Upon evaluating the ability to extract signatures consistently, no model exhibited a clear advantage over the others. Software for VAE-MS is available at https://github.com/CLINDA-AAU/VAE-MS."
+        ]
+      },
+      {
+        "title": "Deep knowledge tracing and cognitive load estimation for personalized learning path generation using neural network architecture",
+        "source": "Crossref / Scientific Reports",
+        "year": 2025,
+        "date": "2025-7-10",
+        "url": "https://doi.org/10.1038/s41598-025-10497-x",
+        "doi": "10.1038/s41598-025-10497-x",
+        "authors": [
+          "Chunyan Tong",
+          "Changhong Ren"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper is about 'personalized learning path generation' using deep knowledge tracing and cognitive load estimation in an educational context. The abstract discusses student modeling, knowledge components, and learning trajectories. There is no mention of 3D shapes, Boundary Representations, CAD, geometry, or topology. It is completely off-topic for neural B-Rep reconstruction/generation.",
+        "evidence_snippets": [
+          "<jats:title>Abstract</jats:title> <jats:p>This paper presents a novel approach for personalized learning path generation by integrating deep knowledge tracing and cognitive load estimation within a unified framework. We propose a dual-stream neural network architecture that simultaneously models students’ knowledge states and cognitive load levels to optimize learning trajectories. The knowledge state tracking module employs a bidirectional Transformer with graph attention mechanisms to capture complex relationships between knowledge components, while the cognitive load estimation module utilizes multimodal data analysis to dynamically assess mental effort during learning activities. A dual-objective optimization algorithm balances knowledge acquisition with cognitive load management to generate paths that maintain optimal challenge levels. Experimental evaluations across multiple educational domains demonstrate that our approach outperforms existing methods in prediction accuracy (87.5%), path quality (4.4/5), and learning efficiency (24.6% improvement). The implemented system supports real-time adaptation based on performance and cognitive state, resulting in reduced frustration, higher engagement, and improved knowledge retention. This research contributes to both theoretical understanding of learning processes and practical implementation of next-generation adaptive educational technologies.</jats:p>"
+        ]
+      },
+      {
+        "title": "Electro-Diffusion Physics-Informed Neural Network (ED-PINN) for 3D Brain Electric Field Reconstruction from EEG Signals",
+        "source": "Crossref / Crossref",
+        "year": 2025,
+        "date": "2025-10-30",
+        "url": "https://doi.org/10.20944/preprints202510.2322.v1",
+        "doi": "10.20944/preprints202510.2322.v1",
+        "authors": [
+          "Anshuman Sahoo",
+          "Raghunath Rout"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper introduces 'ED-PINN' for reconstructing 3D intracranial electric potential fields from EEG signals. It uses a physics-informed neural network for a volumetric field reconstruction problem in computational neuroimaging. While it involves '3D reconstruction' and 'neural representation', the domain is electromagnetic potential distribution in the brain, not geometric/topological B-Rep structures for CAD/solid models. It does not address faces, edges, vertices, or topology of boundary representations.",
+        "evidence_snippets": [
+          "<jats:p>Reconstructing the continuous, three-dimensional (3D) distribution of intracranial electric potential from sparse, non-invasive scalp electroencephalography (EEG) is a central inverse problem in computational neuroimaging. This work introduces the Electro- Diffusion Physics-Informed Neural Network (ED-PINN), a coordinate-based neural representation that enforces the governing quasi-static Maxwellian electro-diffusion equation, ∇ · (σ(x)∇ϕ(x)) = −I(x), as a soft constraint during training. By parameterizing the potential field ϕ(x) as a continuous function, ED-PINN integrates sparse electrode measurements, Dirichlet/Neumann boundary conditions, and collocation-based PDE residuals into a single, unified objective function. This mesh-free approach enables the reconstruction of physically consistent, differentiable volumetric fields without the need for explicit domain meshing required by traditional methods like FEM or BEM. We demonstrate the efficacy of this approach on a canonical three-layer spherical head model with realistic tissue conductivities and synthetic Gaussian sources. We present a quantitative and qualitative evaluation, analyze primary error sources, and outline a clear roadmap for extensions to anatomically realistic geometries and anisotropic conductivity tensors derived from diffusion MRI. The experiments show that ED-PINN produces smooth, differentiable potential fields and localizes sources to sub-centimeter accuracy under the studied conditions. The paper includes detailed implementation notes, training recipes suitable for Colab/CPU environments, and a curated bibliography to ensure reproducibility.</jats:p>"
+        ]
+      },
+      {
+        "title": "Electromagnetic energy calibration of the SoLid detector with horizontal muons",
+        "source": "arXiv",
+        "year": 2025,
+        "date": "2025-07-07T16:35:32Z",
+        "url": "http://arxiv.org/abs/2507.05180v4",
+        "doi": "",
+        "authors": [
+          "SoLid collaboration"
+        ],
+        "eligibility_score": 10,
+        "eligible": true,
+        "topical_relevance": "low",
+        "task_fit": "weak",
+        "evidence_sufficiency": "strong",
+        "verification_status": "partial",
+        "evidence_level": "abstract",
+        "time_range_status": "in_range",
+        "rank_reason": "The paper describes electromagnetic energy calibration for the 'SoLid' neutrino detector using cosmic muons. It is an experimental physics paper focusing on detector calibration, energy estimation, and background reduction. The term 'solid' refers to solid scintillators, not solid models or B-Reps. There is no connection to 3D shape reconstruction, neural networks, or CAD data structures.",
+        "evidence_snippets": [
+          "SoLid is a neutrino experiment at very-short baseline searching for active-to-sterile oscillations of reactor antineutrinos. The detection principle is based on the pairing of two types of solid scintillators: polyvinyl toluene and $^6$Li:ZnS(Ag), which is a new technology used in this field of Physics. In addition to good neutron-gamma discrimination, this setup allows the detector to be highly segmented; the basic detection unit is a 5 cm cube. High segmentation provides numerous advantages including precise localisation of the Inverse Beta Decay (IBD) products, the derivation of an antineutrino energy estimator based on the isolated positron energy, and a powerful background reduction tool that relies on the topological signature of the signal. Finally, the system is read out by a network of WLS fibres coupled to photosensors. A relative electromagnetic calibration is performed with horizontal cosmic muons. This source poses the simplest calibration problem in which a single detection unit is involved. In addition, large muon energy deposits allow us to perform a calibration at the most detailed level (i.e. per fibre) and to accurately define the fraction of energy escaping to neighbouring detection cells. A statistical precision at the sub-percent level is reached. The paper also discusses two methods to calibrate the absolute energy scale. The first method relies on horizontal muons, though the precision is limited to around 10\\% because of the uncertainty in the energy distribution of such muons. A novel, alternative method based on the radioactive AmBe source is proposed. It takes advantage of the electron-positron pair-production process and provides a calibration point at 3.4 MeV (i.e. in the core of the IBD positron spectrum). The paper is concluded with various cross-check including a determination of the energy spectrum of the standard cosmogenic background candle: $^{12}$B."
+        ]
+      }
+    ],
+    "dedup_notes": [
+      "Retrieved papers were deduplicated by DOI, URL, or normalized title; 30 duplicate entries were merged."
+    ],
+    "missing_metadata": [
+      "Title-only candidates remain weak until abstract or excerpt evidence is available."
+    ],
+    "coverage_gaps": [
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=BRepNet+topological+message+passing+boundary+representation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation+generation+neural+network&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=CAD+B-Rep+learning+transformer+architecture&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+graph+neural+network+generation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+boundary+representation+reconstruction+point+cloud&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+B-Rep+prediction+variational+autoencoder&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation+reconstruction&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=topology-geometry+joint+modeling&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+      "Semantic Scholar retrieval failed: Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+shape+output&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+    ],
+    "source_errors": [
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=BRepNet+topological+message+passing+boundary+representation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "BRepNet topological message passing boundary representation"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation+generation+neural+network&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "boundary representation generation neural network"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=CAD+B-Rep+learning+transformer+architecture&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "CAD B-Rep learning transformer architecture"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=B-Rep+graph+neural+network+generation&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "B-Rep graph neural network generation"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=neural+boundary+representation+reconstruction+point+cloud&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "neural boundary representation reconstruction point cloud"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+B-Rep+prediction+variational+autoencoder&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "direct B-Rep prediction variational autoencoder"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=boundary+representation+reconstruction&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "boundary representation reconstruction"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=topology-geometry+joint+modeling&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "topology-geometry joint modeling"
+      },
+      {
+        "source": "Semantic Scholar",
+        "error": "Client error '429 ' for url 'https://api.semanticscholar.org/graph/v1/paper/search?query=direct+shape+output&limit=5&fields=title%2Cabstract%2Cauthors%2Cyear%2CpublicationDate%2Curl%2Cvenue%2CexternalIds%2CopenAccessPdf&year=2021-'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "query": "direct shape output"
+      }
+    ],
+    "rerank_trace": {
+      "attempted": true,
+      "skipped_reason": "",
+      "candidate_count": 24,
+      "batch_size": 6,
+      "batch_count": 4,
+      "successful_batches": 4,
+      "empty_batches": 0,
+      "failed_batches": 0,
+      "judgment_count": 24,
+      "judged_paper_ids": [
+        "p0",
+        "p1",
+        "p10",
+        "p11",
+        "p12",
+        "p13",
+        "p14",
+        "p15",
+        "p16",
+        "p17",
+        "p18",
+        "p19",
+        "p2",
+        "p20",
+        "p21",
+        "p22",
+        "p23",
+        "p3",
+        "p4",
+        "p5",
+        "p6",
+        "p7",
+        "p8",
+        "p9"
+      ],
+      "batches": [
+        {
+          "batch_index": 0,
+          "paper_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p0\",\n      \"topical_relevance\": \"low\",\n      \"task_fit\": \"weak\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper is about reconstructing sea surface height fields using implicit neural representations for oceanographic data. It does not address B-Rep data structures, CAD models, or solid geometry. The matched query is misleading; the work is unrelated to boundary representation reconstruction or generation for CAD.\"\n    },\n    {\n      \"",
+          "error": ""
+        },
+        {
+          "batch_index": 1,
+          "paper_ids": [
+            "p6",
+            "p7",
+            "p8",
+            "p9",
+            "p10",
+            "p11"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p6\",\n      \"topical_relevance\": \"high\",\n      \"task_fit\": \"direct\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper presents 'BrepGPT', an autoregressive framework for direct B-rep generation using a Voronoi Half-Patch representation and a decoder-only Transformer. The abstract explicitly states it is for 'B-rep generation', addresses the 'intricate coupling between geometric and topological elements', and outputs 'complete B-rep models",
+          "error": ""
+        },
+        {
+          "batch_index": 2,
+          "paper_ids": [
+            "p12",
+            "p13",
+            "p14",
+            "p15",
+            "p16",
+            "p17"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p12\",\n      \"topical_relevance\": \"high\",\n      \"task_fit\": \"direct\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper explicitly introduces a method for learning and generating CAD models as B-Reps, unifying geometry and topology in a holistic latent space. It describes a diffusion-based generator for B-Reps from various inputs, directly addressing neural B-Rep generation and reconstruction. The evidence clearly matches the required crit",
+          "error": ""
+        },
+        {
+          "batch_index": 3,
+          "paper_ids": [
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p22",
+            "p23"
+          ],
+          "status": "success",
+          "parsed_judgment_count": 6,
+          "raw_response_preview": "{\n  \"papers\": [\n    {\n      \"paper_id\": \"p18\",\n      \"topical_relevance\": \"low\",\n      \"task_fit\": \"weak\",\n      \"evidence_sufficiency\": \"strong\",\n      \"reason\": \"The paper is about testing message-passing concurrency in programming languages, not about 3D shape representation or B-Rep reconstruction/generation. The matched query 'BRepNet topological message passing boundary representation' suggests a keyword overlap, but the evidence text discusses concurrent program verification, not CAD or n",
+          "error": ""
+        }
+      ]
+    },
+    "local_library_debug": {
+      "scanned_count": 0,
+      "missing_count": 0,
+      "read_error_count": 0,
+      "empty_text_count": 0,
+      "token_miss_count": 0,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "entries": []
+    }
+  },
+  "review_output": {
+    "decision": "REVISE",
+    "review_summary": "Retrieval returned 24 papers, but only 4 are strong, direct matches for neural B-Rep reconstruction/generation. The remaining 20 are either weakly related, off-topic, or explicitly excluded. The hard requirement for at least 10 core papers is not met. Semantic Scholar rate limits severely impacted coverage, and many retrieved papers are irrelevant due to ambiguous query terms.",
+    "scores": {
+      "coverage_score": 0,
+      "relevance_score": 1,
+      "metadata_score": 2,
+      "diversity_score": 1,
+      "evidence_score": 2
+    },
+    "hard_requirements": {
+      "source_coverage": {
+        "passed": false,
+        "reason": "Semantic Scholar returned 429 errors for 9 out of 12 queries, severely limiting coverage from a key source. This prevented retrieval of many relevant papers from that venue."
+      },
+      "candidate_depth": {
+        "passed": false,
+        "reason": "Only 4 papers (AutoRegressive Generation with B-rep Holistic Token Sequence Representation, BrepGPT, GraphBrep, HoLa) are strong, direct matches. The user required at least 10 core papers. The retrieval does not credibly support that minimum."
+      },
+      "relevance": {
+        "passed": false,
+        "reason": "Majority of retrieved papers are irrelevant (e.g., neuroscience, oceanography, topology optimization, mutational signatures). This indicates poor query specificity and filtering."
+      },
+      "metadata": {
+        "passed": true,
+        "reason": "Metadata for retrieved papers (title, year, authors, source, URL) is generally complete and verifiable."
+      },
+      "query_fit": {
+        "passed": false,
+        "reason": "Queries like 'BRepNet topological message passing boundary representation' retrieved off-topic papers (e.g., concurrency testing). Terms like 'boundary representation' matched papers in neuroscience and oceanography, showing insufficient domain restriction."
+      },
+      "core_method_fit": {
+        "passed": true,
+        "reason": "The 4 strong matches perfectly fit the core method requirements: they output B-Rep data structures directly using modern neural architectures (autoregressive transformers, diffusion, graph diffusion)."
+      },
+      "time_consistency": {
+        "passed": true,
+        "reason": "All papers are within the 2021-2026 time range."
+      },
+      "gaps": {
+        "passed": false,
+        "reason": "Critical gap: Missing foundational papers from 2021-2024 (e.g., BRepNet, early diffusion models for B-Rep). The retrieval is skewed towards 2025-2026, suggesting incomplete historical coverage."
+      }
+    },
+    "key_risks": [
+      "The 4 strong papers are all from 2025-2026, missing earlier foundational work.",
+      "Semantic Scholar rate limiting blocked access to a major academic source.",
+      "Many irrelevant papers were retrieved due to ambiguous terms like 'boundary representation' and 'solid'.",
+      "The query 'BRepNet' retrieved a concurrency paper, indicating a namespace collision."
+    ],
+    "next_actions": [
+      "Revise queries to be more specific to CAD/3D vision and exclude ambiguous terms.",
+      "Prioritize sources other than Semantic Scholar (e.g., Crossref, OpenAlex) to circumvent rate limits.",
+      "Explicitly filter out neuroscience, oceanography, and other off-topic domains.",
+      "Include known foundational paper titles (e.g., 'BRepNet') as exact queries."
+    ],
+    "failure_reasons": [
+      "Insufficient number of core papers: only 4 strong matches against a required minimum of 10.",
+      "Poor relevance filtering: majority of retrieved papers are off-topic.",
+      "Source coverage gap: Semantic Scholar rate limits prevented retrieval of key papers."
+    ],
+    "reformulation_advice": [
+      "**Query Improvements:** Use more specific, domain-restricted queries: 'neural B-Rep generation CAD', 'B-Rep reconstruction from point cloud neural network', 'direct B-Rep synthesis diffusion', 'B-Rep graph neural network CAD', 'boundary representation learning for solid models'. Avoid ambiguous terms like 'boundary representation' alone; pair with 'CAD', 'solid model', '3D shape'.",
+      "**Semantic Term Expansion:** Add terms: 'BRepNet', 'CAD model generation', 'solid geometry learning', 'topological graph generation', 'face-edge-vertex prediction'. Exclude terms: 'neuroscience', 'ocean', 'topology optimization', 'educational'.",
+      "**Source Strategy:** Rely more heavily on Crossref and OpenAlex for this revision. Use arXiv's cs.CV and cs.GR categories. If possible, implement a post-retrieval filter to discard papers from clearly unrelated domains (e.g., bioRxiv, EGUsphere).",
+      "**Known Paper Seed:** Start with the 4 strong papers found. Use their references and citations (via Crossref/OpenAlex) to find related work within the time window. This can help bridge the gap to earlier years (2021-2024)."
+    ]
+  }
+}
