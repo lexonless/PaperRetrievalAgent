@@ -156,6 +156,8 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             rerank_default_headers=None,
             request_timeout=30.0,
             max_results_per_source=10,
+            docling_accelerator="AUTO",
+            docling_ocr_backend="torch",
         )
 
 

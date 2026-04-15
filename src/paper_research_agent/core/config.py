@@ -19,6 +19,8 @@ class Settings:
     rerank_default_headers: dict[str, str] | None
     request_timeout: float
     max_results_per_source: int
+    docling_accelerator: str
+    docling_ocr_backend: str
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -97,4 +99,6 @@ class Settings:
             rerank_default_headers=rerank_default_headers,
             request_timeout=float(os.getenv("REQUEST_TIMEOUT", "30")),
             max_results_per_source=int(os.getenv("MAX_RESULTS_PER_SOURCE", "10")),
+            docling_accelerator=os.getenv("DOCLING_ACCELERATOR", "AUTO").strip().upper() or "AUTO",
+            docling_ocr_backend=os.getenv("DOCLING_OCR_BACKEND", "torch").strip().lower() or "torch",
         )

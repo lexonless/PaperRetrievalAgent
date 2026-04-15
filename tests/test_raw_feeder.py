@@ -229,6 +229,8 @@ def _build_settings() -> Settings:
         rerank_default_headers=None,
         request_timeout=30.0,
         max_results_per_source=5,
+        docling_accelerator="AUTO",
+        docling_ocr_backend="torch",
     )
 
 

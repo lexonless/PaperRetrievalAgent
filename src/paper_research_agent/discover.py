@@ -410,8 +410,9 @@ class RawFeederService:
         page_image_dir: Path,
     ) -> dict[str, Any]:
         try:
+            from docling.datamodel.accelerator_options import AcceleratorDevice, AcceleratorOptions
             from docling.datamodel.base_models import InputFormat
-            from docling.datamodel.pipeline_options import PdfPipelineOptions
+            from docling.datamodel.pipeline_options import PdfPipelineOptions, RapidOcrOptions
             from docling.document_converter import DocumentConverter, PdfFormatOption
         except ImportError:
             return {
@@ -423,8 +424,11 @@ class RawFeederService:
             }
 
         try:
+            accelerator_device = self._resolve_docling_accelerator_device()
             pipeline_options = PdfPipelineOptions()
+            pipeline_options.accelerator_options = AcceleratorOptions(device=accelerator_device)
             pipeline_options.generate_page_images = True
+            pipeline_options.ocr_options = RapidOcrOptions(backend=self._settings.docling_ocr_backend)
             converter = DocumentConverter(
                 format_options={
                     InputFormat.PDF: PdfFormatOption(
@@ -487,6 +491,18 @@ class RawFeederService:
             "local_page_image_dir": str(page_image_dir) if page_image_paths else "",
             "pdf_error": error_message,
         }
+
+    def _resolve_docling_accelerator_device(self):
+        from docling.datamodel.accelerator_options import AcceleratorDevice
+
+        configured = normalize_text(self._settings.docling_accelerator, for_matching=True)
+        mapping = {
+            "auto": AcceleratorDevice.AUTO,
+            "cpu": AcceleratorDevice.CPU,
+            "cuda": AcceleratorDevice.CUDA,
+            "mps": AcceleratorDevice.MPS,
+        }
+        return mapping.get(configured, AcceleratorDevice.AUTO)
 
 
 def build_discover_query_plan(intent: DiscoverIntent) -> Any:
