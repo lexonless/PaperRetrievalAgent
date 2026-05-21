@@ -25,6 +25,8 @@ class Settings:
     request_timeout: float
     max_output_tokens: int
     max_results_per_source: int
+    http_proxy: str
+    openalex_api_key: str
     docling_accelerator: str
     docling_ocr_backend: str
     unpaywall_email: str
@@ -118,6 +120,8 @@ class Settings:
             request_timeout=float(os.getenv("REQUEST_TIMEOUT", "30")),
             max_results_per_source=int(os.getenv("MAX_RESULTS_PER_SOURCE", "10")),
             max_output_tokens=int(os.getenv("MAX_OUTPUT_TOKENS", "4096")),
+            http_proxy=os.getenv("HTTP_PROXY", "").strip(),
+            openalex_api_key=os.getenv("OPENALEX_API_KEY", "").strip(),
             docling_accelerator=os.getenv("DOCLING_ACCELERATOR", "AUTO").strip().upper() or "AUTO",
             docling_ocr_backend=os.getenv("DOCLING_OCR_BACKEND", "torch").strip().lower() or "torch",
             unpaywall_email=os.getenv("UNPAYWALL_EMAIL", "").strip(),

@@ -79,6 +79,7 @@ class PaperDiscoveryAgent:
         if source_collector is None:
             self._client = httpx.AsyncClient(
                 timeout=settings.request_timeout,
+                proxy=settings.http_proxy or None,
                 headers={
                     "User-Agent": "paper-discovery-agent/0.1 (academic paper discovery)",
                     "Accept": "*/*",
@@ -353,8 +354,16 @@ class PaperDiscoveryAgent:
         graph_papers: list[dict[str, Any]] = []
         for seed in seeds:
             oa_id = seed.get("_openalex_id", "")
-            refs = await self._source_collector.fetch_references(oa_id, top_k=20)
-            cites = await self._source_collector.fetch_citations(oa_id, top_k=20)
+            try:
+                refs = await self._source_collector.fetch_references(oa_id, top_k=20)
+                cites = await self._source_collector.fetch_citations(oa_id, top_k=20)
+            except Exception as exc:
+                state["all_errors"].append({
+                    "source": "openalex_graph",
+                    "openalex_id": oa_id,
+                    "error": str(exc),
+                })
+                continue
 
             for raw in [*refs, *cites]:
                 candidates = self._ranking_engine.prepare_agent_candidates(
@@ -508,6 +517,9 @@ class PaperDiscoveryAgent:
     async def _download_pdf(self, pdf_url: str) -> bytes:
         if self._client is None:
             raise RuntimeError("HTTP client not initialized.")
+        if "content.openalex.org" in pdf_url and self._settings.openalex_api_key:
+            sep = "&" if "?" in pdf_url else "?"
+            pdf_url = f"{pdf_url}{sep}api_key={self._settings.openalex_api_key}"
         response = await self._client.get(pdf_url)
         response.raise_for_status()
         return response.content

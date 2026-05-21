@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
+import sys
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -84,6 +86,10 @@ class CrossEncoderReranker(BaseReranker):
     def _ensure_model(self) -> None:
         if self._model is not None:
             return
+        os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+        os.environ.setdefault("TOKENIZERS_USE_FAST", "True")
+        if self._device == "cpu":
+            os.environ["CUDA_VISIBLE_DEVICES"] = ""
         try:
             from FlagEmbedding import FlagReranker
         except ImportError:
@@ -93,8 +99,8 @@ class CrossEncoderReranker(BaseReranker):
             )
         logging.getLogger("transformers").setLevel(logging.WARNING)
         logger.info("Loading cross-encoder model %s on %s ...", self._model_name, self._device)
-        use_fp16 = self._device != "cpu"
-        self._model = FlagReranker(self._model_name, use_fp16=use_fp16)
+        sys.stdout.flush()
+        self._model = FlagReranker(self._model_name, use_fp16=False)
         logger.info("Cross-encoder model loaded.")
 
     async def rerank(self, query: str, papers: list[dict[str, Any]]) -> list[dict[str, Any]]:

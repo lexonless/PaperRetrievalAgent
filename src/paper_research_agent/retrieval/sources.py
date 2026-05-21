@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import re
+import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
@@ -13,6 +14,10 @@ from .utils import DEFAULT_SOURCE_ORDER, extract_year, normalize_pdf_url
 
 
 class PaperSourceCollector:
+    _arxiv_lock = asyncio.Lock()
+    _last_arxiv_call: float = 0
+    _arxiv_min_interval: float = 2.0
+
     def __init__(self, settings: Settings, client: Any) -> None:
         self._settings = settings
         self._client = client
@@ -226,12 +231,17 @@ class PaperSourceCollector:
         return records, source_errors, debug_summary
 
     async def search_arxiv_records(self, query: str, max_results: int | None = None) -> list[PaperRecord]:
-        limit = self._resolve_limit(max_results)
-        search_query = self._format_arxiv_search_query(query)
-        response = await self._client.get(
-            "http://export.arxiv.org/api/query",
-            params={"search_query": search_query, "start": 0, "max_results": limit, "sortBy": "relevance", "sortOrder": "descending"},
-        )
+        async with PaperSourceCollector._arxiv_lock:
+            elapsed = time.monotonic() - PaperSourceCollector._last_arxiv_call
+            if elapsed < PaperSourceCollector._arxiv_min_interval:
+                await asyncio.sleep(PaperSourceCollector._arxiv_min_interval - elapsed)
+            limit = self._resolve_limit(max_results)
+            search_query = self._format_arxiv_search_query(query)
+            response = await self._client.get(
+                "http://export.arxiv.org/api/query",
+                params={"search_query": search_query, "start": 0, "max_results": limit, "sortBy": "relevance", "sortOrder": "descending"},
+            )
+            PaperSourceCollector._last_arxiv_call = time.monotonic()
         response.raise_for_status()
         root = ET.fromstring(response.text)
         namespace = {"atom": "http://www.w3.org/2005/Atom"}
@@ -426,8 +436,8 @@ class PaperSourceCollector:
                     summary=self._reconstruct_openalex_abstract(item.get("abstract_inverted_index")),
                     authors=authors,
                     published=published,
-                    url=landing_page,
-                    pdf_url=pdf_url,
+                    url=landing,
+                    pdf_url=pdf,
                     doi=doi,
                     source_rank=rank,
                     openalex_id=oa_id,
