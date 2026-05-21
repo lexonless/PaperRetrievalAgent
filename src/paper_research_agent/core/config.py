@@ -17,10 +17,17 @@ class Settings:
     rerank_model_base_url: str
     rerank_model_name: str
     rerank_default_headers: dict[str, str] | None
+    rerank_strategy: str
+    cross_encoder_model: str
+    cross_encoder_device: str
+    cross_encoder_batch_size: int
+    cross_encoder_max_length: int
     request_timeout: float
+    max_output_tokens: int
     max_results_per_source: int
     docling_accelerator: str
     docling_ocr_backend: str
+    unpaywall_email: str
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -87,6 +94,12 @@ class Settings:
         if rerank_headers:
             rerank_default_headers = rerank_headers
 
+        rerank_strategy = os.getenv("RERANK_STRATEGY", "cross_encoder").strip().lower()
+        cross_encoder_model = os.getenv("CROSS_ENCODER_MODEL", "BAAI/bge-reranker-base").strip()
+        cross_encoder_device = os.getenv("CROSS_ENCODER_DEVICE", "cpu").strip().lower()
+        cross_encoder_batch_size = int(os.getenv("CROSS_ENCODER_BATCH_SIZE", "32"))
+        cross_encoder_max_length = int(os.getenv("CROSS_ENCODER_MAX_LENGTH", "512"))
+
         return cls(
             model_provider=provider,
             model_api_key=api_key,
@@ -97,8 +110,15 @@ class Settings:
             rerank_model_base_url=rerank_base_url,
             rerank_model_name=rerank_model_name,
             rerank_default_headers=rerank_default_headers,
+            rerank_strategy=rerank_strategy,
+            cross_encoder_model=cross_encoder_model,
+            cross_encoder_device=cross_encoder_device,
+            cross_encoder_batch_size=cross_encoder_batch_size,
+            cross_encoder_max_length=cross_encoder_max_length,
             request_timeout=float(os.getenv("REQUEST_TIMEOUT", "30")),
             max_results_per_source=int(os.getenv("MAX_RESULTS_PER_SOURCE", "10")),
+            max_output_tokens=int(os.getenv("MAX_OUTPUT_TOKENS", "4096")),
             docling_accelerator=os.getenv("DOCLING_ACCELERATOR", "AUTO").strip().upper() or "AUTO",
             docling_ocr_backend=os.getenv("DOCLING_OCR_BACKEND", "torch").strip().lower() or "torch",
+            unpaywall_email=os.getenv("UNPAYWALL_EMAIL", "").strip(),
         )

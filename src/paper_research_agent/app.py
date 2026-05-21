@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from .agent import PaperDiscoveryAgent
 from .core.config import Settings
-from .discover import RawFeederService
 
 
 class RawFeederApplication:
     def __init__(self, settings: Settings, *, output_root: str = "projects") -> None:
-        self._service = RawFeederService(settings, output_root=output_root)
+        self._settings = settings
+        self._output_root = output_root
 
     async def discover(
         self,
@@ -15,7 +16,11 @@ class RawFeederApplication:
         query: str,
         top_k: int = 5,
     ):
-        return await self._service.discover(project_slug=project_slug, query=query, top_k=top_k)
+        agent = PaperDiscoveryAgent(self._settings, output_root=self._output_root)
+        try:
+            return await agent.discover(project_slug=project_slug, query=query, top_k=top_k)
+        finally:
+            await agent.close()
 
     async def close(self) -> None:
-        await self._service.close()
+        pass

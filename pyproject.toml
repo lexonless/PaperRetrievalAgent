@@ -1,7 +1,7 @@
 [project]
-name = "raw-feeder"
+name = "paper-discovery-agent"
 version = "0.1.0"
-description = "A raw feeder for discovering papers and materializing them as source markdown for LLM Wiki."
+description = "A single-agent paper discovery tool that uses LLM tool calling to search and collect academic papers."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -12,10 +12,11 @@ dependencies = [
     "pydantic>=2.8,<3.0",
     "pypdf>=5.0,<6.0",
     "python-dotenv>=1.0,<2.0",
+    "FlagEmbedding",
 ]
 
 [project.scripts]
-raw-feeder = "paper_research_agent.main:main"
+paper-agent = "paper_research_agent.main:main"
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]

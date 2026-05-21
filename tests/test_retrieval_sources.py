@@ -99,24 +99,24 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(raw_source_families, {"OpenAlex"})
         self.assertEqual(len(papers), 1)
 
-    def test_dedup_falls_back_to_identical_title_even_when_keys_differ(self) -> None:
+    def test_dedup_merges_same_doi(self) -> None:
         engine = PaperRankingEngine()
         papers, duplicate_count, _ = engine.prepare_ranked_papers(
             records=[
                 PaperRecord(
-                    title="BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+                    title="BrepGPT",
                     source="arXiv",
                     summary="Abstract from arXiv.",
                     authors=["Author A"],
                     published="2025-11-27",
                     url="http://arxiv.org/abs/2511.22171v1",
-                    doi="",
+                    doi="10.1145/example",
                     source_rank=1,
                     matched_query="b-rep generation",
                     query_stage="primary",
                 ),
                 PaperRecord(
-                    title="BrepGPT: Autoregressive B-rep Generation with Voronoi Half-Patch",
+                    title="BrepGPT",
                     source="OpenAlex",
                     summary="Abstract from OpenAlex.",
                     authors=["Author B"],
@@ -143,6 +143,90 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("arXiv", papers[0]["source"])
         self.assertIn("OpenAlex", papers[0]["source"])
 
+    def test_dedup_merges_by_title_when_one_has_doi_and_other_has_url(self) -> None:
+        engine = PaperRankingEngine()
+        papers, duplicate_count, _ = engine.prepare_ranked_papers(
+            records=[
+                PaperRecord(
+                    title="BrepGPT: Autoregressive B-rep Generation",
+                    source="arXiv",
+                    summary="Abstract from arXiv.",
+                    authors=["Author A"],
+                    published="2025-11-27",
+                    url="http://arxiv.org/abs/2511.22171v1",
+                    doi="",
+                    source_rank=1,
+                    matched_query="brep",
+                    query_stage="primary",
+                ),
+                PaperRecord(
+                    title="BrepGPT: Autoregressive B-rep Generation",
+                    source="OpenAlex",
+                    summary="Abstract from OpenAlex.",
+                    authors=["Author B"],
+                    published="2025-11-27",
+                    url="https://openalex.org/W1234567890",
+                    doi="10.1145/example",
+                    source_rank=2,
+                    matched_query="brep",
+                    query_stage="primary",
+                ),
+            ],
+            from_year=2021,
+            end_year=2026,
+            context={
+                "query_phrases": ["brep"],
+                "query_tokens": ["brep", "generation"],
+                "exclude_phrases": [],
+                "allow_review_articles": False,
+            },
+        )
+
+        self.assertEqual(duplicate_count, 1)
+        self.assertEqual(len(papers), 1)
+
+    def test_dedup_falls_back_to_title_when_no_doi_or_url(self) -> None:
+        engine = PaperRankingEngine()
+        papers, duplicate_count, _ = engine.prepare_ranked_papers(
+            records=[
+                PaperRecord(
+                    title="BrepGPT",
+                    source="arXiv",
+                    summary="Abstract.",
+                    authors=["Author A"],
+                    published="2025-01-01",
+                    url="",
+                    doi="",
+                    source_rank=1,
+                    matched_query="brep",
+                    query_stage="primary",
+                ),
+                PaperRecord(
+                    title="BrepGPT",
+                    source="OpenAlex",
+                    summary="Abstract.",
+                    authors=["Author B"],
+                    published="2025-01-01",
+                    url="",
+                    doi="",
+                    source_rank=2,
+                    matched_query="brep",
+                    query_stage="primary",
+                ),
+            ],
+            from_year=2021,
+            end_year=2026,
+            context={
+                "query_phrases": ["brep"],
+                "query_tokens": ["brep"],
+                "exclude_phrases": [],
+                "allow_review_articles": False,
+            },
+        )
+
+        self.assertEqual(duplicate_count, 1)
+        self.assertEqual(len(papers), 1)
+
     def _build_settings(self) -> Settings:
         return Settings(
             model_provider="glm",
@@ -158,6 +242,7 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             max_results_per_source=10,
             docling_accelerator="AUTO",
             docling_ocr_backend="torch",
+            unpaywall_email="",
         )
 
 

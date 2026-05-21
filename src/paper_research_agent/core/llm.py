@@ -21,6 +21,7 @@ def build_chat_model(settings: Settings, *, temperature: float = 0.1):
         default_headers=settings.default_headers,
         timeout=settings.request_timeout,
         temperature=temperature,
+        max_tokens=settings.max_output_tokens,
     )
 
 
@@ -34,6 +35,7 @@ def build_rerank_chat_model(settings: Settings):
         default_headers=settings.rerank_default_headers,
         timeout=settings.request_timeout,
         temperature=0.0,
+        max_tokens=settings.max_output_tokens,
     )
 
 
@@ -75,8 +77,20 @@ def coerce_model(schema: type[StructuredModelT], value: StructuredModelT | BaseM
     if isinstance(value, dict):
         return schema.model_validate(value)
     if isinstance(value, str):
-        return schema.model_validate_json(_clean_json_text(value))
+        cleaned = _clean_json_text(value)
+        try:
+            return schema.model_validate_json(cleaned)
+        except Exception:
+            repaired = _repair_truncated_json(cleaned)
+            return schema.model_validate_json(repaired)
     raise TypeError(f"Cannot coerce {type(value)!r} into {schema.__name__}")
+
+
+def _repair_truncated_json(text: str) -> str:
+    text = text.rstrip(",\n\r ")
+    open_braces = text.count("{") - text.count("}")
+    open_brackets = text.count("[") - text.count("]")
+    return text + "]" * open_brackets + "}" * open_braces
 
 
 def dump_json(data: BaseModel | dict) -> str:

@@ -38,7 +38,24 @@ Copy `.env.example` to `.env` and set a supported OpenAI-compatible model provid
 ### 3. Run discovery
 
 ```bash
-raw-feeder discover --project brep-discovery --query "recent papers on direct B-Rep generation from natural language descriptions" --top-k 15
+paper-agent discover --project brep-discovery --query "recent papers on direct B-Rep generation from natural language descriptions" --top-k 15
+```
+
+可选参数：
+- `--top-k`: 最终输出论文数量（默认 5）
+- `--output-dir`: 输出根目录（默认 `projects`）
+
+### Rerank 策略配置
+
+默认使用本地 cross-encoder 重排（`BAAI/bge-reranker-base`，首次运行自动下载 ~1.1GB）。可在 `.env` 中覆盖：
+
+```bash
+# 切换到 LLM 重排
+RERANK_STRATEGY=llm
+
+# 自定义 cross-encoder 模型
+CROSS_ENCODER_MODEL=BAAI/bge-reranker-v2-m3
+CROSS_ENCODER_DEVICE=cuda
 ```
 
 ## Output Layout
@@ -77,7 +94,7 @@ The file is explicitly marked as raw source material and not as a wiki page or s
 ## Example Flow
 
 1. Create or edit `projects/<slug>/project.md` with domain context.
-2. Run `raw-feeder discover ...`.
+2. Run `paper-agent discover ...`.
 3. Inspect the generated files in `projects/<slug>/raw/papers/`.
 4. Point your wiki agent at those raw markdown files and ingest them into the wiki layer.
 

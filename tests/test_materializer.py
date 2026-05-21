@@ -26,7 +26,7 @@ class MaterializerTests(unittest.TestCase):
                 "date": "2025-01-01",
                 "url": "https://arxiv.org/abs/2501.12345",
                 "doi": "",
-                "_pdf_url": "https://arxiv.org/pdf/2501.12345.pdf",
+                "pdf_url": "https://arxiv.org/pdf/2501.12345.pdf",
                 "evidence_snippets": [],
                 "_matched_queries": ["brep generation"],
                 "evidence_level": "title_only",

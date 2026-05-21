@@ -1,0 +1,38 @@
+
+你是一名机器人学文献调研 agent。请围绕**接触（contact）**、**柔顺/顺应（compliance）**、**接触约束下的 IK 与 motion generation** 检索论文，重点面向**人形机器人**，同时扩展到机械臂、双臂、灵巧手、whole-body manipulation、contact-rich manipulation 等相关方向。
+
+注意：**不要把单纯抓取作为主线**。请显式提高以下论文的权重：
+
+* contact-aware IK
+* constrained / differential / whole-body IK under contact
+* impedance / admittance / compliant control
+* hybrid force-position control
+* multi-contact whole-body control
+* contact-rich manipulation
+* physically consistent / force-aware motion generation
+* humanoid whole-body manipulation
+* environment-assisted manipulation
+* hand-arm-body coordinated contact manipulation
+
+请先构建**细分子领域树**，再为每个子领域筛选 5–10 篇代表论文。每篇论文都要给出：
+
+* 标题、作者、年份、venue
+* 标签
+* 一句话贡献总结
+* 为什么重要
+* 影响力证据（引用 / GitHub / 项目页 / benchmark / 数据集）
+* 与“接触/柔顺”主线的相关性
+* 局限性
+
+最后分成以下几类输出：
+
+* 接触与柔顺基础经典
+* 近两三年最值得跟进
+* humanoid + whole-body + contact 最相关
+* contact-constrained IK 最相关
+* contact-rich motion generation 最相关
+* 工程落地与真实实验最强
+
+并给出总表：
+| 论文 | 子领域 | 接触/柔顺强度 | 人形相关性 | 标签 | 年份 | 影响力/开源信号 | 推荐等级 |
+

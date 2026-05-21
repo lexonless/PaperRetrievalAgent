@@ -8,9 +8,8 @@ from typing import Any
 
 from ..core.config import Settings
 from ..core.models import PaperRecord
-from ..core.models import SourceQuerySpec
 from ..core.normalization import normalize_string_list, normalize_text
-from .utils import DEFAULT_SOURCE_ORDER, TOPIC_FALLBACK_STAGE, extract_year, normalize_pdf_url
+from .utils import DEFAULT_SOURCE_ORDER, extract_year, normalize_pdf_url
 
 
 class PaperSourceCollector:
@@ -24,43 +23,6 @@ class PaperSourceCollector:
 
     def clear_local_pdf_paths(self) -> None:
         self._local_pdf_paths = []
-
-    def build_retrieval_plan(self, task_interpretation: dict[str, Any]) -> list[tuple[str, list[dict[str, Any]]]]:
-        query_plan = task_interpretation.get("query_plan", {}) if isinstance(task_interpretation, dict) else {}
-        rendered_queries = [
-            SourceQuerySpec.model_validate(item).model_dump()
-            for item in query_plan.get("rendered_queries", [])
-            if isinstance(item, dict)
-        ]
-        if rendered_queries:
-            grouped_specs: dict[str, list[dict[str, Any]]] = {}
-            for spec in rendered_queries:
-                grouped_specs.setdefault(normalize_text(spec.get("stage", "")) or "primary", []).append(spec)
-            return list(grouped_specs.items())
-
-        primary_queries = normalize_string_list(query_plan.get("primary_queries"))
-        semantic_core_terms = normalize_string_list(query_plan.get("semantic_core_terms"))
-
-        if not primary_queries and semantic_core_terms:
-            primary_queries = [" ".join(semantic_core_terms[:4])]
-
-        primary_query_texts = set(primary_queries)
-        semantic_queries = [
-            term for term in semantic_core_terms
-            if term and term not in primary_query_texts
-        ]
-
-        retrieval_plan: list[tuple[str, list[dict[str, Any]]]] = [
-            ("primary", [{"query": query, "source": "", "purpose": "precision", "stage": "primary", "notes": ""} for query in primary_queries])
-        ]
-        if semantic_queries:
-            retrieval_plan.append(
-                (
-                    f"{TOPIC_FALLBACK_STAGE}_semantic_core_terms",
-                    [{"query": query, "source": "", "purpose": "recall", "stage": f"{TOPIC_FALLBACK_STAGE}_semantic_core_terms", "notes": ""} for query in semantic_queries[:4]],
-                )
-            )
-        return retrieval_plan
 
     async def collect_records_for_query_specs(
         self,
@@ -139,6 +101,8 @@ class PaperSourceCollector:
                         source_rank=record.source_rank,
                         matched_query=query,
                         query_stage=stage_name,
+                        openalex_id=record.openalex_id,
+                        cited_by_count=record.cited_by_count,
                     )
                 )
         return records, source_errors
@@ -334,7 +298,7 @@ class PaperSourceCollector:
             "search": query,
             "per-page": limit,
             "sort": "relevance_score:desc",
-            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "type"]),
+            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "type", "cited_by_count"]),
         }
         if from_year is not None:
             params["filter"] = f"from_publication_date:{from_year}-01-01"
@@ -360,11 +324,16 @@ class PaperSourceCollector:
             primary_location = item.get("primary_location") or {}
             landing_page = ""
             pdf_url = ""
+            openalex_id = ""
             if isinstance(primary_location, dict):
                 landing_page = normalize_text(primary_location.get("landing_page_url", ""))
                 pdf_url = normalize_pdf_url(primary_location.get("pdf_url", "") or "")
             if isinstance(ids, dict):
-                landing_page = landing_page or normalize_text(ids.get("openalex", ""))
+                openalex_url = normalize_text(ids.get("openalex", ""))
+                landing_page = landing_page or openalex_url
+                if "/W" in openalex_url:
+                    openalex_id = openalex_url.rsplit("/", 1)[-1]
+            cited_by = item.get("cited_by_count") or 0
             doi = normalize_text(item.get("doi", ""))
             if doi.startswith("https://doi.org/"):
                 doi = doi.removeprefix("https://doi.org/")
@@ -379,6 +348,90 @@ class PaperSourceCollector:
                     pdf_url=pdf_url,
                     doi=doi,
                     source_rank=rank,
+                    openalex_id=openalex_id,
+                    cited_by_count=cited_by,
+                )
+            )
+        return records
+
+    async def fetch_references(self, openalex_id: str, top_k: int = 5) -> list[PaperRecord]:
+        """Fetch papers that this paper references (前向溯源)."""
+        response = await self._client.get(f"https://api.openalex.org/works/{openalex_id}")
+        response.raise_for_status()
+        work = response.json()
+        ref_urls = work.get("referenced_works", []) or []
+        ref_ids = [_extract_openalex_id_from_url(u) for u in ref_urls[:30]]
+        ref_ids = [rid for rid in ref_ids if rid]
+        if not ref_ids:
+            return []
+        filter_param = "|".join(ref_ids[:25])
+        params: dict[str, Any] = {
+            "filter": f"openalex_id:{filter_param}",
+            "per-page": 25,
+            "sort": "cited_by_count:desc",
+            "select": "display_name,authorships,publication_year,publication_date,ids,doi,primary_location,abstract_inverted_index,cited_by_count",
+        }
+        resp = await self._client.get("https://api.openalex.org/works", params=params)
+        resp.raise_for_status()
+        return self._parse_openalex_batch(resp.json().get("results", []))[:top_k]
+
+    async def fetch_citations(self, openalex_id: str, top_k: int = 5) -> list[PaperRecord]:
+        """Fetch papers that cite this paper (后向追踪), filtered for recency and impact."""
+        import datetime as dt
+        two_years_ago = (dt.date.today().replace(year=dt.date.today().year - 2)).isoformat()
+        params: dict[str, Any] = {
+            "filter": f"cites:{openalex_id},from_publication_date:{two_years_ago}",
+            "per-page": 20,
+            "sort": "cited_by_count:desc",
+            "select": "display_name,authorships,publication_year,publication_date,ids,doi,primary_location,abstract_inverted_index,cited_by_count",
+        }
+        response = await self._client.get("https://api.openalex.org/works", params=params)
+        response.raise_for_status()
+        items = response.json().get("results", [])
+        records = self._parse_openalex_batch(items)
+        return [r for r in records if r.source_rank > 0][:top_k]
+
+    def _parse_openalex_batch(self, items: list[dict[str, Any]]) -> list[PaperRecord]:
+        records: list[PaperRecord] = []
+        for rank, item in enumerate(items, start=1):
+            title = normalize_text(item.get("display_name", "") or "Untitled")
+            if not title or title == "Untitled":
+                continue
+            authors: list[str] = []
+            for a in item.get("authorships") or []:
+                if isinstance(a, dict) and isinstance(a.get("author"), dict):
+                    name = normalize_text(a["author"].get("display_name", ""))
+                    if name:
+                        authors.append(name)
+            published = normalize_text(item.get("publication_date") or str(item.get("publication_year") or ""))
+            ids = item.get("ids") or {}
+            loc = item.get("primary_location") or {}
+            landing = normalize_text(loc.get("landing_page_url", "") or ids.get("openalex", ""))
+            pdf = normalize_pdf_url(loc.get("pdf_url", "") or "")
+            doi = normalize_text(item.get("doi", ""))
+            if doi.startswith("https://doi.org/"):
+                doi = doi.removeprefix("https://doi.org/")
+            oa_id = ""
+            oa_url = normalize_text(ids.get("openalex", ""))
+            if "/W" in oa_url:
+                oa_id = oa_url.rsplit("/", 1)[-1]
+            cited_by = item.get("cited_by_count") or 0
+            doi = normalize_text(item.get("doi", ""))
+            if doi.startswith("https://doi.org/"):
+                doi = doi.removeprefix("https://doi.org/")
+            records.append(
+                PaperRecord(
+                    title=title,
+                    source="OpenAlex",
+                    summary=self._reconstruct_openalex_abstract(item.get("abstract_inverted_index")),
+                    authors=authors,
+                    published=published,
+                    url=landing_page,
+                    pdf_url=pdf_url,
+                    doi=doi,
+                    source_rank=rank,
+                    openalex_id=oa_id,
+                    cited_by_count=cited_by,
                 )
             )
         return records
@@ -463,3 +516,9 @@ class PaperSourceCollector:
             return ""
         ordered_tokens = [positions[pos] for pos in sorted(positions)]
         return normalize_text(" ".join(ordered_tokens))
+
+
+def _extract_openalex_id_from_url(url: str) -> str:
+    if "/W" in url:
+        return url.rsplit("/", 1)[-1].strip()
+    return ""

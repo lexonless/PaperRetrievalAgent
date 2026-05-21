@@ -11,21 +11,21 @@ AppFactory = Callable[[Settings, str], object]
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Raw feeder for LLM Wiki source materials.")
+    parser = argparse.ArgumentParser(description="Paper discovery agent with LLM tool calling.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     discover_parser = subparsers.add_parser(
         "discover",
         help="Discover papers from a natural-language query and materialize them into raw markdown.",
     )
-    discover_parser.add_argument("--project", type=str, required=True, help="Project slug used for the feeder workspace.")
+    discover_parser.add_argument("--project", type=str, required=True, help="Project slug used for the work directory.")
     discover_parser.add_argument("--query", type=str, required=True, help="Natural-language query for paper discovery.")
     discover_parser.add_argument("--top-k", type=int, default=5, help="Maximum number of raw paper files to write.")
     discover_parser.add_argument(
         "--output-dir",
         type=str,
         default="projects",
-        help="Root directory for project raw outputs.",
+        help="Root directory for project outputs.",
     )
     return parser.parse_args(argv)
 
@@ -50,9 +50,12 @@ async def run_once(
         print(f"\nProject: {project_slug}")
         print(f"Query: {query}")
         print(f"Batch: {batch_path}")
-        print(f"Selected raw papers: {batch.selected_count}")
-        for item in batch.written_files:
-            print(f"- {item.path}")
+        selected = batch.get("selected_count", 0) if isinstance(batch, dict) else getattr(batch, "selected_count", 0)
+        written = batch.get("written_files", []) if isinstance(batch, dict) else getattr(batch, "written_files", [])
+        print(f"Selected raw papers: {selected}")
+        for item in written:
+            path = item.get("path", "") if isinstance(item, dict) else getattr(item, "path", "")
+            print(f"- {path}")
     finally:
         await app.close()
 

@@ -16,7 +16,7 @@ def build_raw_paper_slug(paper: dict) -> str:
 
     for candidate in (
         normalize_text(paper.get("url", "")),
-        normalize_text(paper.get("_pdf_url", "")),
+        normalize_text(paper.get("pdf_url", "")),
     ):
         match = ARXIV_ID_PATTERN.search(candidate)
         if match:
@@ -42,9 +42,9 @@ def render_raw_paper_markdown(
     title = normalize_text(paper.get("title", "")) or "Untitled Paper"
     authors = [normalize_text(author) for author in paper.get("authors", []) if normalize_text(author)]
     source_family = _resolve_source_family(normalize_text(paper.get("source", "")))
-    canonical_url = normalize_text(paper.get("url", "")) or normalize_text(paper.get("_pdf_url", ""))
+    canonical_url = normalize_text(paper.get("url", "")) or normalize_text(paper.get("pdf_url", ""))
     doi = normalize_text(paper.get("doi", ""))
-    pdf_url = normalize_text(paper.get("_pdf_url", ""))
+    pdf_url = normalize_text(paper.get("pdf_url", ""))
     summary = normalize_text((paper.get("evidence_snippets") or [""])[0])
     if not summary:
         summary = "_No abstract or summary was available from the discovery sources._"
