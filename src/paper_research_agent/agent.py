@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import re
 from datetime import datetime
 from pathlib import Path
@@ -20,6 +21,8 @@ from .retrieval.query_planning import build_query_entries
 from .retrieval.ranking import PaperRankingEngine
 from .retrieval.reranker import build_reranker
 from .retrieval.sources import PaperSourceCollector
+
+logger = logging.getLogger(__name__)
 
 QUERY_DECOMPOSITION_SYSTEM_PROMPT = """You are a scholarly query decomposer. Your job is to convert a user's natural-language research question into structured search dimensions.
 
@@ -125,6 +128,8 @@ class PaperDiscoveryAgent:
 
         while not self._should_stop(state):
             state["search_iteration"] += 1
+            logger.info("=== iteration %s/%s ===", state["search_iteration"], MAX_ITERATIONS)
+            logger.info("search query: %s", state["current_search_query"])
 
             new_papers = await self._search_node(state, decomposition)
             await self._resolve_pdf_urls(new_papers)
@@ -138,8 +143,13 @@ class PaperDiscoveryAgent:
 
             review = await self._review_node(state, query, decomposition)
             state["is_converged"] = review["converged"]
+            logger.info(
+                "review: converged=%s, reason=%s, total_papers=%s",
+                review["converged"], review.get("reason", ""), len(state["all_papers"]),
+            )
             if not state["is_converged"] and state["search_iteration"] < MAX_ITERATIONS:
                 state["current_search_query"] = review["refined_query"]
+                logger.info("rewritten query: %s", state["current_search_query"])
 
         sorted_papers = sorted(
             state["all_papers"].values(),
@@ -147,6 +157,12 @@ class PaperDiscoveryAgent:
         )
         selected_papers = sorted_papers[: max(1, min(top_k, 20))]
         generated_at = datetime.now().isoformat(timespec="seconds")
+
+        logger.info(
+            "pipeline done: %s candidates, %s selected, converged=%s after %s iterations",
+            len(state["all_papers"]), len(selected_papers),
+            state["is_converged"], state["search_iteration"],
+        )
 
         await self._download_selected_pdfs(selected_papers, paths, top_k)
 
@@ -193,6 +209,7 @@ class PaperDiscoveryAgent:
     # ── PDF resolution and download ────────────────────────────────────────
 
     async def _resolve_pdf_urls(self, papers: list[dict[str, Any]]) -> None:
+        resolved = 0
         for paper in papers:
             if paper.get("pdf_status") == "available":
                 continue
@@ -206,6 +223,9 @@ class PaperDiscoveryAgent:
                 paper["pdf_urls"] = urls
                 paper["pdf_url"] = urls[0]
                 paper["pdf_status"] = "available"
+                resolved += 1
+        if resolved:
+            logger.info("pdf resolve: %s/%s papers got PDF URLs", resolved, len(papers))
 
     async def _resolve_unpaywall(self, doi: str) -> str:
         email = self._settings.unpaywall_email
@@ -235,6 +255,8 @@ class PaperDiscoveryAgent:
     async def _download_selected_pdfs(
         self, papers: list[dict[str, Any]], paths: Any, limit: int,
     ) -> None:
+        downloaded_count = 0
+        failed_count = 0
         for paper in papers[:limit]:
             if paper.get("pdf_status") != "available":
                 continue
@@ -254,12 +276,17 @@ class PaperDiscoveryAgent:
                     paper["local_path"] = str(pdf_path)
                     paper["pdf_url"] = pdf_url
                     downloaded = True
+                    logger.info("pdf ok: %s -> %s", normalize_text(paper.get("title", "")[:60]), slug)
+                    downloaded_count += 1
                     break
                 except Exception as exc:
                     last_error = str(exc)
             if not downloaded:
                 paper["pdf_status"] = "failed"
                 paper["local_path"] = ""
+                logger.info("pdf fail: %s (%s)", normalize_text(paper.get("title", "")[:60]), last_error[:80])
+                failed_count += 1
+        logger.info("pdf download: %s ok, %s failed", downloaded_count, failed_count)
 
     # ═══════════════════════════════════════════════════════════════════════
     # Node 1: search_papers
@@ -296,6 +323,10 @@ class PaperDiscoveryAgent:
         state["all_records"].extend(all_records)
         state["all_errors"].extend(all_spec_errors)
 
+        logger.info("search: %s records from %s entries, %s errors", len(all_records), len(entries), len(all_spec_errors))
+        for err in all_spec_errors:
+            logger.warning("source error [%s]: %s", err.get("source", "?"), err.get("error", "")[:100])
+
         candidates = self._ranking_engine.prepare_agent_candidates(
             records=all_records, matched_query=search_query,
         )
@@ -308,6 +339,7 @@ class PaperDiscoveryAgent:
                 state["all_papers"][key] = paper
                 new_papers.append(paper)
 
+        logger.info("search: %s new papers (total: %s)", len(new_papers), len(state["all_papers"]))
         return new_papers
 
     # ═══════════════════════════════════════════════════════════════════════
@@ -322,10 +354,12 @@ class PaperDiscoveryAgent:
             return
         judgments = await self._reranker.rerank(query, to_score)
         batch_log: list[dict[str, Any]] = []
+        scores = []
         for j in judgments:
             key = j.get("paper_key", "")
             score = int(j.get("relevance", 0))
             reason = normalize_text(j.get("reason", ""))
+            scores.append(score)
             batch_log.append({"paper_key": key, "relevance": score, "reason": reason})
             if key in state["all_papers"]:
                 state["all_papers"][key]["relevance_score"] = score
@@ -335,6 +369,13 @@ class PaperDiscoveryAgent:
             "scored_count": len(to_score),
             "judgments": batch_log,
         })
+        if scores:
+            logger.info(
+                "rerank: scored %s papers, distribution: 1=%s 2=%s 3=%s 4=%s 5=%s",
+                len(scores),
+                scores.count(1), scores.count(2), scores.count(3),
+                scores.count(4), scores.count(5),
+            )
 
     # ═══════════════════════════════════════════════════════════════════════
     # Node 3: expand_citations
@@ -349,8 +390,10 @@ class PaperDiscoveryAgent:
         seeds = seeds[:n]
 
         if not seeds:
+            logger.info("expand: no seeds with score >= 3")
             return []
 
+        logger.info("expand: using %s seeds: %s", len(seeds), [normalize_text(s.get("title", "")[:60]) for s in seeds])
         graph_papers: list[dict[str, Any]] = []
         for seed in seeds:
             oa_id = seed.get("_openalex_id", "")
@@ -358,6 +401,7 @@ class PaperDiscoveryAgent:
                 refs = await self._source_collector.fetch_references(oa_id, top_k=20)
                 cites = await self._source_collector.fetch_citations(oa_id, top_k=20)
             except Exception as exc:
+                logger.warning("expand: graph fetch failed for %s: %s", oa_id, exc)
                 state["all_errors"].append({
                     "source": "openalex_graph",
                     "openalex_id": oa_id,
@@ -377,6 +421,7 @@ class PaperDiscoveryAgent:
                         state["all_papers"][key] = paper
                         graph_papers.append(paper)
 
+        logger.info("expand: %s new graph papers", len(graph_papers))
         return graph_papers
 
     # ═══════════════════════════════════════════════════════════════════════
@@ -441,6 +486,15 @@ class PaperDiscoveryAgent:
             "convergence_reason": normalize_text(result.convergence_reason),
             "papers": review_entries,
         })
+
+        avg_scores = ""
+        if review_entries:
+            avg_rel = sum(e["relevance"] for e in review_entries) / len(review_entries)
+            avg_nov = sum(e["novelty"] for e in review_entries) / len(review_entries)
+            avg_rig = sum(e["rigor"] for e in review_entries) / len(review_entries)
+            avg_ovr = sum(e["overall"] for e in review_entries) / len(review_entries)
+            avg_scores = f", avg: rel={avg_rel:.1f} nov={avg_nov:.1f} rig={avg_rig:.1f} ovr={avg_ovr:.1f}"
+        logger.info("review: %s papers reviewed%s", len(review_entries), avg_scores)
 
         return {
             "converged": result.converged,
@@ -655,6 +709,10 @@ def _extract_direct_pdf_urls(paper: dict[str, Any]) -> list[str]:
         if match:
             arxiv_id = match.group(1).removesuffix(".pdf")
             urls.append(f"https://arxiv.org/pdf/{arxiv_id}.pdf")
+
+    doi = normalize_text(paper.get("doi", ""))
+    if doi.startswith("10.1145/"):
+        urls.append(f"https://dl.acm.org/doi/pdf/{doi}")
 
     return urls
 

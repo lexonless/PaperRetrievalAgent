@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import logging
 from collections.abc import Callable
 
 from .core.config import Settings
@@ -83,6 +84,7 @@ def run_cli(
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s", datefmt="%H:%M:%S")
     raise SystemExit(run_cli())
 
 
