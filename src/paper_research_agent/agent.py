@@ -31,7 +31,7 @@ RULES:
 2. application_domains: the application fields or domains (e.g. "medical imaging", "CAD", "NLP"). Limit to 5 entries.
 3. key_metrics: evaluation metrics, tasks, or desired outcomes (e.g. "segmentation accuracy", "Dice score", "reconstruction quality"). Limit to 5 entries.
 4. expanded_terms: academic synonyms, abbreviations, full names, and related concepts for each core_tech and domain. Include both formal names and common abbreviations. (e.g. for "diffusion model": "DDPM", "score-based model", "denoising diffusion", "latent diffusion"; for "boundary representation": "B-Rep", "BRep", "BREP"). Limit to 10 entries.
-5. excluded_terms: terms that would cause false positives — adjacent fields, unrelated applications, or concepts the user explicitly wants to avoid. Limit to 5 entries.
+5. excluded_terms: ONLY include terms from truly irrelevant application domains or fields. Do NOT exclude technical methods (e.g. "mesh", "voxel", "point cloud") that papers might mention as comparison baselines. Limit to 3 entries.
 
 Return ONLY the structured JSON and nothing else.
 """

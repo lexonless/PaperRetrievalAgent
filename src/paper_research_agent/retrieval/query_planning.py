@@ -22,7 +22,7 @@ def build_query_entries(
 
     entries: list[dict[str, str]] = []
 
-    arxiv_precision = _render_arxiv_query(positive_groups[:4], normalized_excluded)
+    arxiv_precision = _render_arxiv_query(positive_groups[:4], [])
     if arxiv_precision:
         entries.append({"source": "arXiv", "query": arxiv_precision, "purpose": "precision", "stage": "primary", "notes": "Structured boolean query for arXiv."})
 
@@ -30,7 +30,7 @@ def build_query_entries(
     if arxiv_recall and arxiv_recall != arxiv_precision:
         entries.append({"source": "arXiv", "query": arxiv_recall, "purpose": "recall", "stage": "primary", "notes": "Broader arXiv recall query."})
 
-    oa_precision = _render_openalex_query(positive_groups[:4], normalized_excluded)
+    oa_precision = _render_openalex_query(positive_groups[:4], [])
     if oa_precision:
         entries.append({"source": "OpenAlex", "query": oa_precision, "purpose": "precision", "stage": "primary", "notes": "Boolean query for OpenAlex."})
 
