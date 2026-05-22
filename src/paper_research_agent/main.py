@@ -38,11 +38,31 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     query_group.add_argument("--query-txt", type=str, dest="query_txt", help="Path to a .txt file containing the query.")
     discover_parser.add_argument("--top-k", type=int, default=5, help="Maximum number of raw paper files to write.")
     discover_parser.add_argument(
-        "--output-dir",
-        type=str,
-        default="projects",
-        help="Root directory for project outputs.",
+        "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
     )
+
+    plan_parser = subparsers.add_parser(
+        "plan",
+        help="Agent-driven research: AI autonomously decides to discover papers, synthesize reports, or both.",
+    )
+    plan_parser.add_argument("--project", type=str, required=True, help="Project slug used for the work directory.")
+    plan_query_group = plan_parser.add_mutually_exclusive_group(required=True)
+    plan_query_group.add_argument("--query", type=str, help="Natural-language query for the research task.")
+    plan_query_group.add_argument("--query-txt", type=str, dest="query_txt", help="Path to a .txt file containing the query.")
+    plan_parser.add_argument("--top-k", type=int, default=5, help="Maximum number of papers to select.")
+    plan_parser.add_argument(
+        "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
+    )
+
+    synthesize_parser = subparsers.add_parser(
+        "synthesize",
+        help="Generate a Chinese research report from existing paper metadata files.",
+    )
+    synthesize_parser.add_argument("--project", type=str, required=True, help="Project slug with existing paper data.")
+    synthesize_parser.add_argument(
+        "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
+    )
+
     return parser.parse_args(argv)
 
 
@@ -98,9 +118,34 @@ def run_cli(
     settings: Settings | None = None,
 ) -> int:
     args = parse_args(argv)
-    if args.command != "discover":
+    if args.command not in ("discover", "plan", "synthesize"):
         raise ValueError(f"Unsupported command: {args.command}")
+
+    if args.command == "synthesize":
+        asyncio.run(
+            _run_synthesize(
+                project_slug=args.project.strip(),
+                output_dir=args.output_dir.strip(),
+                app_factory=app_factory,
+                settings=settings,
+            )
+        )
+        return 0
+
     query = _resolve_query(args)
+    if args.command == "plan":
+        asyncio.run(
+            _run_plan(
+                project_slug=args.project.strip(),
+                query=query,
+                top_k=args.top_k,
+                output_dir=args.output_dir.strip(),
+                app_factory=app_factory,
+                settings=settings,
+            )
+        )
+        return 0
+
     asyncio.run(
         run_once(
             project_slug=args.project.strip(),
@@ -112,6 +157,52 @@ def run_cli(
         )
     )
     return 0
+
+
+async def _run_plan(
+    *,
+    project_slug: str,
+    query: str,
+    top_k: int,
+    output_dir: str,
+    app_factory: AppFactory | None = None,
+    settings: Settings | None = None,
+) -> None:
+    from .app import RawFeederApplication
+
+    _setup_logging(output_dir, project_slug)
+    resolved_settings = settings or Settings.from_env()
+    factory = app_factory or (lambda s, o: RawFeederApplication(s, output_root=o))
+    app = factory(resolved_settings, output_dir)
+
+    try:
+        print(f"\n项目: {project_slug}")
+        print(f"需求: {query}\n")
+        result = await app.plan(project_slug=project_slug, query=query, top_k=top_k)
+        if result:
+            print(f"\n{result}")
+    finally:
+        await app.close()
+
+
+async def _run_synthesize(
+    *,
+    project_slug: str,
+    output_dir: str,
+    app_factory: AppFactory | None = None,
+    settings: Settings | None = None,
+) -> None:
+    from .app import RawFeederApplication
+
+    _setup_logging(output_dir, project_slug)
+    resolved_settings = settings or Settings.from_env()
+    factory = app_factory or (lambda s, o: RawFeederApplication(s, output_root=o))
+    app = factory(resolved_settings, output_dir)
+
+    try:
+        await app.synthesize(project_slug=project_slug)
+    finally:
+        await app.close()
 
 
 def main() -> None:

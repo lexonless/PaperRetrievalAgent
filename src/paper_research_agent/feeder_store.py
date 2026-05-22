@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 import shutil
+from typing import Any
 
 
 @dataclass(slots=True)
@@ -78,3 +81,161 @@ def _reset_project_root(project_root: Path, root_dir: Path) -> None:
     except ValueError as exc:
         raise ValueError(f"Refusing to delete project outside project root: {root_dir}") from exc
     shutil.rmtree(root_dir)
+
+
+def list_batches(project_root: Path, slug: str) -> list[Path]:
+    batches_dir = (project_root.resolve() / slug / ".feeder" / "batches")
+    if not batches_dir.is_dir():
+        return []
+    batch_files = sorted(
+        batches_dir.glob("*.json"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    return batch_files
+
+
+def load_batch_json(batch_path: Path) -> dict[str, Any]:
+    return json.loads(batch_path.read_text(encoding="utf-8"))
+
+
+_YAML_FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
+
+
+def parse_metadata_papers(project_root: Path, slug: str) -> list[dict[str, Any]]:
+    metadata_dir = (project_root.resolve() / slug / "raw" / "papers" / "metadata")
+    if not metadata_dir.is_dir():
+        return []
+
+    papers: list[dict[str, Any]] = []
+    for md_file in sorted(metadata_dir.glob("*.md")):
+        try:
+            content = md_file.read_text(encoding="utf-8")
+        except Exception:
+            continue
+
+        m = _YAML_FRONTMATTER_RE.match(content)
+        if not m:
+            continue
+
+        yaml_text = m.group(1)
+        body_text = content[m.end():]
+        frontmatter = _parse_simple_yaml(yaml_text)
+        abstract = _extract_abstract(body_text)
+        paper = _frontmatter_to_paper_dict(frontmatter, abstract=abstract)
+        if paper.get("title"):
+            papers.append(paper)
+
+    return papers
+
+
+def _parse_simple_yaml(text: str) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    current_key: str | None = None
+    current_list: list[str] = []
+
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        if not line.startswith(" ") and not line.startswith("\t") and ":" in stripped:
+            if current_key and current_list:
+                result[current_key] = current_list
+                current_list = []
+            raw_key = stripped.split(":", 1)[0].strip()
+            raw_val = stripped.split(":", 1)[1].strip().strip('"').strip("'")
+            current_key = raw_key
+            if raw_val:
+                result[current_key] = raw_val
+            else:
+                result[current_key] = ""
+        elif current_key and stripped.startswith("- "):
+            item = stripped[2:].strip().strip('"').strip("'")
+            current_list.append(item)
+
+    if current_key and current_list:
+        result[current_key] = current_list
+
+    return result
+
+
+def _frontmatter_to_paper_dict(fm: dict[str, Any], *, abstract: str = "") -> dict[str, Any]:
+    paper: dict[str, Any] = {}
+    paper["title"] = fm.get("title", "")
+
+    authors = fm.get("authors", [])
+    if isinstance(authors, str):
+        authors = [a.strip() for a in authors.split(",") if a.strip()]
+    paper["authors"] = authors
+
+    paper["year"] = _parse_year(fm.get("year", ""))
+    paper["source"] = fm.get("source_family", "")
+    paper["doi"] = fm.get("doi", "")
+    paper["url"] = fm.get("canonical_url", "")
+    paper["pdf_url"] = fm.get("pdf_url", "")
+    paper["pdf_download_status"] = fm.get("pdf_download_status", "pending")
+    paper["evidence_snippets"] = [abstract] if abstract else []
+
+    return paper
+
+
+def _parse_year(value: Any) -> int:
+    if isinstance(value, int):
+        return value if value > 1900 else 0
+    if isinstance(value, str):
+        try:
+            y = int(value.strip())
+            return y if y > 1900 else 0
+        except (ValueError, TypeError):
+            pass
+    return 0
+
+
+_BODY_ABSTRACT_RE = re.compile(r"## Abstract\s*\n+(.*?)(?:\n## |\n---|\Z)", re.DOTALL)
+
+
+def _extract_abstract(text: str) -> str:
+    m = _BODY_ABSTRACT_RE.search(text)
+    if m:
+        return m.group(1).strip()
+    return ""
+
+
+def get_project_query(project_root: Path, slug: str) -> str:
+    batches = list_batches(project_root, slug)
+    for batch_path in batches:
+        try:
+            data = load_batch_json(batch_path)
+            query = data.get("query", "")
+            if query:
+                return query
+        except Exception:
+            continue
+    return ""
+
+
+def get_project_decomposition(project_root: Path, slug: str) -> dict[str, Any] | None:
+    batches = list_batches(project_root, slug)
+    for batch_path in batches:
+        try:
+            data = load_batch_json(batch_path)
+            decomp = data.get("query_decomposition")
+            if decomp:
+                return decomp
+        except Exception:
+            continue
+    return None
+
+
+def get_project_review_stats(project_root: Path, slug: str) -> dict[str, Any]:
+    batches = list_batches(project_root, slug)
+    stats: dict[str, Any] = {}
+    for batch_path in batches:
+        try:
+            data = load_batch_json(batch_path)
+            stats.setdefault("candidate_count", data.get("candidate_count", 0))
+            stats.setdefault("selected_count", data.get("selected_count", 0))
+        except Exception:
+            continue
+    return stats
