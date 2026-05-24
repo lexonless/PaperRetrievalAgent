@@ -12,38 +12,44 @@ from ..core.normalization import normalize_text
 
 logger = logging.getLogger(__name__)
 
-SYNTHESIS_SYSTEM_PROMPT = """你是一位资深的学术研究员，擅长撰写综合性的学术调研报告。你的任务是根据已有的论文数据，撰写一份高质量的中文调研报告。
+SYNTHESIS_SYSTEM_PROMPT = """你是一位资深的学术调研专家，擅长撰写综合性的学术文献调研报告。
 
-## 报告要求
+## 核心职责
 
-1. **语言**：主体使用中文撰写。专业术语、模型名称、指标名称在首次出现时标注英文原文，例如"Transformer 架构（Transformer architecture）"。
+根据提供的论文数据，生成一份高质量的文献调研报告。
 
-2. **结构**：按以下章节组织报告：
-   - **执行摘要**：2-3 句核心结论，概括当前领域的研究现状和主要发现。
-   - **研究背景与概览**：介绍研究领域背景，概述当前主流方向和研究趋势。
-   - **方法对比**：横向对比不同论文采用的方法、模型或技术路线，指出各自的优势与局限性。不足3篇论文时此章节可省略。
-   - **关键发现与指标**：汇总关键实验结果、性能指标、评估结论。
-   - **研究空白与未来方向**：基于现有论文找出尚未覆盖的研究空白，提出可行的未来研究方向。
-   - **参考文献**：列出所有引用论文，格式为 `[序号] 标题 —— 作者 (年份), 来源`
+## 报告格式要求
 
-3. **内容深度**：
-   - 基于论文摘要中提供的具体信息进行分析
-   - 避免泛泛而谈，要引用具体论文的具体贡献
-   - 交叉引用论文时需要标注参考文献编号
-   - 区分不同论文的创新程度（可参考提供的评分）
-   - 如果提供的论文信息不足以支撑某个章节，请如实说明并用现有信息做最佳推断
+**重要：** 请仔细阅读用户给出的「调研指令」。如果指令中包含了特定的输出格式要求（例如：分类体系树、子领域拆解、逐篇详细分析、特定分类桶、总结表等），请严格按照指令中的格式组织报告。如果指令没有指定特殊格式，则使用以下默认结构：
 
-4. **格式**：纯 Markdown 格式，使用标题、表格、列表等 Markdown 语法增强可读性。
+默认结构：
+- **执行摘要**：2-3 句核心结论
+- **研究背景与概览**：领域背景、主流方向和趋势
+- **方法对比**：横向对比不同方法/技术路线的优劣（不足3篇论文时可省略）
+- **关键发现与指标**：关键实验结果和性能指标
+- **研究空白与未来方向**：未覆盖的研究空白和可行方向
+- **参考文献**：`[序号] 标题 —— 作者 (年份), 来源`
+
+## 语言要求
+
+主体使用中文撰写。专业术语、模型名称、算法名称在首次出现时标注英文原文，例如"阻抗控制（impedance control）"。
+
+## 内容要求
+
+- 基于论文摘要中提供的具体信息进行分析，避免泛泛而谈
+- 引用具体论文的具体贡献，交叉引用时标注参考文献编号
+- 区分不同论文的创新程度
+- 如果提供的论文信息不足以支撑某个要求，请如实说明并根据现有信息做最佳推断
+- 使用 Markdown 表格、列表等语法增强可读性
 
 ## 输出
 
-直接输出完整的 Markdown 格式调研报告，不需要 JSON 包裹或代码块包装。从报告标题开始。
+直接输出完整的 Markdown 格式调研报告。不要用 JSON 包裹或代码块包装。从标题开始。
 """
 
-SYNTHESIS_USER_PROMPT_TEMPLATE = """请根据以下信息撰写调研报告：
+SYNTHESIS_USER_PROMPT_TEMPLATE = """## 调研指令
 
-## 用户研究问题
-{query}
+{user_instruction}
 
 ## 查询分解维度
 {decomposition}
@@ -60,13 +66,14 @@ SYNTHESIS_USER_PROMPT_TEMPLATE = """请根据以下信息撰写调研报告：
 
 {papers_detail}
 
-请根据以上信息撰写完整的中文调研报告。"""
+请严格按照"调研指令"中的要求生成调研报告。优先使用指令中指定的格式和分类方式。如果论文数据不足以完全满足指令要求，请根据现有数据做最佳努力，并如实说明数据局限性。"""
 
 
 class SynthesisEngine:
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
         self._llm = build_chat_model(settings, temperature=0.3)
+        self._llm.max_tokens = max(settings.max_output_tokens, 16384)
 
     async def synthesize(
         self,
@@ -93,7 +100,7 @@ class SynthesisEngine:
             decomp_text = "无"
 
         user_prompt = SYNTHESIS_USER_PROMPT_TEMPLATE.format(
-            query=query,
+            user_instruction=query if query else "请根据以下论文数据撰写综合调研报告。",
             decomposition=decomp_text,
             candidate_count=stats["candidate_count"],
             selected_count=len(papers),

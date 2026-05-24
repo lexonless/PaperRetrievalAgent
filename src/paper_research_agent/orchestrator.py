@@ -44,12 +44,13 @@ ORCHESTRATOR_SYSTEM_PROMPT = """你是一个学术调研助手。根据用户的
 - 调用工具后分析结果，如果成功则继续下一步
 - 不需要过度解释，简洁高效地完成任务
 - 最终需要给用户一个简洁的总结
+- **discover_papers 最多调用 3 次**，超过后必须调用 synthesize_report 或直接退出
 """
 
 
 def _build_discover_papers_tool(settings: Settings, output_root: str) -> Any:
     @tool
-    def discover_papers(query: str, project: str, top_k: int = 5) -> str:
+    async def discover_papers(query: str, project: str, top_k: int = 5) -> str:
         """搜索学术论文并下载PDF。输入研究query和项目名称，在arXiv/Crossref/OpenAlex中搜索论文。
 
         Args:
@@ -57,35 +58,84 @@ def _build_discover_papers_tool(settings: Settings, output_root: str) -> Any:
             project: 项目名称/slug（必填）
             top_k: 最终输出的论文数量上限，默认5
         """
-        import asyncio
         from .agent import PaperDiscoveryAgent
 
-        async def _run():
-            agent = PaperDiscoveryAgent(settings, output_root=output_root)
-            try:
-                batch, batch_path = await agent.discover(
-                    project_slug=project, query=query, top_k=max(1, min(top_k, 20)),
-                )
-                selected = batch.get("selected_count", 0) if isinstance(batch, dict) else 0
-                candidates = batch.get("candidate_count", 0) if isinstance(batch, dict) else 0
-                return (
-                    f"论文搜索完成。\n"
-                    f"- 搜索到 {candidates} 篇候选论文\n"
-                    f"- 筛选后保留 {selected} 篇\n"
-                    f"- 批次文件：{batch_path}\n"
-                    f"- 论文元数据文件已写入 raw/papers/metadata/ 目录"
-                )
-            finally:
-                await agent.close()
-
-        return asyncio.run(_run())
+        agent = PaperDiscoveryAgent(settings, output_root=output_root)
+        try:
+            batch, batch_path = await agent.discover(
+                project_slug=project, query=query, top_k=max(1, min(top_k, 20)),
+                reset_existing=False,
+            )
+            return _format_discover_result(batch, batch_path, project, Path(output_root).resolve())
+        finally:
+            await agent.close()
 
     return discover_papers
 
 
+def _format_discover_result(batch: dict, batch_path: Path, project: str, root: Path) -> str:
+    rows: list[str] = []
+
+    selected = batch.get("selected_count", 0)
+    candidates = batch.get("candidate_count", 0)
+
+    rows.append("本次搜索:")
+    rows.append(f"  候选 {candidates} 篇 → 保留 {selected} 篇")
+    rows.append(f"  批次: {batch_path}")
+
+    iterations = batch.get("iterations", 0)
+    converged = batch.get("converged", False)
+    if iterations:
+        rows.append(f"  内部迭代: {iterations}/3 轮, 收敛: {'是' if converged else '否'}")
+
+    review_log = batch.get("review_log") or []
+    if review_log:
+        for rl in review_log:
+            rows.append(f"    第{rl.get('iteration', '?')}轮: 审核{rl.get('reviewed_count', 0)}篇, "
+                        f"converged={rl.get('converged', False)}, "
+                        f"reason=\"{rl.get('convergence_reason', '')}\"")
+    else:
+        rows.append("    (未进行LLM二审, 论文数不足或分数过低)")
+
+    executed = batch.get("executed_queries") or []
+    if executed:
+        rows.append("  搜索过的方向:")
+        seen_directions: set[str] = set()
+        for eq in executed:
+            q = eq.get("query", "")
+            purpose = eq.get("purpose", "")
+            direction = f"\"{q}\"" + (f" ({purpose})" if purpose else "")
+            if direction not in seen_directions:
+                seen_directions.add(direction)
+                rows.append(f"    - {direction}")
+
+    total_papers = len(parse_metadata_papers(root, project))
+    rows.append(f"")
+    rows.append(f"项目累计论文总数: {total_papers} 篇")
+
+    suggestion = _build_suggestion(converged, total_papers, iterations)
+    rows.append(f"建议: {suggestion}")
+
+    return "\n".join(rows)
+
+
+def _build_suggestion(converged: bool, total_papers: int, iterations: int) -> str:
+    if converged and total_papers >= 10:
+        return "converged_enough — 当前方向已饱和, 建议调用 synthesize_report"
+    if converged and total_papers >= 3:
+        return "converged_ok — 有可用结果, 可以调用 synthesize_report 或换个方向再搜"
+    if converged and total_papers < 3:
+        return "converged_but_few — 论文太少, 建议用更宽泛的关键词再搜一次"
+    if not converged and iterations >= 3:
+        return "exhausted_iterations — 3轮已满但未收敛, 建议换个更具体的子方向或直接 synthesize"
+    if not converged:
+        return "not_converged — 内部审核认为覆盖不全, 建议用精炼后的关键词再搜一轮"
+    return "可调用 synthesize_report"
+
+
 def _build_synthesize_report_tool(settings: Settings, output_root: str) -> Any:
     @tool
-    def synthesize_report(project: str) -> str:
+    async def synthesize_report(project: str) -> str:
         """根据已有论文数据生成中文调研报告。要求项目目录中已有论文元数据文件。报告保存为 project/report.md。
 
         Args:
@@ -101,18 +151,13 @@ def _build_synthesize_report_tool(settings: Settings, output_root: str) -> Any:
         review_stats = get_project_review_stats(root, project)
 
         engine = SynthesisEngine(settings)
-        import asyncio
-
-        async def _run():
-            return await engine.synthesize(
-                papers=papers,
-                query=query or "未指定查询",
-                project_slug=project,
-                decomposition=decomposition,
-                review_stats=review_stats,
-            )
-
-        report = asyncio.run(_run())
+        report = await engine.synthesize(
+            papers=papers,
+            query=query or "未指定查询",
+            project_slug=project,
+            decomposition=decomposition,
+            review_stats=review_stats,
+        )
 
         report_dir = root / project
         report_dir.mkdir(parents=True, exist_ok=True)
@@ -189,6 +234,8 @@ class ResearchOrchestrator:
 
         final_answer = ""
         max_steps = 6
+        discover_calls = 0
+        MAX_DISCOVER_CALLS = 3
         for _step in range(max_steps):
             response = await llm_with_tools.ainvoke(messages)
             messages.append(response)
@@ -209,6 +256,15 @@ class ResearchOrchestrator:
                 args = tc.get("args", {})
                 tool_id = tc.get("id", "")
 
+                if name == "discover_papers":
+                    if discover_calls >= MAX_DISCOVER_CALLS:
+                        tool_result = (
+                            f"discover_papers 调用次数已达上限 ({MAX_DISCOVER_CALLS} 次)。"
+                            f"请直接调用 synthesize_report 生成报告，不要再搜索新论文。"
+                        )
+                        messages.append(ToolMessage(content=tool_result, tool_call_id=tool_id))
+                        continue
+
                 project_value = args.get("project") or args.get("project_slug") or project_slug
                 if name == "discover_papers":
                     args = {
@@ -216,6 +272,7 @@ class ResearchOrchestrator:
                         "project": project_value,
                         "top_k": args.get("top_k", top_k),
                     }
+                    discover_calls += 1
                 elif name == "synthesize_report":
                     args = {"project": project_value}
                 elif name == "get_project_status":
@@ -228,7 +285,7 @@ class ResearchOrchestrator:
                     result_text = f"未知工具: {name}"
                 else:
                     try:
-                        result_text = self._tool_map[name].invoke(args)
+                        result_text = await self._tool_map[name].ainvoke(args)
                         if isinstance(result_text, list):
                             result_text = json.dumps(result_text, ensure_ascii=False)
                     except Exception as exc:

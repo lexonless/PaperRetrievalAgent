@@ -15,7 +15,7 @@ from .core.config import Settings
 from .core.llm import build_chat_model, invoke_structured_output
 from .core.models import PaperRecord, QueryDecomposition, RawPaperArtifact
 from .core.normalization import normalize_string_list, normalize_text
-from .feeder_store import ensure_project_paths
+from .feeder_store import ensure_project_paths, load_prior_context
 from .materializer import build_raw_paper_slug, render_raw_paper_markdown, write_raw_paper
 from .retrieval.query_planning import build_query_entries
 from .retrieval.ranking import PaperRankingEngine
@@ -109,6 +109,7 @@ class PaperDiscoveryAgent:
         project_slug: str,
         query: str,
         top_k: int = 5,
+        reset_existing: bool = True,
     ) -> tuple[dict[str, Any], Path]:
         state: dict[str, Any] = {
             "query": query,
@@ -124,7 +125,16 @@ class PaperDiscoveryAgent:
         }
 
         decomposition = await self._decompose_query(query)
-        paths = ensure_project_paths(self._output_root, project_slug, reset_existing=True)
+        paths = ensure_project_paths(self._output_root, project_slug, reset_existing=reset_existing)
+
+        if not reset_existing:
+            prior = load_prior_context(self._output_root, project_slug)
+            state["all_papers"].update(prior["all_papers"])
+            state["review_log"].extend(prior["review_log"])
+            state["rerank_log"].extend(prior["rerank_log"])
+            state["executed_queries"].extend(prior["executed_queries"])
+            if prior["all_papers"]:
+                logger.info("loaded %s prior papers from previous batches", len(prior["all_papers"]))
 
         while not self._should_stop(state):
             state["search_iteration"] += 1
@@ -192,6 +202,7 @@ class PaperDiscoveryAgent:
             },
             "written_files": [item.model_dump() for item in written_files],
             "source_errors": state["all_errors"],
+            "all_papers": state["all_papers"],
         }
 
         batch_path = paths.batches_dir / f"{batch_data['batch_id']}.json"

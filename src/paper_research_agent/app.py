@@ -26,10 +26,11 @@ class RawFeederApplication:
         project_slug: str,
         query: str,
         top_k: int = 5,
+        reset_existing: bool = True,
     ):
         agent = PaperDiscoveryAgent(self._settings, output_root=self._output_root)
         try:
-            return await agent.discover(project_slug=project_slug, query=query, top_k=top_k)
+            return await agent.discover(project_slug=project_slug, query=query, top_k=top_k, reset_existing=reset_existing)
         finally:
             await agent.close()
 

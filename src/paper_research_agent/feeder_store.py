@@ -80,7 +80,15 @@ def _reset_project_root(project_root: Path, root_dir: Path) -> None:
         root_dir.relative_to(project_root)
     except ValueError as exc:
         raise ValueError(f"Refusing to delete project outside project root: {root_dir}") from exc
-    shutil.rmtree(root_dir)
+
+    for sub in ("raw",):
+        subdir = root_dir / sub
+        if subdir.exists():
+            shutil.rmtree(subdir)
+
+    batches_dir = root_dir / ".feeder" / "batches"
+    if batches_dir.exists():
+        shutil.rmtree(batches_dir)
 
 
 def list_batches(project_root: Path, slug: str) -> list[Path]:
@@ -239,3 +247,28 @@ def get_project_review_stats(project_root: Path, slug: str) -> dict[str, Any]:
         except Exception:
             continue
     return stats
+
+
+def load_prior_context(project_root: Path, slug: str) -> dict[str, Any]:
+    batches = list_batches(project_root, slug)
+    papers: dict[str, Any] = {}
+    review_log: list[dict[str, Any]] = []
+    rerank_log: list[dict[str, Any]] = []
+    executed_queries: list[dict[str, Any]] = []
+
+    for batch_path in batches:
+        try:
+            data = load_batch_json(batch_path)
+        except Exception:
+            continue
+        papers.update(data.get("all_papers", {}))
+        review_log.extend(data.get("review_log", []))
+        rerank_log.extend(data.get("rerank_log", []))
+        executed_queries.extend(data.get("executed_queries", []))
+
+    return {
+        "all_papers": papers,
+        "review_log": review_log,
+        "rerank_log": rerank_log,
+        "executed_queries": executed_queries,
+    }

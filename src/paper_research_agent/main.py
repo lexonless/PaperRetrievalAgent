@@ -16,12 +16,21 @@ def _setup_logging(output_dir: str, project_slug: str) -> None:
     log_dir = Path(output_dir) / project_slug / ".feeder"
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / "agent.log"
+
     root = logging.getLogger()
     root.setLevel(logging.INFO)
+
+    for handler in root.handlers:
+        if isinstance(handler, logging.FileHandler) and handler.baseFilename == str(log_path.resolve()):
+            return
+
     fmt = logging.Formatter("%(asctime)s [%(name)s] %(levelname)s: %(message)s", datefmt="%H:%M:%S")
     fh = logging.FileHandler(str(log_path), encoding="utf-8")
+    fh.setLevel(logging.DEBUG)
     fh.setFormatter(fmt)
     root.addHandler(fh)
+
+    print(f"[log] Writing to: {log_path.resolve()}")
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
