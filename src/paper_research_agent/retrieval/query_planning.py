@@ -10,31 +10,29 @@ def build_query_entries(
     topic_phrases: list[str],
     expanded_terms: list[str],
     domain_terms: list[str],
-    excluded_terms: list[str],
 ) -> list[dict[str, str]]:
     normalized_topic = _normalize_bucket(topic_phrases)
     normalized_expanded = _normalize_bucket(expanded_terms)
     normalized_domain = _normalize_bucket(domain_terms)
-    normalized_excluded = _normalize_bucket(excluded_terms)
 
     combined = _normalize_bucket(normalized_topic[:3] + normalized_expanded[:4])
     positive_groups = _build_positive_groups(combined, normalized_domain)
 
     entries: list[dict[str, str]] = []
 
-    arxiv_precision = _render_arxiv_query(positive_groups[:4], [])
+    arxiv_precision = _render_arxiv_query(positive_groups[:4])
     if arxiv_precision:
         entries.append({"source": "arXiv", "query": arxiv_precision, "purpose": "precision", "stage": "primary", "notes": "Structured boolean query for arXiv."})
 
-    arxiv_recall = _render_arxiv_query(positive_groups[:2], [])
+    arxiv_recall = _render_arxiv_query(positive_groups[:2])
     if arxiv_recall and arxiv_recall != arxiv_precision:
         entries.append({"source": "arXiv", "query": arxiv_recall, "purpose": "recall", "stage": "primary", "notes": "Broader arXiv recall query."})
 
-    oa_precision = _render_openalex_query(positive_groups[:4], [])
+    oa_precision = _render_openalex_query(positive_groups[:4])
     if oa_precision:
         entries.append({"source": "OpenAlex", "query": oa_precision, "purpose": "precision", "stage": "primary", "notes": "Boolean query for OpenAlex."})
 
-    oa_recall = _render_openalex_query(positive_groups[:3], [])
+    oa_recall = _render_openalex_query(positive_groups[:3])
     if oa_recall and oa_recall != oa_precision:
         entries.append({"source": "OpenAlex", "query": oa_recall, "purpose": "recall", "stage": "primary", "notes": "Broader OpenAlex recall query."})
 
@@ -85,7 +83,7 @@ def _format_phrase(term: str) -> str:
     return cleaned
 
 
-def _render_arxiv_query(positive_groups: list[list[str]], excluded_terms: list[str]) -> str:
+def _render_arxiv_query(positive_groups: list[list[str]]) -> str:
     clauses = []
     for group in positive_groups:
         members = [f"all:{_format_phrase(t)}" for t in group if _format_phrase(t)]
@@ -94,15 +92,10 @@ def _render_arxiv_query(positive_groups: list[list[str]], excluded_terms: list[s
         clauses.append(f"({' OR '.join(members)})" if len(members) > 1 else members[0])
     if not clauses:
         return ""
-    query = " AND ".join(clauses[:4])
-    for term in excluded_terms:
-        formatted = _format_phrase(term)
-        if formatted:
-            query = f"{query} ANDNOT all:{formatted}"
-    return query
+    return " AND ".join(clauses[:4])
 
 
-def _render_openalex_query(positive_groups: list[list[str]], excluded_terms: list[str]) -> str:
+def _render_openalex_query(positive_groups: list[list[str]]) -> str:
     clauses = []
     for group in positive_groups:
         members = [_format_phrase(t) for t in group if _format_phrase(t)]
@@ -111,11 +104,7 @@ def _render_openalex_query(positive_groups: list[list[str]], excluded_terms: lis
         clauses.append(f"({' OR '.join(members)})" if len(members) > 1 else members[0])
     if not clauses:
         return ""
-    query = " AND ".join(clauses[:4])
-    negative_members = [_format_phrase(t) for t in excluded_terms if _format_phrase(t)]
-    if negative_members:
-        query = f"{query} NOT ({' OR '.join(negative_members)})"
-    return query
+    return " AND ".join(clauses[:4])
 
 
 def _render_crossref_query(expanded_terms: list[str], domain_terms: list[str], *, include_optional: bool) -> str:

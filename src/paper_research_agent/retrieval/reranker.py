@@ -11,20 +11,41 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from ..core.config import Settings
-from ..core.llm import build_rerank_chat_model, invoke_structured_output
+from ..core.llm import build_chat_model, invoke_structured_output
+from ..core.models import PaperDict, paper_key
 from ..core.normalization import normalize_text
 
 logger = logging.getLogger(__name__)
 
-RERANK_SYSTEM_PROMPT = """You are a scholarly paper reranker. Score each paper independently on how well it addresses the user's research query.
+LLM_RERANK_PROMPT = """You are an expert scholarly paper evaluator performing a professional re-ranking task. Your goal is to score the given papers with a holistic recommendation based ON THEIR ABSTRACTS.
 
-For each paper return:
-- paper_key: the provided paper_key unchanged
-- relevance: integer 1-5 (1=off-topic, 2=vaguely related, 3=somewhat relevant, 4=relevant, 5=highly relevant)
-- reason: one sentence explaining the score
+### INPUT FORMAT EXPECTATION
+You will be provided with a "Query" and a list of papers, each containing a "paper_id" and an "abstract".
 
-Return exactly one JSON object with key "papers" containing an array of judgments.
-Do not use markdown code fences.
+### SCORING CRITERIA (1-5)
+Evaluate and assign an 'overall' score based on these precise anchor definitions:
+- 5 (Exceptional): Highly relevant to the query AND demonstrates a major breakthrough, state-of-the-art (SOTA) results, or exemplary methodology (benchmarks, ablations).
+- 4 (Strong): Highly relevant with a clear, solid contribution and good clarity, though perhaps incremental rather than revolutionary.
+- 3 (Borderline/Neutral): Relevant but ordinary/trivial contribution, OR slightly tangential but possesses exceptional methodological quality. 
+- 2 (Weak): Marginally relevant to the query, or relevant but poorly written with vague contributions.
+- 1 (Irrelevant): Completely off-topic or provides zero scientific value to the query.
+
+*Note: Do not penalize if quality signals (like ablation studies) cannot be assessed from the abstract; score neutrally on what is visible.*
+
+### OUTPUT FORMAT
+Return EXACTLY ONE valid JSON object. Do NOT wrap the response in markdown code fences (e.g., do NOT use ```json ... 
+```). Start the response directly with the opening curly brace { and end with }.
+
+The JSON must follow this exact structure:
+{
+  "papers": [
+    {
+      "paper_id": "string/int",
+      "overall": int,
+      "reason": "Exactly one sentence summarizing your assessment."
+    }
+  ]
+}
 """
 
 LLM_BATCH_SIZE = 8
@@ -32,7 +53,7 @@ LLM_BATCH_SIZE = 8
 
 class RerankJudgment(BaseModel):
     paper_key: str
-    relevance: int
+    overall: int = 0
     reason: str = ""
 
 
@@ -40,21 +61,9 @@ class RerankResult(BaseModel):
     papers: list[RerankJudgment] = Field(default_factory=list)
 
 
-def _paper_key(paper: dict[str, Any]) -> str:
-    oa_id = normalize_text(paper.get("_openalex_id", ""), for_matching=True)
-    if oa_id:
-        return f"oa:{oa_id}"
-    doi = normalize_text(paper.get("doi", ""), for_matching=True)
-    if doi:
-        return f"doi:{doi}"
-    title = normalize_text(paper.get("title", ""), for_matching=True)
-    return f"title:{title}" if title else f"unknown_{id(paper)}"
-
-
-def _build_paper_text(paper: dict[str, Any], max_length: int = 512) -> str:
-    title = normalize_text(paper.get("title", ""))
-    snippets = paper.get("evidence_snippets", [])
-    abstract = normalize_text(snippets[0])[:max_length] if snippets else ""
+def _build_paper_text(paper: PaperDict, max_length: int = 512) -> str:
+    title = normalize_text(paper.title)
+    abstract = normalize_text(paper.evidence_snippets[0])[:max_length] if paper.evidence_snippets else ""
     if abstract:
         return f"{title}. {abstract}"
     return title
@@ -64,11 +73,14 @@ class BaseReranker(ABC):
 
     @abstractmethod
     async def rerank(self, query: str, papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        """返回 [{paper_key, relevance, reason}, ...]"""
+        """返回 [{paper_key, relevance, ...}, ...]"""
         ...
 
 
 class CrossEncoderReranker(BaseReranker):
+
+    _shared_model: Any = None
+    _shared_model_name: str = ""
 
     def __init__(
         self,
@@ -81,10 +93,17 @@ class CrossEncoderReranker(BaseReranker):
         self._device = device
         self._batch_size = batch_size
         self._max_length = max_length
-        self._model: Any = None
+
+    @property
+    def _model(self) -> Any:
+        return CrossEncoderReranker._shared_model
+
+    @_model.setter
+    def _model(self, value: Any) -> None:
+        CrossEncoderReranker._shared_model = value
 
     def _ensure_model(self) -> None:
-        if self._model is not None:
+        if self._model is not None and self._shared_model_name == self._model_name:
             return
         os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
         os.environ.setdefault("TOKENIZERS_USE_FAST", "True")
@@ -101,6 +120,7 @@ class CrossEncoderReranker(BaseReranker):
         logger.info("Loading cross-encoder model %s on %s ...", self._model_name, self._device)
         sys.stdout.flush()
         self._model = FlagReranker(self._model_name, use_fp16=False)
+        CrossEncoderReranker._shared_model_name = self._model_name
         logger.info("Cross-encoder model loaded.")
 
     async def rerank(self, query: str, papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -120,15 +140,13 @@ class CrossEncoderReranker(BaseReranker):
         if not isinstance(scores, list):
             scores = [scores]
 
-        mapped = [1 + round(score * 4) for score in scores]
-
         return [
             {
-                "paper_key": _paper_key(p),
-                "relevance": int(m),
-                "reason": f"cross-encoder score: {float(scores[i]):.3f}",
+                "paper_key": paper_key(p),
+                "relevance": 1 + round(score * 4),
+                "raw_score": float(score),
             }
-            for i, (p, m) in enumerate(zip(papers, mapped))
+            for p, score in zip(papers, scores)
         ]
 
 
@@ -144,48 +162,49 @@ class LLMReranker(BaseReranker):
         all_judgments: list[dict[str, Any]] = []
         for start in range(0, len(papers), LLM_BATCH_SIZE):
             batch = papers[start : start + LLM_BATCH_SIZE]
-            judgments = await self._judge_rerank_batch(batch, query)
+            judgments = await self._judge_batch(batch, query)
             all_judgments.extend(judgments)
         return all_judgments
 
-    async def _judge_rerank_batch(
-        self, batch: list[dict[str, Any]], query: str
+    async def _judge_batch(
+        self, batch: list[PaperDict], query: str
     ) -> list[dict[str, Any]]:
         papers_data = []
         for p in batch:
-            key = _paper_key(p)
-            title = normalize_text(p.get("title", ""))
-            year = p.get("year", "")
-            snippets = p.get("evidence_snippets", [])
-            abstract = normalize_text(snippets[0])[:500] if snippets else ""
+            key = paper_key(p)
+            abstract = normalize_text(p.evidence_snippets[0])[:500] if p.evidence_snippets else ""
             papers_data.append({
                 "paper_key": key,
-                "title": title,
-                "year": year,
+                "title": normalize_text(p.title),
+                "year": p.year,
                 "abstract": abstract,
             })
 
         result = await invoke_structured_output(
             model=self._model,
             schema=RerankResult,
-            system_prompt=RERANK_SYSTEM_PROMPT,
+            system_prompt=LLM_RERANK_PROMPT,
             user_prompt=json.dumps({"query": query, "papers": papers_data}, ensure_ascii=False, indent=2),
         )
         return [
-            {"paper_key": j.paper_key, "relevance": j.relevance, "reason": j.reason}
+            {
+                "paper_key": j.paper_key,
+                "overall": j.overall,
+                "reason": j.reason,
+            }
             for j in result.papers
         ]
 
 
-def build_reranker(settings: Settings) -> BaseReranker:
-    strategy = settings.rerank_strategy
-    if strategy == "llm":
-        llm = build_rerank_chat_model(settings)
-        return LLMReranker(llm)
-
-    return CrossEncoderReranker(
+def build_reranker(settings: Settings) -> tuple[CrossEncoderReranker, LLMReranker]:
+    ce_reranker = CrossEncoderReranker(
         model_name=settings.cross_encoder_model,
         device=settings.cross_encoder_device,
         batch_size=settings.cross_encoder_batch_size,
         max_length=settings.cross_encoder_max_length,
     )
+
+    llm = build_chat_model(settings, rerank=True)
+    llm_reranker = LLMReranker(llm)
+
+    return ce_reranker, llm_reranker

@@ -3,8 +3,7 @@ from __future__ import annotations
 import unittest
 
 from paper_research_agent.core.config import Settings
-from paper_research_agent.core.models import PaperRecord
-from paper_research_agent.retrieval.ranking import PaperRankingEngine
+from paper_research_agent.core.models import PaperDict
 from paper_research_agent.retrieval.sources import PaperSourceCollector
 from paper_research_agent.retrieval.utils import DEFAULT_SOURCE_ORDER
 
@@ -22,7 +21,7 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             max_results_per_source: int | None = None,
             from_year: int | None = None,
             target_source: str = "",
-        ) -> tuple[list[PaperRecord], list[dict[str, str]]]:
+        ) -> tuple[list[PaperDict], list[dict[str, str]]]:
             return [], []
 
         collector.collect_all_source_records = fake_collect_all_source_records  # type: ignore[method-assign]
@@ -45,7 +44,7 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             max_results_per_source: int | None = None,
             from_year: int | None = None,
             target_source: str = "",
-        ) -> tuple[list[PaperRecord], list[dict[str, str]]]:
+        ) -> tuple[list[PaperDict], list[dict[str, str]]]:
             self.assertEqual(target_source, "arXiv")
             return [], []
 
@@ -68,168 +67,8 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(client.last_params["search_query"], 'all:"graph rag" AND all:retrieval')
 
-    def test_ranking_recognizes_openalex_source_family(self) -> None:
-        engine = PaperRankingEngine()
-        papers, duplicate_count, raw_source_families = engine.prepare_ranked_papers(
-            records=[
-                PaperRecord(
-                    title="Adapter Tuning for Retrieval",
-                    source="OpenAlex",
-                    summary="A retrieval paper with enough evidence for eligibility.",
-                    authors=["A. Author"],
-                    published="2024-12-01",
-                    url="https://openalex.org/W1234567890",
-                    doi="10.1000/example",
-                    source_rank=1,
-                    matched_query="adapter tuning retrieval",
-                    query_stage="primary",
-                )
-            ],
-            from_year=2020,
-            end_year=2026,
-            context={
-                "query_phrases": ["adapter tuning retrieval"],
-                "query_tokens": ["adapter", "tuning", "retrieval"],
-                "exclude_phrases": [],
-                "allow_review_articles": False,
-            },
-        )
-
-        self.assertEqual(duplicate_count, 0)
-        self.assertEqual(raw_source_families, {"OpenAlex"})
-        self.assertEqual(len(papers), 1)
-
-    def test_dedup_merges_same_doi(self) -> None:
-        engine = PaperRankingEngine()
-        papers, duplicate_count, _ = engine.prepare_ranked_papers(
-            records=[
-                PaperRecord(
-                    title="BrepGPT",
-                    source="arXiv",
-                    summary="Abstract from arXiv.",
-                    authors=["Author A"],
-                    published="2025-11-27",
-                    url="http://arxiv.org/abs/2511.22171v1",
-                    doi="10.1145/example",
-                    source_rank=1,
-                    matched_query="b-rep generation",
-                    query_stage="primary",
-                ),
-                PaperRecord(
-                    title="BrepGPT",
-                    source="OpenAlex",
-                    summary="Abstract from OpenAlex.",
-                    authors=["Author B"],
-                    published="2025-11-27",
-                    url="https://openalex.org/W1234567890",
-                    doi="10.1145/example",
-                    source_rank=2,
-                    matched_query="b-rep generation",
-                    query_stage="primary",
-                ),
-            ],
-            from_year=2021,
-            end_year=2026,
-            context={
-                "query_phrases": ["b-rep generation"],
-                "query_tokens": ["brep", "generation"],
-                "exclude_phrases": [],
-                "allow_review_articles": False,
-            },
-        )
-
-        self.assertEqual(duplicate_count, 1)
-        self.assertEqual(len(papers), 1)
-        self.assertIn("arXiv", papers[0]["source"])
-        self.assertIn("OpenAlex", papers[0]["source"])
-
-    def test_dedup_merges_by_title_when_one_has_doi_and_other_has_url(self) -> None:
-        engine = PaperRankingEngine()
-        papers, duplicate_count, _ = engine.prepare_ranked_papers(
-            records=[
-                PaperRecord(
-                    title="BrepGPT: Autoregressive B-rep Generation",
-                    source="arXiv",
-                    summary="Abstract from arXiv.",
-                    authors=["Author A"],
-                    published="2025-11-27",
-                    url="http://arxiv.org/abs/2511.22171v1",
-                    doi="",
-                    source_rank=1,
-                    matched_query="brep",
-                    query_stage="primary",
-                ),
-                PaperRecord(
-                    title="BrepGPT: Autoregressive B-rep Generation",
-                    source="OpenAlex",
-                    summary="Abstract from OpenAlex.",
-                    authors=["Author B"],
-                    published="2025-11-27",
-                    url="https://openalex.org/W1234567890",
-                    doi="10.1145/example",
-                    source_rank=2,
-                    matched_query="brep",
-                    query_stage="primary",
-                ),
-            ],
-            from_year=2021,
-            end_year=2026,
-            context={
-                "query_phrases": ["brep"],
-                "query_tokens": ["brep", "generation"],
-                "exclude_phrases": [],
-                "allow_review_articles": False,
-            },
-        )
-
-        self.assertEqual(duplicate_count, 1)
-        self.assertEqual(len(papers), 1)
-
-    def test_dedup_falls_back_to_title_when_no_doi_or_url(self) -> None:
-        engine = PaperRankingEngine()
-        papers, duplicate_count, _ = engine.prepare_ranked_papers(
-            records=[
-                PaperRecord(
-                    title="BrepGPT",
-                    source="arXiv",
-                    summary="Abstract.",
-                    authors=["Author A"],
-                    published="2025-01-01",
-                    url="",
-                    doi="",
-                    source_rank=1,
-                    matched_query="brep",
-                    query_stage="primary",
-                ),
-                PaperRecord(
-                    title="BrepGPT",
-                    source="OpenAlex",
-                    summary="Abstract.",
-                    authors=["Author B"],
-                    published="2025-01-01",
-                    url="",
-                    doi="",
-                    source_rank=2,
-                    matched_query="brep",
-                    query_stage="primary",
-                ),
-            ],
-            from_year=2021,
-            end_year=2026,
-            context={
-                "query_phrases": ["brep"],
-                "query_tokens": ["brep"],
-                "exclude_phrases": [],
-                "allow_review_articles": False,
-            },
-        )
-
-        self.assertEqual(duplicate_count, 1)
-        self.assertEqual(len(papers), 1)
-
     def _build_settings(self) -> Settings:
         return Settings(
-            model_provider="glm",
             model_api_key="test-key",
             model_base_url="https://example.com",
             model_name="test-model",
@@ -238,10 +77,15 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             rerank_model_base_url="https://example.com",
             rerank_model_name="test-model",
             rerank_default_headers=None,
+            cross_encoder_model="BAAI/bge-reranker-base",
+            cross_encoder_device="cpu",
+            cross_encoder_batch_size=32,
+            cross_encoder_max_length=512,
             request_timeout=30.0,
+            max_output_tokens=4096,
             max_results_per_source=10,
-            docling_accelerator="AUTO",
-            docling_ocr_backend="torch",
+            http_proxy="",
+            openalex_api_key="",
             unpaywall_email="",
         )
 

@@ -1,1 +1,7 @@
-"""Raw feeder package for preparing paper source materials for LLM Wiki."""
+"""Academic paper discovery and research agent."""
+
+from .agent import PaperDiscoveryAgent
+from .app import RawFeederApplication
+from .orchestrator import ResearchOrchestrator
+
+__all__ = ["PaperDiscoveryAgent", "RawFeederApplication", "ResearchOrchestrator"]

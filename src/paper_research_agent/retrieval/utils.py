@@ -9,25 +9,6 @@ DEFAULT_SOURCE_ORDER = ("arXiv", "Crossref", "OpenAlex")
 PRIMARY_STAGE = "primary"
 TOPIC_FALLBACK_STAGE = "topic_fallback"
 
-HARD_NOISE_PHRASES = (
-    "decision letter",
-    "editorial",
-    "correction",
-    "erratum",
-    "table of contents",
-    "front matter",
-    "preface",
-    "call for papers",
-)
-
-REVIEW_ARTICLE_PHRASES = (
-    "systematic review",
-    "survey",
-    "review",
-    "overview",
-    "survey and outlook",
-)
-
 STOPWORDS = {
     "a",
     "an",

@@ -4,30 +4,22 @@ import asyncio
 import re
 import time
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from typing import Any
 
 from ..core.config import Settings
-from ..core.models import PaperRecord
+from ..core.models import PaperDict
 from ..core.normalization import normalize_string_list, normalize_text
-from .utils import DEFAULT_SOURCE_ORDER, extract_year, normalize_pdf_url
+from .utils import DEFAULT_SOURCE_ORDER, normalize_pdf_url
 
 
 class PaperSourceCollector:
     _arxiv_lock = asyncio.Lock()
     _last_arxiv_call: float = 0
-    _arxiv_min_interval: float = 2.0
+    _arxiv_min_interval: float = 5.0
 
     def __init__(self, settings: Settings, client: Any) -> None:
         self._settings = settings
         self._client = client
-        self._local_pdf_paths: list[str] = []
-
-    def set_local_pdf_paths(self, paths: list[str]) -> None:
-        self._local_pdf_paths = [normalize_text(path) for path in paths if normalize_text(path)]
-
-    def clear_local_pdf_paths(self) -> None:
-        self._local_pdf_paths = []
 
     async def collect_records_for_query_specs(
         self,
@@ -35,8 +27,8 @@ class PaperSourceCollector:
         stage_name: str,
         max_results_per_source: int | None,
         from_year: int | None,
-    ) -> tuple[list[PaperRecord], list[dict[str, str]], list[dict[str, Any]]]:
-        records: list[PaperRecord] = []
+    ) -> tuple[list[PaperDict], list[dict[str, str]], list[dict[str, Any]]]:
+        records: list[PaperDict] = []
         source_errors: list[dict[str, str]] = []
         executed_specs: list[dict[str, Any]] = []
 
@@ -73,7 +65,7 @@ class PaperSourceCollector:
         max_results_per_source: int | None = None,
         from_year: int | None = None,
         target_source: str = "",
-    ) -> tuple[list[PaperRecord], list[dict[str, str]]]:
+    ) -> tuple[list[PaperDict], list[dict[str, str]]]:
         tasks: list[tuple[str, Any]] = []
         for source_name in DEFAULT_SOURCE_ORDER:
             if target_source and source_name != target_source:
@@ -86,7 +78,7 @@ class PaperSourceCollector:
                 tasks.append(("OpenAlex", self.search_openalex_records(query, max_results=max_results_per_source, from_year=from_year)))
 
         rendered_results = await asyncio.gather(*(task for _, task in tasks), return_exceptions=True)
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         source_errors: list[dict[str, str]] = []
         for (source_name, _), rendered in zip(tasks, rendered_results, strict=False):
             if isinstance(rendered, Exception):
@@ -94,12 +86,12 @@ class PaperSourceCollector:
                 continue
             for record in rendered:
                 records.append(
-                    PaperRecord(
+                    PaperDict(
                         title=record.title,
                         source=record.source,
-                        summary=record.summary,
+                        evidence_snippets=record.evidence_snippets,
                         authors=record.authors,
-                        published=record.published,
+                        date=record.date,
                         url=record.url,
                         pdf_url=record.pdf_url,
                         doi=record.doi,
@@ -112,125 +104,7 @@ class PaperSourceCollector:
                 )
         return records, source_errors
 
-    async def collect_local_pdf_records(
-        self,
-        *,
-        task_interpretation: dict[str, Any],
-        context: dict[str, Any],
-    ) -> tuple[list[PaperRecord], list[dict[str, str]], dict[str, Any]]:
-        if not self._local_pdf_paths:
-            return [], [], {"scanned_count": 0, "missing_count": 0, "read_error_count": 0, "empty_text_count": 0, "token_miss_count": 0, "candidate_count": 0, "retained_count": 0, "entries": []}
-
-        query_tokens = set(context.get("query_tokens", []))
-        records: list[PaperRecord] = []
-        source_errors: list[dict[str, str]] = []
-        debug_entries: list[dict[str, Any]] = []
-        debug_summary = {
-            "scanned_count": 0,
-            "missing_count": 0,
-            "read_error_count": 0,
-            "empty_text_count": 0,
-            "token_miss_count": 0,
-            "candidate_count": 0,
-            "retained_count": 0,
-            "entries": debug_entries,
-        }
-
-        intent = task_interpretation.get("intent", {}) if isinstance(task_interpretation, dict) else {}
-        topic = normalize_text(intent.get("topic", ""))
-        for rank, pdf_path in enumerate(self._local_pdf_paths[:20], start=1):
-            debug_summary["scanned_count"] += 1
-            path = Path(pdf_path)
-            title = normalize_text(path.stem.replace("_", " ").replace("-", " "))
-            if not path.exists():
-                source_errors.append({"source": "LocalLibrary", "error": f"Missing local PDF: {pdf_path}", "query": topic})
-                debug_summary["missing_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path),
-                        "title": title or path.name,
-                        "status": "missing_file",
-                        "error": f"Missing local PDF: {pdf_path}",
-                    }
-                )
-                continue
-            try:
-                snippet = await asyncio.to_thread(self._read_local_pdf_text, path, 2400)
-            except Exception as exc:
-                source_errors.append({"source": "LocalLibrary", "error": str(exc), "query": topic})
-                debug_summary["read_error_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path.resolve()),
-                        "title": title or path.name,
-                        "status": "read_error",
-                        "error": str(exc),
-                    }
-                )
-                continue
-
-            extracted_chars = len(snippet)
-            if extracted_chars == 0:
-                debug_summary["empty_text_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path.resolve()),
-                        "title": title or path.name,
-                        "status": "empty_text",
-                        "extracted_chars": 0,
-                    }
-                )
-                continue
-
-            combined_match = normalize_text(f"{title} {snippet[:1200]}", for_matching=True)
-            matched_tokens = sorted(query_tokens.intersection(set(combined_match.split())))
-            if query_tokens and not matched_tokens:
-                debug_summary["token_miss_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path.resolve()),
-                        "title": title or path.name,
-                        "status": "token_miss",
-                        "extracted_chars": extracted_chars,
-                        "matched_token_count": 0,
-                        "matched_tokens": [],
-                    }
-                )
-                continue
-
-            published = ""
-            year = extract_year(title)
-            if year is not None:
-                published = str(year)
-
-            records.append(
-                PaperRecord(
-                    title=title or path.name,
-                    source="LocalLibrary",
-                    summary=normalize_text(snippet[:900]),
-                    authors=[],
-                    published=published,
-                    url=str(path.resolve()),
-                    pdf_url=str(path.resolve()),
-                    source_rank=rank,
-                    matched_query=topic,
-                    query_stage="local_library",
-                )
-            )
-            debug_summary["candidate_count"] += 1
-            debug_entries.append(
-                {
-                    "path": str(path.resolve()),
-                    "title": title or path.name,
-                    "status": "candidate_added",
-                    "extracted_chars": extracted_chars,
-                    "matched_token_count": len(matched_tokens),
-                    "matched_tokens": matched_tokens,
-                }
-            )
-        return records, source_errors, debug_summary
-
-    async def search_arxiv_records(self, query: str, max_results: int | None = None) -> list[PaperRecord]:
+    async def search_arxiv_records(self, query: str, max_results: int | None = None) -> list[PaperDict]:
         async with PaperSourceCollector._arxiv_lock:
             elapsed = time.monotonic() - PaperSourceCollector._last_arxiv_call
             if elapsed < PaperSourceCollector._arxiv_min_interval:
@@ -238,7 +112,7 @@ class PaperSourceCollector:
             limit = self._resolve_limit(max_results)
             search_query = self._format_arxiv_search_query(query)
             response = await self._client.get(
-                "http://export.arxiv.org/api/query",
+                "https://export.arxiv.org/api/query",
                 params={"search_query": search_query, "start": 0, "max_results": limit, "sortBy": "relevance", "sortOrder": "descending"},
             )
             PaperSourceCollector._last_arxiv_call = time.monotonic()
@@ -247,7 +121,7 @@ class PaperSourceCollector:
         namespace = {"atom": "http://www.w3.org/2005/Atom"}
         entries = root.findall("atom:entry", namespace)
 
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         for rank, entry in enumerate(entries, start=1):
             authors = [author.findtext("atom:name", default="", namespaces=namespace).strip() for author in entry.findall("atom:author", namespace)]
             title = entry.findtext("atom:title", default="", namespaces=namespace).strip()
@@ -262,10 +136,10 @@ class PaperSourceCollector:
                 if title_attr == "pdf" or type_attr == "application/pdf" or href.lower().endswith(".pdf"):
                     pdf_url = href
                     break
-            records.append(PaperRecord(title=normalize_text(title), source="arXiv", summary=normalize_text(summary), authors=[a for a in authors if a], published=published, url=url, pdf_url=normalize_pdf_url(pdf_url) or normalize_pdf_url(url), source_rank=rank))
+            records.append(PaperDict(title=normalize_text(title), source="arXiv", evidence_snippets=[normalize_text(summary)], authors=[a for a in authors if a], date=published, url=url, pdf_url=normalize_pdf_url(pdf_url) or normalize_pdf_url(url), source_rank=rank))
         return records
 
-    async def search_crossref_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperRecord]:
+    async def search_crossref_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperDict]:
         limit = self._resolve_limit(max_results)
         params: dict[str, Any] = {"query": query, "rows": limit, "select": "title,author,DOI,URL,published-print,published-online,issued,container-title,abstract,link"}
         if from_year is not None:
@@ -274,7 +148,7 @@ class PaperSourceCollector:
         response.raise_for_status()
         items = response.json().get("message", {}).get("items", [])
 
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         for rank, item in enumerate(items, start=1):
             title_list = item.get("title") or []
             title = title_list[0].strip() if title_list else "Untitled"
@@ -288,12 +162,12 @@ class PaperSourceCollector:
             venue_list = item.get("container-title") or []
             venue = venue_list[0].strip() if venue_list else "Crossref"
             records.append(
-                PaperRecord(
+                PaperDict(
                     title=normalize_text(title),
                     source=f"Crossref / {venue}",
-                    summary=normalize_text(item.get("abstract", "")),
+                    evidence_snippets=[normalize_text(item.get("abstract", ""))],
                     authors=authors,
-                    published=self._extract_crossref_date(item),
+                    date=self._extract_crossref_date(item),
                     url=(item.get("URL") or "").strip(),
                     pdf_url=self._extract_crossref_pdf_url(item),
                     doi=(item.get("DOI") or "").strip(),
@@ -302,13 +176,13 @@ class PaperSourceCollector:
             )
         return records
 
-    async def search_openalex_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperRecord]:
+    async def search_openalex_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperDict]:
         limit = self._resolve_limit(max_results)
         params: dict[str, Any] = {
             "search": query,
             "per-page": limit,
             "sort": "relevance_score:desc",
-            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "type", "cited_by_count"]),
+            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "abstract", "type", "cited_by_count"]),
         }
         if from_year is not None:
             params["filter"] = f"from_publication_date:{from_year}-01-01"
@@ -316,7 +190,7 @@ class PaperSourceCollector:
         response.raise_for_status()
         items = response.json().get("results", [])
 
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         for rank, item in enumerate(items, start=1):
             title = normalize_text(item.get("display_name", "") or "Untitled")
             authors: list[str] = []
@@ -348,12 +222,12 @@ class PaperSourceCollector:
             if doi.startswith("https://doi.org/"):
                 doi = doi.removeprefix("https://doi.org/")
             records.append(
-                PaperRecord(
+                PaperDict(
                     title=title,
                     source="OpenAlex",
-                    summary=self._reconstruct_openalex_abstract(item.get("abstract_inverted_index")),
+                    evidence_snippets=[self._extract_openalex_abstract(item)],
                     authors=authors,
-                    published=published,
+                    date=published,
                     url=landing_page,
                     pdf_url=pdf_url,
                     doi=doi,
@@ -364,7 +238,7 @@ class PaperSourceCollector:
             )
         return records
 
-    async def fetch_references(self, openalex_id: str, top_k: int = 5) -> list[PaperRecord]:
+    async def fetch_references(self, openalex_id: str, top_k: int = 5) -> list[PaperDict]:
         """Fetch papers that this paper references (前向溯源)."""
         response = await self._client.get(f"https://api.openalex.org/works/{openalex_id}")
         response.raise_for_status()
@@ -385,7 +259,7 @@ class PaperSourceCollector:
         resp.raise_for_status()
         return self._parse_openalex_batch(resp.json().get("results", []))[:top_k]
 
-    async def fetch_citations(self, openalex_id: str, top_k: int = 5) -> list[PaperRecord]:
+    async def fetch_citations(self, openalex_id: str, top_k: int = 5) -> list[PaperDict]:
         """Fetch papers that cite this paper (后向追踪), filtered for recency and impact."""
         import datetime as dt
         two_years_ago = (dt.date.today().replace(year=dt.date.today().year - 2)).isoformat()
@@ -401,8 +275,8 @@ class PaperSourceCollector:
         records = self._parse_openalex_batch(items)
         return [r for r in records if r.source_rank > 0][:top_k]
 
-    def _parse_openalex_batch(self, items: list[dict[str, Any]]) -> list[PaperRecord]:
-        records: list[PaperRecord] = []
+    def _parse_openalex_batch(self, items: list[dict[str, Any]]) -> list[PaperDict]:
+        records: list[PaperDict] = []
         for rank, item in enumerate(items, start=1):
             title = normalize_text(item.get("display_name", "") or "Untitled")
             if not title or title == "Untitled":
@@ -426,16 +300,13 @@ class PaperSourceCollector:
             if "/W" in oa_url:
                 oa_id = oa_url.rsplit("/", 1)[-1]
             cited_by = item.get("cited_by_count") or 0
-            doi = normalize_text(item.get("doi", ""))
-            if doi.startswith("https://doi.org/"):
-                doi = doi.removeprefix("https://doi.org/")
             records.append(
-                PaperRecord(
+                PaperDict(
                     title=title,
                     source="OpenAlex",
-                    summary=self._reconstruct_openalex_abstract(item.get("abstract_inverted_index")),
+                    evidence_snippets=[self._extract_openalex_abstract(item)],
                     authors=authors,
-                    published=published,
+                    date=published,
                     url=landing,
                     pdf_url=pdf,
                     doi=doi,
@@ -453,35 +324,6 @@ class PaperSourceCollector:
         if re.search(r"\b(?:all|ti|abs|au|cat|id|jr|co|rn):", cleaned, flags=re.IGNORECASE):
             return cleaned
         return f"all:{cleaned}"
-
-    def _read_local_pdf_text(self, path: Path, max_chars: int = 1800) -> str:
-        try:
-            from pypdf import PdfReader
-        except ImportError:
-            return ""
-        if not path.exists():
-            return ""
-        try:
-            reader = PdfReader(str(path))
-        except Exception:
-            return ""
-        chunks: list[str] = []
-        remaining = max_chars
-        for page in reader.pages[:3]:
-            if remaining <= 0:
-                break
-            try:
-                page_text = page.extract_text() or ""
-            except Exception:
-                continue
-            normalized = normalize_text(page_text)
-            if not normalized:
-                continue
-            snippet = normalized[:remaining]
-            if snippet:
-                chunks.append(snippet)
-                remaining -= len(snippet)
-        return normalize_text(" ".join(chunks))[:max_chars]
 
     def _resolve_limit(self, max_results: int | None) -> int:
         if max_results is None:
@@ -512,20 +354,21 @@ class PaperSourceCollector:
                 return candidate
         return ""
 
-    def _reconstruct_openalex_abstract(self, abstract_inverted_index: Any) -> str:
-        if not isinstance(abstract_inverted_index, dict):
-            return ""
-        positions: dict[int, str] = {}
-        for token, token_positions in abstract_inverted_index.items():
-            if not isinstance(token, str) or not isinstance(token_positions, list):
-                continue
-            for pos in token_positions:
-                if isinstance(pos, int):
-                    positions[pos] = token
-        if not positions:
-            return ""
-        ordered_tokens = [positions[pos] for pos in sorted(positions)]
-        return normalize_text(" ".join(ordered_tokens))
+    @staticmethod
+    def _extract_openalex_abstract(item: dict[str, Any]) -> str:
+        inv_index = item.get("abstract_inverted_index")
+        if isinstance(inv_index, dict):
+            from pyalex import invert_abstract
+
+            text = invert_abstract(inv_index)
+            if text:
+                return normalize_text(text)
+        plain = item.get("abstract")
+        if isinstance(plain, str):
+            plain = normalize_text(plain)
+            if plain:
+                return plain
+        return ""
 
 
 def _extract_openalex_id_from_url(url: str) -> str:

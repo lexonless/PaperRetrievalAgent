@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from paper_research_agent.core.config import Settings
-from paper_research_agent.core.models import PaperRecord
+from paper_research_agent.core.models import PaperDict
 from paper_research_agent.feeder_store import ProjectPaths
 from paper_research_agent.main import run_cli
 
@@ -22,27 +22,27 @@ class FakeCollector:
         max_results_per_source: int | None = None,
         from_year: int | None = None,
         target_source: str = "",
-    ) -> tuple[list[PaperRecord], list[dict[str, str]]]:
+    ) -> tuple[list[PaperDict], list[dict[str, str]]]:
         self.calls.append(query)
         return [
-            PaperRecord(title="Direct B-Rep Generation with Diffusion Models", source="arXiv",
-                        summary="We propose a novel diffusion-based approach for direct B-Rep generation.",
-                        authors=["Author A"], published="2025-03-15",
+            PaperDict(title="Direct B-Rep Generation with Diffusion Models", source="arXiv",
+                        evidence_snippets=["We propose a novel diffusion-based approach for direct B-Rep generation."],
+                        authors=["Author A"], date="2025-03-15",
                         url="https://arxiv.org/abs/2503.12345",
                         pdf_url="https://arxiv.org/pdf/2503.12345.pdf",
                         source_rank=1, matched_query=query, query_stage=stage_name),
-            PaperRecord(title="CAD Reconstruction via Neural Implicit Representations",
+            PaperDict(title="CAD Reconstruction via Neural Implicit Representations",
                         source="Crossref / CAD Journal",
-                        summary="A method for reconstructing CAD models.",
-                        authors=["Author C"], published="2024-06-01",
+                        evidence_snippets=["A method for reconstructing CAD models."],
+                        authors=["Author C"], date="2024-06-01",
                         url="https://example.com/cad-recon", doi="10.1000/cad-recon",
                         source_rank=1, matched_query=query, query_stage=stage_name),
         ], []
 
-    async def fetch_references(self, openalex_id: str, top_k: int = 5) -> list[PaperRecord]:
+    async def fetch_references(self, openalex_id: str, top_k: int = 5) -> list[PaperDict]:
         return []
 
-    async def fetch_citations(self, openalex_id: str, top_k: int = 5) -> list[PaperRecord]:
+    async def fetch_citations(self, openalex_id: str, top_k: int = 5) -> list[PaperDict]:
         return []
 
 
@@ -75,7 +75,6 @@ class _FakeStructuredLLM:
                 application_domains=["CAD", "geometric modeling"],
                 key_metrics=["reconstruction quality"],
                 expanded_terms=["boundary representation", "DDPM"],
-                excluded_terms=["mesh"],
             )
         if "RerankResult" in name:
             papers = _extract_papers(messages)
@@ -106,7 +105,7 @@ def _extract_papers(messages) -> list[dict]:
 
 
 class FakeApp:
-    async def discover(self, *, project_slug, query, top_k=5):
+    async def discover(self, *, project_slug, query):
         return (
             {"selected_count": 1, "written_files": [
                 {"path": f"projects/{project_slug}/raw/papers/metadata/demo.md"}
@@ -119,6 +118,7 @@ class FakeApp:
 class AgentTests(unittest.IsolatedAsyncioTestCase):
     async def test_agent_searches_and_materializes_papers(self):
         from paper_research_agent.agent import PaperDiscoveryAgent
+        from paper_research_agent.agent.pdf import PdfDownloader
         from paper_research_agent.retrieval.ranking import PaperRankingEngine
 
         fake_root = Path(os.getcwd()) / "projects" / "demo-agent-test"
@@ -139,13 +139,9 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
             written_md[str(path)] = content
 
         with (
-            patch("paper_research_agent.agent.ensure_project_paths", return_value=fake_paths),
-            patch("paper_research_agent.agent.write_raw_paper", side_effect=_capture),
-            patch.object(PaperDiscoveryAgent, "_download_pdf", side_effect=lambda s, u: b"fake"),
-            patch.object(PaperDiscoveryAgent, "_process_with_docling", side_effect=lambda s, *a, **k: {
-                "fulltext_extracted": False, "local_fulltext_path": "",
-                "page_images_exported": False, "local_page_image_dir": "", "pdf_error": "",
-            }),
+            patch("paper_research_agent.agent.engine.ensure_project_paths", return_value=fake_paths),
+            patch("paper_research_agent.agent.engine.write_raw_paper", side_effect=_capture),
+            patch.object(PdfDownloader, "_fetch", side_effect=lambda s, u: b"fake"),
         ):
             agent = PaperDiscoveryAgent(
                 settings=_build_settings(), output_root=str(fake_root.parent),
@@ -154,7 +150,7 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
             agent._llm = FakeLLM()
             batch_data, batch_path = await agent.discover(
                 project_slug="demo-agent-test",
-                query="recent papers on direct brep generation", top_k=2,
+                query="recent papers on direct brep generation",
             )
             await agent.close()
 
@@ -168,7 +164,7 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
         stdout = io.StringIO()
         with redirect_stdout(stdout):
             exit_code = run_cli(
-                ["discover", "--project", "demo", "--query", "papers on brep", "--top-k", "1"],
+                ["discover", "--project", "demo", "--query", "papers on brep"],
                 app_factory=lambda s, o: FakeApp(), settings=_build_settings(),
             )
         self.assertEqual(exit_code, 0)
@@ -178,12 +174,15 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
 
 def _build_settings():
     return Settings(
-        model_provider="glm", model_api_key="t", model_base_url="https://x.com",
+        model_api_key="t", model_base_url="https://x.com",
         model_name="m", default_headers=None,
         rerank_model_api_key="t", rerank_model_base_url="https://x.com",
         rerank_model_name="m", rerank_default_headers=None,
-        request_timeout=30.0, max_results_per_source=5,
-        docling_accelerator="AUTO", docling_ocr_backend="torch",
+        cross_encoder_model="BAAI/bge-reranker-base",
+        cross_encoder_device="cpu", cross_encoder_batch_size=32,
+        cross_encoder_max_length=512,
+        request_timeout=30.0, max_output_tokens=4096,
+        max_results_per_source=5, http_proxy="", openalex_api_key="",
         unpaywall_email="",
     )
 

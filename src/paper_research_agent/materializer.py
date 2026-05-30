@@ -3,52 +3,50 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from .core.models import PaperDict
 from .core.normalization import normalize_text
-
 
 ARXIV_ID_PATTERN = re.compile(r"arxiv\.org/(?:abs|pdf)/([^/?#]+)", re.IGNORECASE)
 
 
-def build_raw_paper_slug(paper: dict) -> str:
-    doi = normalize_text(paper.get("doi", ""), for_matching=True)
+def build_raw_paper_slug(paper: PaperDict) -> str:
+    doi = normalize_text(paper.doi, for_matching=True)
     if doi:
         return _slugify(f"doi-{doi}", max_length=90)
 
-    for candidate in (
-        normalize_text(paper.get("url", "")),
-        normalize_text(paper.get("pdf_url", "")),
-    ):
+    for candidate in (normalize_text(paper.url), normalize_text(paper.pdf_url)):
         match = ARXIV_ID_PATTERN.search(candidate)
         if match:
             identifier = match.group(1).removesuffix(".pdf")
             return _slugify(f"arxiv-{identifier}", max_length=90)
 
-    title = normalize_text(paper.get("title", "paper"))
+    title = normalize_text(paper.title or "paper")
+    return _slugify(title, max_length=90) or "paper"
     return _slugify(title, max_length=90) or "paper"
 
 
 def render_raw_paper_markdown(
-    paper: dict,
+    paper: PaperDict,
     *,
     project_slug: str,
     user_query: str,
     generated_at: str,
     local_pdf_path: str = "",
-    local_fulltext_path: str = "",
-    local_page_image_dir: str = "",
     pdf_download_status: str = "not_attempted",
     pdf_error: str = "",
 ) -> str:
-    title = normalize_text(paper.get("title", "")) or "Untitled Paper"
-    authors = [normalize_text(author) for author in paper.get("authors", []) if normalize_text(author)]
-    source_family = _resolve_source_family(normalize_text(paper.get("source", "")))
-    canonical_url = normalize_text(paper.get("url", "")) or normalize_text(paper.get("pdf_url", ""))
-    doi = normalize_text(paper.get("doi", ""))
-    pdf_url = normalize_text(paper.get("pdf_url", ""))
-    summary = normalize_text((paper.get("evidence_snippets") or [""])[0])
+    title = normalize_text(paper.title) or "Untitled Paper"
+    authors = [normalize_text(author) for author in paper.authors if normalize_text(author)]
+    source_family = _resolve_source_family(normalize_text(paper.source))
+    canonical_url = normalize_text(paper.url) or normalize_text(paper.pdf_url)
+    doi = normalize_text(paper.doi)
+    pdf_url = normalize_text(paper.pdf_url)
+    pdf_urls_raw = paper.pdf_urls or []
+    pdf_urls = [normalize_text(u) for u in pdf_urls_raw if normalize_text(u)]
+    summary = normalize_text((paper.evidence_snippets or [""])[0])
     if not summary:
         summary = "_No abstract or summary was available from the discovery sources._"
-    matched_queries = [normalize_text(item) for item in paper.get("_matched_queries", []) if normalize_text(item)]
+    matched_queries = [normalize_text(item) for item in paper.matched_queries if normalize_text(item)]
     arxiv_id = _extract_arxiv_id(canonical_url or pdf_url)
     lines = [
         "---",
@@ -59,14 +57,14 @@ def render_raw_paper_markdown(
         f'generated_at: "{generated_at}"',
         f'feeder: "raw-feeder-v1"',
         f'source_family: "{_escape_yaml(source_family)}"',
-        f'year: "{_escape_yaml(str(paper.get("year", "")))}"',
-        f'date: "{_escape_yaml(normalize_text(paper.get("date", "")))}"',
+        f'year: "{_escape_yaml(str(paper.year))}"',
+        f'date: "{_escape_yaml(normalize_text(paper.date))}"',
         f'canonical_url: "{_escape_yaml(canonical_url)}"',
         f'doi: "{_escape_yaml(doi)}"',
             f'pdf_url: "{_escape_yaml(pdf_url)}"',
+            "pdf_url_candidates:",
+            *([f'  - "{_escape_yaml(u)}"' for u in pdf_urls] or ['  - ""']),
             f'local_pdf_path: "{_escape_yaml(local_pdf_path)}"',
-            f'local_fulltext_path: "{_escape_yaml(local_fulltext_path)}"',
-            f'local_page_image_dir: "{_escape_yaml(local_page_image_dir)}"',
             f'pdf_download_status: "{_escape_yaml(pdf_download_status)}"',
             "authors:",
     ]
@@ -96,16 +94,24 @@ def render_raw_paper_markdown(
             "",
             f"- Source family: `{source_family}`",
             f"- Authors: {', '.join(authors) if authors else '_Unknown_'}",
-            f"- Year: {normalize_text(str(paper.get('year', ''))) or '_Unknown_'}",
-            f"- Date: {normalize_text(paper.get('date', '')) or '_Unknown_'}",
+            f"- Year: {paper.year or '_Unknown_'}",
+            f"- Date: {normalize_text(paper.date) or '_Unknown_'}",
             f"- Canonical URL: {canonical_url or '_Unavailable_'}",
             f"- DOI: {doi or '_Unavailable_'}",
             f"- PDF URL: {pdf_url or '_Unavailable_'}",
             f"- Local PDF: {local_pdf_path or '_Unavailable_'}",
-            f"- Local converted markdown: {local_fulltext_path or '_Unavailable_'}",
-            f"- Local page images: {local_page_image_dir or '_Unavailable_'}",
             f"- PDF download status: `{pdf_download_status}`",
-            "",
+        ],
+    )
+    if pdf_urls:
+        lines.append("")
+        lines.append("## PDF Candidates")
+        lines.append("")
+        for u in pdf_urls:
+            label = _resolve_pdf_source_label(u)
+            lines.append(f"- [{label}]({u})")
+    lines.extend([
+        "",
             "## Abstract",
             "",
             summary,
@@ -114,8 +120,8 @@ def render_raw_paper_markdown(
             "",
             f"- User query: {user_query}",
             f"- Matched queries: {', '.join(matched_queries) if matched_queries else '_Unavailable_'}",
-            f"- Retrieval evidence level: {normalize_text(paper.get('evidence_level', '')) or '_unknown_'}",
-            f"- Eligibility score: {paper.get('eligibility_score', 0)}",
+            f"- Retrieval evidence level: {normalize_text(paper.evidence_level) or '_unknown_'}",
+            f"- Eligibility score: 0",
             "",
             "## Provenance",
             "",
@@ -172,3 +178,22 @@ def _slugify(value: str, *, max_length: int) -> str:
 
 def _escape_yaml(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"')
+
+
+_PDF_LABEL_PATTERNS: list[tuple[str, str]] = [
+    (r"arxiv\.org", "arXiv"),
+    (r"content\.openalex\.org", "OpenAlex content mirror"),
+    (r"dl\.acm\.org", "ACM DL"),
+    (r"sciencedirect\.com", "ScienceDirect"),
+    (r"ieeexplore\.ieee\.org", "IEEE Xplore"),
+    (r"link\.springer\.com", "Springer"),
+    (r"unpaywall", "Unpaywall"),
+]
+
+
+def _resolve_pdf_source_label(url: str) -> str:
+    lowered = url.lower()
+    for pattern, label in _PDF_LABEL_PATTERNS:
+        if re.search(pattern, lowered):
+            return label
+    return "Resolved via metadata"

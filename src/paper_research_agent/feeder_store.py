@@ -4,8 +4,9 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-import shutil
 from typing import Any
+
+from .core.models import PaperDict
 
 
 @dataclass(slots=True)
@@ -23,11 +24,9 @@ class ProjectPaths:
     log_path: Path
 
 
-def ensure_project_paths(project_root: Path, slug: str, *, reset_existing: bool = False) -> ProjectPaths:
+def ensure_project_paths(project_root: Path, slug: str) -> ProjectPaths:
     project_root = project_root.resolve()
     root_dir = (project_root / slug).resolve()
-    if reset_existing and root_dir.exists():
-        _reset_project_root(project_root, root_dir)
     raw_dir = root_dir / "raw"
     papers_dir = raw_dir / "papers"
     paper_metadata_dir = papers_dir / "metadata"
@@ -75,22 +74,6 @@ def ensure_project_paths(project_root: Path, slug: str, *, reset_existing: bool 
     )
 
 
-def _reset_project_root(project_root: Path, root_dir: Path) -> None:
-    try:
-        root_dir.relative_to(project_root)
-    except ValueError as exc:
-        raise ValueError(f"Refusing to delete project outside project root: {root_dir}") from exc
-
-    for sub in ("raw",):
-        subdir = root_dir / sub
-        if subdir.exists():
-            shutil.rmtree(subdir)
-
-    batches_dir = root_dir / ".feeder" / "batches"
-    if batches_dir.exists():
-        shutil.rmtree(batches_dir)
-
-
 def list_batches(project_root: Path, slug: str) -> list[Path]:
     batches_dir = (project_root.resolve() / slug / ".feeder" / "batches")
     if not batches_dir.is_dir():
@@ -110,28 +93,16 @@ def load_batch_json(batch_path: Path) -> dict[str, Any]:
 _YAML_FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 
 
-def parse_metadata_papers(project_root: Path, slug: str) -> list[dict[str, Any]]:
+def parse_metadata_papers(project_root: Path, slug: str) -> list[PaperDict]:
     metadata_dir = (project_root.resolve() / slug / "raw" / "papers" / "metadata")
     if not metadata_dir.is_dir():
         return []
 
-    papers: list[dict[str, Any]] = []
+    papers: list[PaperDict] = []
     for md_file in sorted(metadata_dir.glob("*.md")):
-        try:
-            content = md_file.read_text(encoding="utf-8")
-        except Exception:
-            continue
-
-        m = _YAML_FRONTMATTER_RE.match(content)
-        if not m:
-            continue
-
-        yaml_text = m.group(1)
-        body_text = content[m.end():]
-        frontmatter = _parse_simple_yaml(yaml_text)
-        abstract = _extract_abstract(body_text)
+        ...
         paper = _frontmatter_to_paper_dict(frontmatter, abstract=abstract)
-        if paper.get("title"):
+        if paper.title:
             papers.append(paper)
 
     return papers
@@ -168,24 +139,21 @@ def _parse_simple_yaml(text: str) -> dict[str, Any]:
     return result
 
 
-def _frontmatter_to_paper_dict(fm: dict[str, Any], *, abstract: str = "") -> dict[str, Any]:
-    paper: dict[str, Any] = {}
-    paper["title"] = fm.get("title", "")
-
+def _frontmatter_to_paper_dict(fm: dict[str, Any], *, abstract: str = "") -> PaperDict:
     authors = fm.get("authors", [])
     if isinstance(authors, str):
         authors = [a.strip() for a in authors.split(",") if a.strip()]
-    paper["authors"] = authors
-
-    paper["year"] = _parse_year(fm.get("year", ""))
-    paper["source"] = fm.get("source_family", "")
-    paper["doi"] = fm.get("doi", "")
-    paper["url"] = fm.get("canonical_url", "")
-    paper["pdf_url"] = fm.get("pdf_url", "")
-    paper["pdf_download_status"] = fm.get("pdf_download_status", "pending")
-    paper["evidence_snippets"] = [abstract] if abstract else []
-
-    return paper
+    return PaperDict(
+        title=fm.get("title", ""),
+        authors=authors,
+        year=_parse_year(fm.get("year", "")),
+        source=fm.get("source_family", ""),
+        doi=fm.get("doi", ""),
+        url=fm.get("canonical_url", ""),
+        pdf_url=fm.get("pdf_url", ""),
+        pdf_status=fm.get("pdf_download_status", "pending"),
+        evidence_snippets=[abstract] if abstract else [],
+    )
 
 
 def _parse_year(value: Any) -> int:
@@ -247,28 +215,3 @@ def get_project_review_stats(project_root: Path, slug: str) -> dict[str, Any]:
         except Exception:
             continue
     return stats
-
-
-def load_prior_context(project_root: Path, slug: str) -> dict[str, Any]:
-    batches = list_batches(project_root, slug)
-    papers: dict[str, Any] = {}
-    review_log: list[dict[str, Any]] = []
-    rerank_log: list[dict[str, Any]] = []
-    executed_queries: list[dict[str, Any]] = []
-
-    for batch_path in batches:
-        try:
-            data = load_batch_json(batch_path)
-        except Exception:
-            continue
-        papers.update(data.get("all_papers", {}))
-        review_log.extend(data.get("review_log", []))
-        rerank_log.extend(data.get("rerank_log", []))
-        executed_queries.extend(data.get("executed_queries", []))
-
-    return {
-        "all_papers": papers,
-        "review_log": review_log,
-        "rerank_log": rerank_log,
-        "executed_queries": executed_queries,
-    }

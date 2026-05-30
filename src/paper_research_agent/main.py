@@ -45,7 +45,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     query_group = discover_parser.add_mutually_exclusive_group(required=True)
     query_group.add_argument("--query", type=str, help="Natural-language query for paper discovery.")
     query_group.add_argument("--query-txt", type=str, dest="query_txt", help="Path to a .txt file containing the query.")
-    discover_parser.add_argument("--top-k", type=int, default=5, help="Maximum number of raw paper files to write.")
     discover_parser.add_argument(
         "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
     )
@@ -58,7 +57,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     plan_query_group = plan_parser.add_mutually_exclusive_group(required=True)
     plan_query_group.add_argument("--query", type=str, help="Natural-language query for the research task.")
     plan_query_group.add_argument("--query-txt", type=str, dest="query_txt", help="Path to a .txt file containing the query.")
-    plan_parser.add_argument("--top-k", type=int, default=5, help="Maximum number of papers to select.")
     plan_parser.add_argument(
         "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
     )
@@ -93,7 +91,6 @@ async def run_once(
     *,
     project_slug: str,
     query: str,
-    top_k: int,
     output_dir: str,
     app_factory: AppFactory | None = None,
     settings: Settings | None = None,
@@ -106,7 +103,7 @@ async def run_once(
     app = factory(resolved_settings, output_dir)
 
     try:
-        batch, batch_path = await app.discover(project_slug=project_slug, query=query, top_k=top_k)
+        batch, batch_path = await app.discover(project_slug=project_slug, query=query)
         print(f"\nProject: {project_slug}")
         print(f"Query: {query}")
         print(f"Batch: {batch_path}")
@@ -147,7 +144,6 @@ def run_cli(
             _run_plan(
                 project_slug=args.project.strip(),
                 query=query,
-                top_k=args.top_k,
                 output_dir=args.output_dir.strip(),
                 app_factory=app_factory,
                 settings=settings,
@@ -159,7 +155,6 @@ def run_cli(
         run_once(
             project_slug=args.project.strip(),
             query=query,
-            top_k=args.top_k,
             output_dir=args.output_dir.strip(),
             app_factory=app_factory,
             settings=settings,
@@ -172,7 +167,6 @@ async def _run_plan(
     *,
     project_slug: str,
     query: str,
-    top_k: int,
     output_dir: str,
     app_factory: AppFactory | None = None,
     settings: Settings | None = None,
@@ -187,7 +181,7 @@ async def _run_plan(
     try:
         print(f"\n项目: {project_slug}")
         print(f"需求: {query}\n")
-        result = await app.plan(project_slug=project_slug, query=query, top_k=top_k)
+        result = await app.plan(project_slug=project_slug, query=query)
         if result:
             print(f"\n{result}")
     finally:
