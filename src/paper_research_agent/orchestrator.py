@@ -56,8 +56,7 @@ def _build_discover_papers_tool(settings: Settings, output_root: str) -> Any:
         agent = PaperDiscoveryAgent(settings, output_root=output_root)
         try:
             batch, batch_path = await agent.discover(
-                project_slug=project, query=query,
-                reset_existing=False,
+                project_slug=project, query=query
             )
             return _format_discover_result(batch, batch_path, project, Path(output_root).resolve())
         finally:
