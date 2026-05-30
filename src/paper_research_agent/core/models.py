@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .normalization import normalize_text
 
@@ -73,6 +73,19 @@ class QueryDecomposition(BaseModel):
     key_metrics: list[str] = Field(default_factory=list)
     expanded_terms: list[str] = Field(default_factory=list)
     desired_paper_count: int = 5
+
+    @field_validator("expanded_terms", mode="before")
+    @classmethod
+    def _flatten_expanded_terms(cls, v: object) -> list[str]:
+        if isinstance(v, dict):
+            result: list[str] = []
+            for key, terms in v.items():
+                result.append(str(key))
+                if isinstance(terms, list):
+                    for term in terms:
+                        result.append(str(term))
+            return result
+        return v  # type: ignore[return-value]
 
 
 class ReviewResult(BaseModel):
