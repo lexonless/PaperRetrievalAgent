@@ -160,10 +160,29 @@ class PdfUrlResolver:
     @staticmethod
     def _extract_openalex_pdf_urls(work: dict) -> list[str]:
         urls: list[str] = []
-        pl = work.get("primary_location") or {}
-        pl_pdf = normalize_text(pl.get("pdf_url", "") or "")
-        if pl_pdf:
-            urls.append(pl_pdf)
+
+        all_locations: list[dict] = []
+        pl = work.get("primary_location")
+        if isinstance(pl, dict):
+            all_locations.append(pl)
+        locs = work.get("locations")
+        if isinstance(locs, list):
+            all_locations.extend(locs)
+
+        for loc in all_locations:
+            if not isinstance(loc, dict):
+                continue
+            landing = normalize_text(loc.get("landing_page_url", "") or "")
+            pdf = normalize_text(loc.get("pdf_url", "") or "")
+            candidate = pdf or landing
+            if not candidate:
+                continue
+            if "arxiv.org" in candidate.lower():
+                if candidate not in urls:
+                    urls.insert(0, candidate)
+            elif candidate.lower().endswith(".pdf") and candidate not in urls:
+                urls.append(candidate)
+
         oa_id = work.get("id", "").rsplit("/", 1)[-1] if work.get("id") else ""
         if oa_id and oa_id.startswith("W"):
             mirror = f"https://content.openalex.org/works/{oa_id}.pdf"
