@@ -94,3 +94,13 @@ class ReviewResult(BaseModel):
     converged: bool = False
     convergence_reason: str = ""
     refined_query: str = ""
+
+
+class PaperReading(BaseModel):
+    title: str = Field(default="", description="论文标题")
+    problem_statement: str = Field(default="", description="该论文解决的核心问题以及填补的此前研究的空白")
+    proposed_method: str = Field(default="", description="论文提出的具体技术方案、算法、架构，需包含关键技术栈或骨干网络")
+    key_contributions: list[str] = Field(default_factory=list, description="论文核心贡献点的列表")
+    key_results: list[str] = Field(default_factory=list, description="关键实验结果、评测指标及对比基线的摘要列表")
+    limitations: list[str] = Field(default_factory=list, description="论文显式承认或隐式暴露的局限性、边界条件、未覆盖的极端场景")
+    relevance_assessment: str = Field(default="", description="结合给定研究背景的相关性评估，若无背景则留空")
