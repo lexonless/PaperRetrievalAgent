@@ -108,7 +108,7 @@ class PaperDiscoveryAgent:
             if new_papers:
                 await self._rerank_node(state, new_papers, query)
 
-            graph_papers = await self._expand_node(state, n=SEED_COUNT)
+            graph_papers = await self._expand_node(state, n=SEED_COUNT, year_from=resolved_year_from, year_to=resolved_year_to)
             await self._pdf_url_resolver.resolve_pdf_urls(graph_papers)
             if graph_papers:
                 await self._rerank_node(state, graph_papers, query)
@@ -321,7 +321,7 @@ class PaperDiscoveryAgent:
     # Node 3: expand_citations
     # ═══════════════════════════════════════════════════════════════════════
 
-    async def _expand_node(self, state: dict, *, n: int = 3) -> list[PaperDict]:
+    async def _expand_node(self, state: dict, *, n: int = 3, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
         expanded_ids = state.setdefault("_expanded_oa_ids", set())
         seeds = [
             p for p in state["all_papers"].values()
@@ -354,6 +354,13 @@ class PaperDiscoveryAgent:
                 continue
 
             for raw in [*refs, *cites]:
+                if year_from is not None or year_to is not None:
+                    yr = raw.year if raw.year else 0
+                    if yr > 0:
+                        if year_from is not None and yr < year_from:
+                            continue
+                        if year_to is not None and yr > year_to:
+                            continue
                 candidates = self._ranking_engine.prepare_agent_candidates(
                     records=[raw], matched_query=f"graph of: {normalize_text(seed.title)}",
                 )
