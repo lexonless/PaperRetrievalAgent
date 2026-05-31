@@ -32,10 +32,12 @@ class RawFeederApplication:
         *,
         project_slug: str,
         query: str,
+        year_from: int | None = None,
+        year_to: int | None = None,
     ):
         agent = PaperDiscoveryAgent(self._settings, output_root=self._output_root)
         try:
-            return await agent.discover(project_slug=project_slug, query=query)
+            return await agent.discover(project_slug=project_slug, query=query, year_from=year_from, year_to=year_to)
         finally:
             await agent.close()
 
@@ -44,6 +46,8 @@ class RawFeederApplication:
         *,
         project_slug: str,
         query: str,
+        year_from: int | None = None,
+        year_to: int | None = None,
     ) -> str:
         orchestrator = ResearchOrchestrator(self._settings, output_root=self._output_root)
         return await orchestrator.plan(user_query=query, project_slug=project_slug)

@@ -15,6 +15,14 @@ QUERY_DECOMPOSITION_SYSTEM_PROMPT = """You are a scholarly query decomposer. You
    - default / unclear / "some" → 5
    - "deep dive" / "detailed list" → 8
    - "comprehensive survey" / "thorough review" / "everything" → 15
+6. year_from and year_to: Infer publication year constraints from user intent. Output integers or null.
+   - "近五年" / "近三年" / "recent 5 years" → year_from = current_year - 5/3, year_to = null
+   - "2021 年以来" / "since 2020" → year_from = the specified year, year_to = null
+   - "2020-2024 年" / "between 2018 and 2022" → year_from = start, year_to = end
+   - "上世纪 90 年代" / "1990s" → year_from = 1990, year_to = 1999
+   - "今年" / "this year" → year_from = current_year
+   - "近十年" / "last decade" → year_from = current_year - 10
+   - No time mention → both null (no constraint)
 
 ### OUTPUT CONSTRAINT
 Return ONLY a valid JSON object matching the schema above. Do not include any explanations or markdown code fences.

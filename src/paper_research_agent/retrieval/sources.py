@@ -9,7 +9,7 @@ from typing import Any
 from ..core.config import Settings
 from ..core.models import PaperDict
 from ..core.normalization import normalize_string_list, normalize_text
-from .utils import DEFAULT_SOURCE_ORDER, normalize_pdf_url
+from .utils import DEFAULT_SOURCE_ORDER, extract_year, normalize_pdf_url
 
 
 class PaperSourceCollector:
@@ -26,7 +26,8 @@ class PaperSourceCollector:
         query_specs: list[str] | list[dict[str, Any]],
         stage_name: str,
         max_results_per_source: int | None,
-        from_year: int | None,
+        year_from: int | None = None,
+        year_to: int | None = None,
     ) -> tuple[list[PaperDict], list[dict[str, str]], list[dict[str, Any]]]:
         records: list[PaperDict] = []
         source_errors: list[dict[str, str]] = []
@@ -49,7 +50,8 @@ class PaperSourceCollector:
                 query=query,
                 stage_name=stage_name,
                 max_results_per_source=max_results_per_source,
-                from_year=from_year,
+                year_from=year_from,
+                year_to=year_to,
                 target_source=target_source,
             )
             records.extend(query_records)
@@ -63,7 +65,8 @@ class PaperSourceCollector:
         query: str,
         stage_name: str,
         max_results_per_source: int | None = None,
-        from_year: int | None = None,
+        year_from: int | None = None,
+        year_to: int | None = None,
         target_source: str = "",
     ) -> tuple[list[PaperDict], list[dict[str, str]]]:
         tasks: list[tuple[str, Any]] = []
@@ -71,11 +74,11 @@ class PaperSourceCollector:
             if target_source and source_name != target_source:
                 continue
             if source_name == "arXiv":
-                tasks.append(("arXiv", self.search_arxiv_records(query, max_results=max_results_per_source)))
+                tasks.append(("arXiv", self.search_arxiv_records(query, max_results=max_results_per_source, year_from=year_from, year_to=year_to)))
             elif source_name == "Crossref":
-                tasks.append(("Crossref", self.search_crossref_records(query, max_results=max_results_per_source, from_year=from_year)))
+                tasks.append(("Crossref", self.search_crossref_records(query, max_results=max_results_per_source, year_from=year_from, year_to=year_to)))
             elif source_name == "OpenAlex":
-                tasks.append(("OpenAlex", self.search_openalex_records(query, max_results=max_results_per_source, from_year=from_year)))
+                tasks.append(("OpenAlex", self.search_openalex_records(query, max_results=max_results_per_source, year_from=year_from, year_to=year_to)))
 
         rendered_results = await asyncio.gather(*(task for _, task in tasks), return_exceptions=True)
         records: list[PaperDict] = []
@@ -104,7 +107,7 @@ class PaperSourceCollector:
                 )
         return records, source_errors
 
-    async def search_arxiv_records(self, query: str, max_results: int | None = None) -> list[PaperDict]:
+    async def search_arxiv_records(self, query: str, max_results: int | None = None, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
         async with PaperSourceCollector._arxiv_lock:
             elapsed = time.monotonic() - PaperSourceCollector._last_arxiv_call
             if elapsed < PaperSourceCollector._arxiv_min_interval:
@@ -127,6 +130,13 @@ class PaperSourceCollector:
             title = entry.findtext("atom:title", default="", namespaces=namespace).strip()
             summary = entry.findtext("atom:summary", default="", namespaces=namespace).strip()
             published = entry.findtext("atom:published", default="", namespaces=namespace).strip()
+            if year_from is not None or year_to is not None:
+                pub_year = extract_year(published)
+                if pub_year is not None:
+                    if year_from is not None and pub_year < year_from:
+                        continue
+                    if year_to is not None and pub_year > year_to:
+                        continue
             url = entry.findtext("atom:id", default="", namespaces=namespace).strip()
             pdf_url = ""
             for link in entry.findall("atom:link", namespace):
@@ -139,11 +149,16 @@ class PaperSourceCollector:
             records.append(PaperDict(title=normalize_text(title), source="arXiv", evidence_snippets=[normalize_text(summary)], authors=[a for a in authors if a], date=published, url=url, pdf_url=normalize_pdf_url(pdf_url) or normalize_pdf_url(url), source_rank=rank))
         return records
 
-    async def search_crossref_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperDict]:
+    async def search_crossref_records(self, query: str, max_results: int | None = None, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
         limit = self._resolve_limit(max_results)
         params: dict[str, Any] = {"query": query, "rows": limit, "select": "title,author,DOI,URL,published-print,published-online,issued,container-title,abstract,link"}
-        if from_year is not None:
-            params["filter"] = f"from-pub-date:{from_year}-01-01"
+        filters: list[str] = []
+        if year_from is not None:
+            filters.append(f"from-pub-date:{year_from}-01-01")
+        if year_to is not None:
+            filters.append(f"until-pub-date:{year_to}-12-31")
+        if filters:
+            params["filter"] = ",".join(filters)
         response = await self._client.get("https://api.crossref.org/works", params=params)
         response.raise_for_status()
         items = response.json().get("message", {}).get("items", [])
@@ -176,16 +191,21 @@ class PaperSourceCollector:
             )
         return records
 
-    async def search_openalex_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperDict]:
+    async def search_openalex_records(self, query: str, max_results: int | None = None, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
         limit = self._resolve_limit(max_results)
         params: dict[str, Any] = {
             "search": query,
             "per-page": limit,
             "sort": "relevance_score:desc",
-            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "abstract", "type", "cited_by_count"]),
+            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "type", "cited_by_count"]),
         }
-        if from_year is not None:
-            params["filter"] = f"from_publication_date:{from_year}-01-01"
+        filters: list[str] = []
+        if year_from is not None:
+            filters.append(f"from_publication_date:{year_from}-01-01")
+        if year_to is not None:
+            filters.append(f"to_publication_date:{year_to}-12-31")
+        if filters:
+            params["filter"] = ",".join(filters)
         response = await self._client.get("https://api.openalex.org/works", params=params)
         response.raise_for_status()
         items = response.json().get("results", [])

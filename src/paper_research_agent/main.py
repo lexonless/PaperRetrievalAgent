@@ -48,6 +48,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     discover_parser.add_argument(
         "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
     )
+    discover_parser.add_argument("--year-from", type=int, default=None, help="Lower bound of publication year (inclusive).")
+    discover_parser.add_argument("--year-to", type=int, default=None, help="Upper bound of publication year (inclusive).")
 
     plan_parser = subparsers.add_parser(
         "plan",
@@ -60,6 +62,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     plan_parser.add_argument(
         "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
     )
+    plan_parser.add_argument("--year-from", type=int, default=None, help="Lower bound of publication year (inclusive).")
+    plan_parser.add_argument("--year-to", type=int, default=None, help="Upper bound of publication year (inclusive).")
 
     synthesize_parser = subparsers.add_parser(
         "synthesize",
@@ -92,6 +96,8 @@ async def run_once(
     project_slug: str,
     query: str,
     output_dir: str,
+    year_from: int | None = None,
+    year_to: int | None = None,
     app_factory: AppFactory | None = None,
     settings: Settings | None = None,
 ) -> None:
@@ -103,7 +109,7 @@ async def run_once(
     app = factory(resolved_settings, output_dir)
 
     try:
-        batch, batch_path = await app.discover(project_slug=project_slug, query=query)
+        batch, batch_path = await app.discover(project_slug=project_slug, query=query, year_from=year_from, year_to=year_to)
         print(f"\nProject: {project_slug}")
         print(f"Query: {query}")
         print(f"Batch: {batch_path}")
@@ -139,6 +145,8 @@ def run_cli(
         return 0
 
     query = _resolve_query(args)
+    year_from = getattr(args, "year_from", None)
+    year_to = getattr(args, "year_to", None)
     if args.command == "plan":
         asyncio.run(
             _run_plan(
@@ -156,6 +164,8 @@ def run_cli(
             project_slug=args.project.strip(),
             query=query,
             output_dir=args.output_dir.strip(),
+            year_from=year_from,
+            year_to=year_to,
             app_factory=app_factory,
             settings=settings,
         )

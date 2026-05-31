@@ -100,7 +100,19 @@ def parse_metadata_papers(project_root: Path, slug: str) -> list[PaperDict]:
 
     papers: list[PaperDict] = []
     for md_file in sorted(metadata_dir.glob("*.md")):
-        ...
+        try:
+            content = md_file.read_text(encoding="utf-8")
+        except Exception:
+            continue
+
+        m = _YAML_FRONTMATTER_RE.match(content)
+        if not m:
+            continue
+
+        yaml_text = m.group(1)
+        body_text = content[m.end():]
+        frontmatter = _parse_simple_yaml(yaml_text)
+        abstract = _extract_abstract(body_text)
         paper = _frontmatter_to_paper_dict(frontmatter, abstract=abstract)
         if paper.title:
             papers.append(paper)

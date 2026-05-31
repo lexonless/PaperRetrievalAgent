@@ -100,7 +100,7 @@ class PdfUrlResolver:
                         paper.pdf_url = paper.pdf_urls[0]
                         paper.pdf_status = "available"
 
-        available = sum(1 for p in papers if p.get("pdf_status") == "available")
+        available = sum(1 for p in papers if p.pdf_status == "available")
         logger.info("pdf resolve: %s/%s papers got PDF URLs", available, len(papers))
 
     async def _batch_fetch_openalex_by_doi(self, dois: list[str]) -> dict[str, list[str]]:

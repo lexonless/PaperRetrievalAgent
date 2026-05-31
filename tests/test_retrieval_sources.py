@@ -19,7 +19,8 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             query: str,
             stage_name: str,
             max_results_per_source: int | None = None,
-            from_year: int | None = None,
+            year_from: int | None = None,
+            year_to: int | None = None,
             target_source: str = "",
         ) -> tuple[list[PaperDict], list[dict[str, str]]]:
             return [], []
@@ -29,7 +30,7 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             query_specs=["graph rag"],
             stage_name="primary",
             max_results_per_source=5,
-            from_year=2021,
+            year_from=2021,
         )
 
         self.assertEqual(len(executed_specs), 1)
@@ -42,7 +43,8 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             query: str,
             stage_name: str,
             max_results_per_source: int | None = None,
-            from_year: int | None = None,
+            year_from: int | None = None,
+            year_to: int | None = None,
             target_source: str = "",
         ) -> tuple[list[PaperDict], list[dict[str, str]]]:
             self.assertEqual(target_source, "arXiv")
@@ -53,7 +55,7 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             query_specs=[{"query": "all:\"graph rag\"", "source": "arXiv", "purpose": "precision", "stage": "primary", "notes": "arXiv query"}],
             stage_name="primary",
             max_results_per_source=5,
-            from_year=2021,
+            year_from=2021,
         )
 
         self.assertEqual(len(executed_specs), 1)

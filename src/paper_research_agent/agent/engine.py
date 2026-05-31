@@ -75,6 +75,8 @@ class PaperDiscoveryAgent:
         *,
         project_slug: str,
         query: str,
+        year_from: int | None = None,
+        year_to: int | None = None,
     ) -> tuple[dict[str, Any], Path]:
         state: dict[str, Any] = {
             "query": query,
@@ -90,6 +92,10 @@ class PaperDiscoveryAgent:
         }
 
         decomposition = await self._decompose_query(query)
+
+        resolved_year_from = _resolve_year(year_from, decomposition.year_from)
+        resolved_year_to = _resolve_year(year_to, decomposition.year_to)
+
         paths = ensure_project_paths(self._output_root, project_slug)
 
         while True:
@@ -97,7 +103,7 @@ class PaperDiscoveryAgent:
             logger.info("=== iteration %s (hard cap %s) ===", state["search_iteration"], HARD_CAP)
             logger.info("search query: %s", state["current_search_query"])
 
-            new_papers = await self._search_node(state, decomposition)
+            new_papers = await self._search_node(state, decomposition, year_from=resolved_year_from, year_to=resolved_year_to)
             await self._pdf_url_resolver.resolve_pdf_urls(new_papers)
             if new_papers:
                 await self._rerank_node(state, new_papers, query)
@@ -186,7 +192,7 @@ class PaperDiscoveryAgent:
     # Node 1: search_papers
     # ═══════════════════════════════════════════════════════════════════════
 
-    async def _search_node(self, state: dict, decomposition: QueryDecomposition) -> list[PaperDict]:
+    async def _search_node(self, state: dict, decomposition: QueryDecomposition, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
         search_query = state["current_search_query"]
         stage = f"iter_{state['search_iteration']}"
 
@@ -205,6 +211,8 @@ class PaperDiscoveryAgent:
                 stage_name=stage,
                 max_results_per_source=self._settings.max_results_per_source,
                 target_source=entry["source"],
+                year_from=year_from,
+                year_to=year_to,
             )
             all_records.extend(records)
             all_spec_errors.extend(errors)
@@ -436,7 +444,7 @@ class PaperDiscoveryAgent:
             model=self._llm,
             schema=QueryDecomposition,
             system_prompt=QUERY_DECOMPOSITION_SYSTEM_PROMPT,
-            user_prompt=json.dumps({"query": query}, ensure_ascii=False, indent=2),
+            user_prompt=json.dumps({"query": query, "current_year": datetime.now().year}, ensure_ascii=False, indent=2),
         )
         result.core_techs = normalize_string_list(result.core_techs)
         result.application_domains = normalize_string_list(result.application_domains)
@@ -490,3 +498,15 @@ class PaperDiscoveryAgent:
         lines.extend(["", ""])
         existing = paths.log_path.read_text(encoding="utf-8") if paths.log_path.exists() else ""
         paths.log_path.write_text("\n".join(lines) + existing, encoding="utf-8")
+
+
+def _resolve_year(cli_value: int | None, llm_value: int | None) -> int | None:
+    """CLI-provided year takes precedence; normalize to reasonable range."""
+    resolved = cli_value if cli_value is not None else llm_value
+    if resolved is None:
+        return None
+    import datetime as _dt
+    current = _dt.date.today().year
+    if resolved < 1900 or resolved > current + 1:
+        return None
+    return resolved

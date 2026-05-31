@@ -73,6 +73,8 @@ class QueryDecomposition(BaseModel):
     key_metrics: list[str] = Field(default_factory=list)
     expanded_terms: list[str] = Field(default_factory=list)
     desired_paper_count: int = 5
+    year_from: int | None = None
+    year_to: int | None = None
 
     @field_validator("expanded_terms", mode="before")
     @classmethod

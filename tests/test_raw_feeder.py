@@ -105,7 +105,7 @@ def _extract_papers(messages) -> list[dict]:
 
 
 class FakeApp:
-    async def discover(self, *, project_slug, query):
+    async def discover(self, *, project_slug, query, year_from=None, year_to=None):
         return (
             {"selected_count": 1, "written_files": [
                 {"path": f"projects/{project_slug}/raw/papers/metadata/demo.md"}
