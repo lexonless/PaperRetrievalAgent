@@ -10,7 +10,7 @@ from pathlib import Path
 
 from ..core.config import Settings
 from ..core.llm import build_chat_model
-from ..core.models import PaperDict
+from ..core.models import PaperDict, PaperReading
 from ..core.normalization import normalize_text
 
 logger = logging.getLogger(__name__)
@@ -67,7 +67,10 @@ Write the main body in Chinese. For technical terms, model names, and algorithm 
 - Cite specific contributions of specific papers; use reference numbers when cross-referencing
 - Distinguish the innovation level of different papers
 - If the provided paper information is insufficient to support a given requirement, state this honestly and make the best inference based on available data
-- Use Markdown tables, lists, and other syntax to enhance readability
+    - Use Markdown tables, lists, and other syntax to enhance readability
+    - Some papers may include a [Full-text analysis available] section with deeper details
+      (problem statement, method, contributions, results, limitations). When available, prefer
+      this over the abstract for substantive analysis. Papers without this tag only have abstracts.
 
 ## Output
 
@@ -112,6 +115,7 @@ class SynthesisEngine:
         decomposition: dict | None = None,
         review_stats: dict | None = None,
     ) -> str:
+        self._project_slug = project_slug
         papers_detail = self._build_papers_detail(papers)
         stats = self._compute_stats(papers, review_stats or {})
 
@@ -187,11 +191,48 @@ class SynthesisEngine:
                 lines.append(f"- **Score**: overall={overall}")
             if reason:
                 lines.append(f"- **Assessment**: {reason}")
-            if abstract:
+
+            reading = self._load_fulltext_reading(paper)
+            if reading:
+                lines.append("")
+                lines.append("**[Full-text analysis available]**")
+                if reading.problem_statement:
+                    lines.append(f"- **Problem**: {reading.problem_statement}")
+                if reading.proposed_method:
+                    lines.append(f"- **Method**: {reading.proposed_method}")
+                if reading.key_contributions:
+                    lines.append("- **Contributions**:")
+                    for c in reading.key_contributions:
+                        lines.append(f"  - {c}")
+                if reading.key_results:
+                    lines.append("- **Results**:")
+                    for r in reading.key_results:
+                        lines.append(f"  - {r}")
+                if reading.limitations:
+                    lines.append("- **Limitations**:")
+                    for lim in reading.limitations:
+                        lines.append(f"  - {lim}")
+                if reading.relevance_assessment:
+                    lines.append(f"- **Relevance**: {reading.relevance_assessment}")
+            elif abstract:
                 lines.append(f"- **Abstract**: {abstract}")
+
             lines.append("")
 
         return "\n".join(lines)
+
+    def _load_fulltext_reading(self, paper: PaperDict) -> PaperReading | None:
+        slug = normalize_text(paper.slug)
+        if not slug:
+            return None
+        cache_path = Path("projects") / self._project_slug / "raw" / "papers" / "fulltext" / f"{slug}.json"
+        if not cache_path.is_file():
+            return None
+        try:
+            return PaperReading.model_validate_json(cache_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            logger.debug("synthesis: failed to load reading for %s: %s", slug, exc)
+            return None
 
     def _compute_stats(
         self, papers: list[PaperDict], review_stats: dict[str, Any],
