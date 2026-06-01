@@ -196,8 +196,11 @@ class PaperDiscoveryAgent:
         search_query = state["current_search_query"]
         stage = f"iter_{state['search_iteration']}"
 
+        clean_query = re.sub(r"\b\d{4}\s*[-–—]\s*\d{4}\b", "", search_query)
+        clean_query = re.sub(r"\s+", " ", clean_query).strip() or search_query
+
         entries = build_query_entries(
-            topic_phrases=[search_query] + decomposition.core_techs[:2],
+            topic_phrases=[clean_query] + decomposition.core_techs[:2],
             expanded_terms=decomposition.expanded_terms,
             domain_terms=decomposition.application_domains + decomposition.key_metrics,
         )
@@ -410,11 +413,24 @@ class PaperDiscoveryAgent:
             "paper_titles": paper_titles,
         }
 
+        past_refined = [
+            rl.get("refined_query", "") for rl in state["review_log"]
+            if rl.get("refined_query") and rl.get("refined_query") != state["current_search_query"]
+        ]
+        user_prompt_data = dict(stats)
+        if past_refined:
+            user_prompt_data["previously_tried_queries"] = past_refined
+            user_prompt_data["_note"] = (
+                "Your refined_query MUST differ from all of the previously_tried_queries above. "
+                "If you cannot think of a genuinely new search direction, set converged=true with "
+                "a reason explaining why coverage is sufficient."
+            )
+
         result = await invoke_structured_output(
             model=self._llm,
             schema=ReviewResult,
             system_prompt=REVIEW_SYSTEM_PROMPT,
-            user_prompt=json.dumps(stats, ensure_ascii=False, indent=2),
+            user_prompt=json.dumps(user_prompt_data, ensure_ascii=False, indent=2),
         )
 
         state["review_log"].append({
@@ -422,6 +438,7 @@ class PaperDiscoveryAgent:
             "total_papers": total,
             "converged": result.converged,
             "convergence_reason": normalize_text(result.convergence_reason),
+            "refined_query": normalize_text(result.refined_query),
         })
 
         logger.info(

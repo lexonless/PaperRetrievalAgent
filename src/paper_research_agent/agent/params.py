@@ -25,6 +25,13 @@ QUERY_DECOMPOSITION_SYSTEM_PROMPT = """You are a scholarly query decomposer. You
    - No time mention → both null (no constraint)
 
 ### OUTPUT CONSTRAINT
+
+IMPORTANT: Do NOT include year ranges (e.g., "2022-2024", "近五年", "since 2020")
+in any of the extracted text fields above. Year constraints are handled separately
+via the year_from / year_to numeric fields. Individual years like "2023" or phrases
+containing year ranges must never appear in core_techs, expanded_terms,
+application_domains, key_metrics, or any other list/string field.
+
 Return ONLY a valid JSON object matching the schema above. Do not include any explanations or markdown code fences.
 """
 
