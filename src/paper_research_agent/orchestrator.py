@@ -39,8 +39,10 @@ ORCHESTRATOR_SYSTEM_PROMPT = """You are an academic research assistant. Based on
 ## Notes
 
 - discover_papers iterates internally until convergence; only call it once
-- After calling tools, analyze results and complete the task concisely and efficiently
-- Provide a brief summary to the user at the end
+- synthesize_report works regardless of whether discover_papers converged.
+  If converged=false, the report will honestly note limitations and research
+  gaps. Papers found are still valuable — generate the report with available data.
+- Provide a brief summary to the user at the end.
 """
 
 
@@ -126,7 +128,11 @@ def _build_suggestion(converged: bool, total_papers: int, iterations: int) -> st
 def _build_synthesize_report_tool(settings: Settings, output_root: str) -> Any:
     @tool
     async def synthesize_report(project: str) -> str:
-        """Generate a Chinese research report from existing paper data. Requires paper metadata files in the project directory. Report is saved as project/report.md.
+        """Generate a research report from existing paper data.
+
+        Works regardless of search convergence status — when data is
+        partial or unconverged, the report will honestly note limitations
+        and research gaps. The report is saved as project/report.md.
 
         Args:
             project: Project name/slug (required)
