@@ -21,6 +21,7 @@ def build_synthesis_context(
     slug: str,
 ) -> dict[str, Any]:
     from ..feeder_store import (
+        get_project_convergence_status,
         get_project_decomposition,
         get_project_query,
         get_project_review_stats,
@@ -31,12 +32,14 @@ def build_synthesis_context(
     query = get_project_query(project_root, slug)
     decomposition = get_project_decomposition(project_root, slug)
     review_stats = get_project_review_stats(project_root, slug)
+    converged = get_project_convergence_status(project_root, slug)
 
     return {
         "papers": papers,
         "query": query,
         "decomposition": decomposition,
         "review_stats": review_stats,
+        "converged": converged,
     }
 
 SYNTHESIS_SYSTEM_PROMPT = """You are a senior academic research survey expert, skilled at writing comprehensive literature review reports.
@@ -114,6 +117,7 @@ class SynthesisEngine:
         project_slug: str,
         decomposition: dict | None = None,
         review_stats: dict | None = None,
+        converged: bool | None = None,
     ) -> str:
         self._project_slug = project_slug
         papers_detail = self._build_papers_detail(papers)
@@ -131,8 +135,21 @@ class SynthesisEngine:
         else:
             decomp_text = "N/A"
 
+        user_instruction = query if query else "Please write a comprehensive survey report based on the following paper data."
+
+        if converged is not None and not converged:
+            user_instruction += (
+                "\n\n⚠️ IMPORTANT: The paper search did NOT fully converge. "
+                "Some relevant papers may not have been retrieved. "
+                "Please state this honestly at the beginning of the report "
+                "(e.g., in the Executive Summary). Describe what was found "
+                "based on the available data, and note which research "
+                "directions appear under-represented in the results. "
+                "Do NOT fabricate or guess missing information."
+            )
+
         user_prompt = SYNTHESIS_USER_PROMPT_TEMPLATE.format(
-            user_instruction=query if query else "Please write a comprehensive survey report based on the following paper data.",
+            user_instruction=user_instruction,
             decomposition=decomp_text,
             candidate_count=stats["candidate_count"],
             selected_count=len(papers),

@@ -464,11 +464,12 @@ class PaperDiscoveryAgent:
     # ── query decomposition ───────────────────────────────────────────────
 
     async def _decompose_query(self, query: str) -> QueryDecomposition:
+        current_year = datetime.now().year
         result = await invoke_structured_output(
             model=self._llm,
             schema=QueryDecomposition,
-            system_prompt=QUERY_DECOMPOSITION_SYSTEM_PROMPT,
-            user_prompt=json.dumps({"query": query, "current_year": datetime.now().year}, ensure_ascii=False, indent=2),
+            system_prompt=QUERY_DECOMPOSITION_SYSTEM_PROMPT.format(current_year=current_year),
+            user_prompt=json.dumps({"query": query, "current_year": current_year}, ensure_ascii=False, indent=2),
         )
         result.core_techs = normalize_string_list(result.core_techs)
         result.application_domains = normalize_string_list(result.application_domains)

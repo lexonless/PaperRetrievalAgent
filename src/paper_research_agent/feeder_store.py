@@ -227,3 +227,16 @@ def get_project_review_stats(project_root: Path, slug: str) -> dict[str, Any]:
         except Exception:
             continue
     return stats
+
+
+def get_project_convergence_status(project_root: Path, slug: str) -> bool | None:
+    batches = list_batches(project_root, slug)
+    for batch_path in batches:
+        try:
+            data = load_batch_json(batch_path)
+            converged = data.get("converged")
+            if isinstance(converged, bool):
+                return converged
+        except Exception:
+            continue
+    return None

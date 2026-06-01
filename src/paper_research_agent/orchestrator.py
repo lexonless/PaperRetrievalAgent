@@ -147,6 +147,7 @@ def _build_synthesize_report_tool(settings: Settings, output_root: str) -> Any:
             project_slug=project,
             decomposition=ctx["decomposition"],
             review_stats=ctx["review_stats"],
+            converged=ctx.get("converged"),
         )
 
         report_dir = root / project
