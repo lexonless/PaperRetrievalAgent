@@ -15,7 +15,7 @@ from .utils import DEFAULT_SOURCE_ORDER, extract_year, normalize_pdf_url
 class PaperSourceCollector:
     _arxiv_lock = asyncio.Lock()
     _last_arxiv_call: float = 0
-    _arxiv_min_interval: float = 5.0
+    _arxiv_min_interval: float = 10.0
 
     def __init__(self, settings: Settings, client: Any) -> None:
         self._settings = settings
