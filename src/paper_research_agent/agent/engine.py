@@ -93,8 +93,8 @@ class PaperDiscoveryAgent:
 
         decomposition = await self._decompose_query(query)
 
-        resolved_year_from = _resolve_year(year_from, decomposition.year_from)
-        resolved_year_to = _resolve_year(year_to, decomposition.year_to)
+        resolved_year_from = year_from
+        resolved_year_to = year_to
 
         paths = ensure_project_paths(self._output_root, project_slug)
 
@@ -464,12 +464,11 @@ class PaperDiscoveryAgent:
     # ── query decomposition ───────────────────────────────────────────────
 
     async def _decompose_query(self, query: str) -> QueryDecomposition:
-        current_year = datetime.now().year
         result = await invoke_structured_output(
             model=self._llm,
             schema=QueryDecomposition,
-            system_prompt=QUERY_DECOMPOSITION_SYSTEM_PROMPT.replace("{current_year}", str(current_year)),
-            user_prompt=json.dumps({"query": query, "current_year": current_year}, ensure_ascii=False, indent=2),
+            system_prompt=QUERY_DECOMPOSITION_SYSTEM_PROMPT,
+            user_prompt=json.dumps({"query": query}, ensure_ascii=False, indent=2),
         )
         result.core_techs = normalize_string_list(result.core_techs)
         result.application_domains = normalize_string_list(result.application_domains)
@@ -523,15 +522,3 @@ class PaperDiscoveryAgent:
         lines.extend(["", ""])
         existing = paths.log_path.read_text(encoding="utf-8") if paths.log_path.exists() else ""
         paths.log_path.write_text("\n".join(lines) + existing, encoding="utf-8")
-
-
-def _resolve_year(cli_value: int | None, llm_value: int | None) -> int | None:
-    """CLI-provided year takes precedence; normalize to reasonable range."""
-    resolved = cli_value if cli_value is not None else llm_value
-    if resolved is None:
-        return None
-    import datetime as _dt
-    current = _dt.date.today().year
-    if resolved < 1900 or resolved > current + 1:
-        return None
-    return resolved
