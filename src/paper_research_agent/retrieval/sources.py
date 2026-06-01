@@ -8,7 +8,7 @@ from typing import Any
 
 from ..core.config import Settings
 from ..core.models import PaperDict
-from ..core.normalization import normalize_string_list, normalize_text
+from ..core.normalization import normalize_text
 from .utils import DEFAULT_SOURCE_ORDER, extract_year, normalize_pdf_url
 
 
@@ -20,45 +20,6 @@ class PaperSourceCollector:
     def __init__(self, settings: Settings, client: Any) -> None:
         self._settings = settings
         self._client = client
-
-    async def collect_records_for_query_specs(
-        self,
-        query_specs: list[str] | list[dict[str, Any]],
-        stage_name: str,
-        max_results_per_source: int | None,
-        year_from: int | None = None,
-        year_to: int | None = None,
-    ) -> tuple[list[PaperDict], list[dict[str, str]], list[dict[str, Any]]]:
-        records: list[PaperDict] = []
-        source_errors: list[dict[str, str]] = []
-        executed_specs: list[dict[str, Any]] = []
-
-        for query_spec in query_specs:
-            if isinstance(query_spec, dict):
-                query = normalize_text(query_spec.get("query", ""))
-                target_source = normalize_text(query_spec.get("source", ""))
-                purpose = normalize_text(query_spec.get("purpose", "")) or "precision"
-                notes = normalize_text(query_spec.get("notes", ""))
-            else:
-                query = normalize_text(query_spec)
-                target_source = ""
-                purpose = "precision"
-                notes = ""
-            if not query:
-                continue
-            query_records, query_errors = await self.collect_all_source_records(
-                query=query,
-                stage_name=stage_name,
-                max_results_per_source=max_results_per_source,
-                year_from=year_from,
-                year_to=year_to,
-                target_source=target_source,
-            )
-            records.extend(query_records)
-            source_errors.extend(query_errors)
-            sources = [target_source] if target_source else list(DEFAULT_SOURCE_ORDER)
-            executed_specs.append({"query": query, "sources": sources, "stage": stage_name, "purpose": purpose, "notes": notes})
-        return records, source_errors, executed_specs
 
     async def collect_all_source_records(
         self,

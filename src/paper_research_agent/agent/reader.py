@@ -4,8 +4,6 @@ import json
 import logging
 from pathlib import Path
 
-from langchain_core.tools import tool
-
 from ..core.config import Settings
 from ..core.llm import build_chat_model, invoke_structured_output
 from ..core.models import PaperReading
@@ -88,8 +86,7 @@ async def _generate_reading(markdown: str, slug: str, cache_path: Path, llm) -> 
     return reading
 
 
-@tool
-async def read_papers(project: str, paper_slug: str = "", raw: bool = False, output_dir: str = "projects") -> str:
+async def read_papers(project: str, paper_slug: str = "", raw: bool = False, *, output_dir: str) -> str:
     """Read academic paper PDFs and return structured understanding or raw content.
 
     Extracts paper content using document parsing. When `raw=False` (default),
@@ -102,7 +99,7 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False, out
         paper_slug: Specific paper slug to read. If empty, reads ALL papers
                      that have downloaded PDFs in the project.
         raw: If True, return raw markdown instead of structured JSON.
-        output_dir: Root directory for project outputs (default: "projects").
+        output_dir: Root directory for project outputs (required keyword).
     """
     try:
         from docling.document_converter import DocumentConverter  # noqa: F401

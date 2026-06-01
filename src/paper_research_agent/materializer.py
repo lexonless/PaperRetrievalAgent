@@ -22,7 +22,6 @@ def build_raw_paper_slug(paper: PaperDict) -> str:
 
     title = normalize_text(paper.title or "paper")
     return _slugify(title, max_length=90) or "paper"
-    return _slugify(title, max_length=90) or "paper"
 
 
 def render_raw_paper_markdown(

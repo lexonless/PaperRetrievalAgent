@@ -219,7 +219,7 @@ class ResearchOrchestrator:
             _build_discover_papers_tool(settings, output_root),
             _build_synthesize_report_tool(settings, output_root),
             _build_get_project_status_tool(output_root),
-            read_papers,
+            _build_read_papers_tool(output_root),
         ]
         self._tool_map = {t.name: t for t in self._tools}
 
@@ -275,7 +275,7 @@ class ResearchOrchestrator:
                 elif name == "get_project_status":
                     args = {"project": project_value}
                 elif name == "read_papers":
-                    args = {"project": project_value, "paper_slug": args.get("paper_slug", "")}
+                    args = {"project": project_value, "paper_slug": args.get("paper_slug", ""), "output_dir": self._output_root}
 
                 logger.info("agent: calling tool %s for project=%s", name, project_value)
                 print(f"  [Agent] Calling tool: {name}")

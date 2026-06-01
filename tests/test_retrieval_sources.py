@@ -12,55 +12,6 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
     def test_default_source_order_matches_three_sources(self) -> None:
         self.assertEqual(DEFAULT_SOURCE_ORDER, ("arXiv", "Crossref", "OpenAlex"))
 
-    async def test_collect_records_for_query_specs_reports_all_four_sources(self) -> None:
-        collector = PaperSourceCollector(settings=self._build_settings(), client=object())
-
-        async def fake_collect_all_source_records(
-            query: str,
-            stage_name: str,
-            max_results_per_source: int | None = None,
-            year_from: int | None = None,
-            year_to: int | None = None,
-            target_source: str = "",
-        ) -> tuple[list[PaperDict], list[dict[str, str]]]:
-            return [], []
-
-        collector.collect_all_source_records = fake_collect_all_source_records  # type: ignore[method-assign]
-        _, _, executed_specs = await collector.collect_records_for_query_specs(
-            query_specs=["graph rag"],
-            stage_name="primary",
-            max_results_per_source=5,
-            year_from=2021,
-        )
-
-        self.assertEqual(len(executed_specs), 1)
-        self.assertEqual(executed_specs[0]["sources"], ["arXiv", "Crossref", "OpenAlex"])
-
-    async def test_collect_records_for_source_specific_specs_reports_single_source(self) -> None:
-        collector = PaperSourceCollector(settings=self._build_settings(), client=object())
-
-        async def fake_collect_all_source_records(
-            query: str,
-            stage_name: str,
-            max_results_per_source: int | None = None,
-            year_from: int | None = None,
-            year_to: int | None = None,
-            target_source: str = "",
-        ) -> tuple[list[PaperDict], list[dict[str, str]]]:
-            self.assertEqual(target_source, "arXiv")
-            return [], []
-
-        collector.collect_all_source_records = fake_collect_all_source_records  # type: ignore[method-assign]
-        _, _, executed_specs = await collector.collect_records_for_query_specs(
-            query_specs=[{"query": "all:\"graph rag\"", "source": "arXiv", "purpose": "precision", "stage": "primary", "notes": "arXiv query"}],
-            stage_name="primary",
-            max_results_per_source=5,
-            year_from=2021,
-        )
-
-        self.assertEqual(len(executed_specs), 1)
-        self.assertEqual(executed_specs[0]["sources"], ["arXiv"])
-
     async def test_arxiv_structured_query_is_not_prefixed_twice(self) -> None:
         client = _FakeHttpClient()
         collector = PaperSourceCollector(settings=self._build_settings(), client=client)
