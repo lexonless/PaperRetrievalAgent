@@ -15,14 +15,21 @@ QUERY_DECOMPOSITION_SYSTEM_PROMPT = """You are a scholarly query decomposer. You
    - default / unclear / "some" → 5
    - "deep dive" / "detailed list" → 8
    - "comprehensive survey" / "thorough review" / "everything" → 15
-6. year_from and year_to: Infer publication year constraints from user intent. Output integers or null.
-   - "近五年" / "近三年" / "recent 5 years" → year_from = current_year - 5/3, year_to = null
-   - "2021 年以来" / "since 2020" → year_from = the specified year, year_to = null
-   - "2020-2024 年" / "between 2018 and 2022" → year_from = start, year_to = end
-   - "上世纪 90 年代" / "1990s" → year_from = 1990, year_to = 1999
-   - "今年" / "this year" → year_from = current_year
-   - "近十年" / "last decade" → year_from = current_year - 10
-   - No time mention → both null (no constraint)
+6. year_from and year_to: Infer publication year constraints from user intent.
+   Output integers or null.
+
+   General rules for relative time ranges:
+   - "近N年" / "recent N years" / "past N years" / "last N years":
+     Extract N from the phrase → year_from = current_year - N, year_to = null
+     Examples: "近两年"→N=2→year_from=current_year-2; "近十年"→N=10→year_from=current_year-10
+   - "近N个月" / "recent N months": year_from = current_year - 1 (approx)
+   - "今年" / "this year" → year_from = current_year, year_to = null
+
+   General rules for specific time ranges:
+   - "YYYY 年以来" / "since YYYY" → year_from = YYYY, year_to = null
+   - "YYYY-YYYY 年" / "between YYYY and YYYY" → year_from = first YYYY, year_to = second YYYY
+   - "YYYY 年代" / "YYYY0s" → year_from = YYYY0, year_to = YYYY9
+   - No time mention → both null
 
 ### OUTPUT CONSTRAINT
 
