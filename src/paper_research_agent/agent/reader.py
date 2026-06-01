@@ -53,16 +53,14 @@ async def _extract_markdown(pdf_path: Path, slug: str, raw_path: Path) -> str:
         logger.info("reader: raw markdown cache hit for %s", slug)
         return raw_path.read_text(encoding="utf-8")
 
-    try:
-        from docling.document_converter import DocumentConverter
+    from docling.document_converter import DocumentConverter
 
-        converter = DocumentConverter()
-        doc_result = converter.convert(str(pdf_path))
-        markdown = doc_result.document.export_to_markdown()
-    except ImportError as exc:
-        raise exc
-    except Exception as exc:
-        raise exc
+    logger.info("reader: docling convert start: %s (%s bytes)", slug, pdf_path.stat().st_size)
+    converter = DocumentConverter()
+    doc_result = converter.convert(str(pdf_path))
+    logger.info("reader: docling convert done: %s", slug)
+    markdown = doc_result.document.export_to_markdown()
+    logger.info("reader: docling export: %s chars for %s", len(markdown), slug)
 
     if markdown and markdown.strip():
         raw_path.parent.mkdir(parents=True, exist_ok=True)
@@ -105,6 +103,11 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False) -> 
                      that have downloaded PDFs in the project.
         raw: If True, return raw markdown instead of structured JSON.
     """
+    try:
+        from docling.document_converter import DocumentConverter  # noqa: F401
+    except ImportError:
+        return "docling is not installed. Install it with: pip install docling"
+
     resolved = Path(".").resolve()
     pdf_dir = resolved / "projects" / project / "raw" / "papers_pdf"
     fulltext_dir = resolved / "projects" / project / "raw" / "papers" / "fulltext"
@@ -131,9 +134,8 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False) -> 
         if raw:
             try:
                 markdown = await _extract_markdown(pdf_path, slug, raw_path)
-            except ImportError:
-                return "docling is not installed. Install it with: pip install docling"
             except Exception as exc:
+                logger.exception("reader: extraction failed for %s", slug)
                 results.append(f"Extraction failed: {exc}")
                 continue
             results.append(markdown)
@@ -148,10 +150,8 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False) -> 
         logger.info("reader: extracting %s", slug)
         try:
             markdown = await _extract_markdown(pdf_path, slug, raw_path)
-        except ImportError:
-            return "docling is not installed. Install it with: pip install docling"
         except Exception as exc:
-            logger.warning("reader: docling failed for %s: %s", slug, exc)
+            logger.exception("reader: docling failed for %s", slug)
             results.append(json.dumps({"error": str(exc), "slug": slug}, ensure_ascii=False))
             continue
 
@@ -165,7 +165,7 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False) -> 
             reading = await _generate_reading(markdown, slug, cache_path, llm)
             results.append(reading.model_dump_json(indent=2, ensure_ascii=False))
         except Exception as exc:
-            logger.warning("reader: LLM reading failed for %s: %s", slug, exc)
+            logger.exception("reader: LLM reading failed for %s", slug)
             raw_content = markdown[:2000]
             results.append(json.dumps({
                 "error": f"LLM reading failed: {exc}",

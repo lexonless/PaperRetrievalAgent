@@ -24,6 +24,14 @@ from .params import HARD_CAP, LLM_RERANK_TOP_N, QUERY_DECOMPOSITION_SYSTEM_PROMP
 
 logger = logging.getLogger(__name__)
 
+_YEAR_RANGE_RE = re.compile(r"\b\d{4}\s*[-–—]\s*\d{4}\b", re.IGNORECASE)
+
+
+def _strip_year_text(text: str) -> str:
+    cleaned = re.sub(_YEAR_RANGE_RE, "", text)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned or text
+
 
 class PaperDiscoveryAgent:
     def __init__(
@@ -88,7 +96,7 @@ class PaperDiscoveryAgent:
             "is_converged": False,
             "rerank_log": [],
             "review_log": [],
-            "current_search_query": query,
+            "current_search_query": _strip_year_text(query),
         }
 
         decomposition = await self._decompose_query(query)
@@ -133,7 +141,7 @@ class PaperDiscoveryAgent:
                 logger.info("LLM has no meaningful refined query → stopping")
                 break
 
-            state["current_search_query"] = refined
+            state["current_search_query"] = _strip_year_text(refined)
             logger.info("LLM suggests refined query: %s", refined)
 
         sorted_papers: list[PaperDict] = sorted(
@@ -196,11 +204,8 @@ class PaperDiscoveryAgent:
         search_query = state["current_search_query"]
         stage = f"iter_{state['search_iteration']}"
 
-        clean_query = re.sub(r"\b\d{4}\s*[-–—]\s*\d{4}\b", "", search_query)
-        clean_query = re.sub(r"\s+", " ", clean_query).strip() or search_query
-
         entries = build_query_entries(
-            topic_phrases=[clean_query] + decomposition.core_techs[:2],
+            topic_phrases=[search_query] + decomposition.core_techs[:2],
             expanded_terms=decomposition.expanded_terms,
             domain_terms=decomposition.application_domains + decomposition.key_metrics,
         )
