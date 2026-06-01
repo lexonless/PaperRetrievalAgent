@@ -210,6 +210,21 @@ def _build_get_project_status_tool(output_root: str) -> Any:
     return get_project_status
 
 
+def _build_read_papers_tool(output_root: str) -> Any:
+    @tool("read_papers")
+    async def _rp(project: str, paper_slug: str = "", raw: bool = False) -> str:
+        """Read downloaded PDF papers and return structured understanding (problem statement, method, contributions, results, limitations). Can read a single paper or all papers in the project.
+
+        Args:
+            project: Project name/slug (required).
+            paper_slug: Specific paper slug to read. If empty, reads ALL papers.
+            raw: If True, return raw full-text markdown instead of structured JSON.
+        """
+        return await read_papers(project=project, paper_slug=paper_slug, raw=raw, output_dir=output_root)
+
+    return _rp
+
+
 class ResearchOrchestrator:
     def __init__(self, settings: Settings, *, output_root: str = "projects") -> None:
         self._settings = settings
