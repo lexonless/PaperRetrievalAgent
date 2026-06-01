@@ -8,6 +8,7 @@ from typing import Any
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 
+from .agent.reader import read_papers
 from .core.config import Settings
 from .core.llm import build_chat_model
 from .feeder_store import (
@@ -27,6 +28,7 @@ ORCHESTRATOR_SYSTEM_PROMPT = """You are an academic research assistant. Based on
 1. **discover_papers**: Search for academic papers. Takes a research topic as input, returns search result summary. May only be called once.
 2. **synthesize_report**: Generate a Chinese research report from existing paper data. Requires paper data in the project directory.
 3. **get_project_status**: Check the current project status (paper count, batch info, whether a report already exists, etc.).
+4. **read_papers**: Read downloaded PDF papers and return structured understanding (problem statement, method, contributions, results, limitations). Can read a single paper or all papers in the project.
 
 ## Decision Rules
 
@@ -135,6 +137,9 @@ def _build_synthesize_report_tool(settings: Settings, output_root: str) -> Any:
         if not papers:
             return f"No paper data found in project {project}. Please use discover_papers first."
 
+        await read_papers(project=project, paper_slug="")
+        logger.info("synthesize_report: pre-read completed for project=%s", project)
+
         engine = SynthesisEngine(settings)
         report = await engine.synthesize(
             papers=papers,
@@ -206,6 +211,7 @@ class ResearchOrchestrator:
             _build_discover_papers_tool(settings, output_root),
             _build_synthesize_report_tool(settings, output_root),
             _build_get_project_status_tool(output_root),
+            read_papers,
         ]
         self._tool_map = {t.name: t for t in self._tools}
 
@@ -260,6 +266,8 @@ class ResearchOrchestrator:
                     args = {"project": project_value}
                 elif name == "get_project_status":
                     args = {"project": project_value}
+                elif name == "read_papers":
+                    args = {"project": project_value, "paper_slug": args.get("paper_slug", "")}
 
                 logger.info("agent: calling tool %s for project=%s", name, project_value)
                 print(f"  [Agent] Calling tool: {name}")
