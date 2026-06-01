@@ -143,7 +143,7 @@ def _build_synthesize_report_tool(settings: Settings, output_root: str) -> Any:
         if not papers:
             return f"No paper data found in project {project}. Please use discover_papers first."
 
-        await read_papers(project=project, paper_slug="")
+        await read_papers(project=project, paper_slug="", output_dir=output_root)
         logger.info("synthesize_report: pre-read completed for project=%s", project)
 
         engine = SynthesisEngine(settings)
@@ -151,6 +151,7 @@ def _build_synthesize_report_tool(settings: Settings, output_root: str) -> Any:
             papers=papers,
             query=ctx["query"] or "Unspecified query",
             project_slug=project,
+            output_root=output_root,
             decomposition=ctx["decomposition"],
             review_stats=ctx["review_stats"],
             converged=ctx.get("converged"),

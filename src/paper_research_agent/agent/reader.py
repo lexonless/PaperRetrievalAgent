@@ -89,7 +89,7 @@ async def _generate_reading(markdown: str, slug: str, cache_path: Path, llm) -> 
 
 
 @tool
-async def read_papers(project: str, paper_slug: str = "", raw: bool = False) -> str:
+async def read_papers(project: str, paper_slug: str = "", raw: bool = False, output_dir: str = "projects") -> str:
     """Read academic paper PDFs and return structured understanding or raw content.
 
     Extracts paper content using document parsing. When `raw=False` (default),
@@ -102,15 +102,16 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False) -> 
         paper_slug: Specific paper slug to read. If empty, reads ALL papers
                      that have downloaded PDFs in the project.
         raw: If True, return raw markdown instead of structured JSON.
+        output_dir: Root directory for project outputs (default: "projects").
     """
     try:
         from docling.document_converter import DocumentConverter  # noqa: F401
     except ImportError:
         return "docling is not installed. Install it with: pip install docling"
 
-    resolved = Path(".").resolve()
-    pdf_dir = resolved / "projects" / project / "raw" / "papers_pdf"
-    fulltext_dir = resolved / "projects" / project / "raw" / "papers" / "fulltext"
+    resolved = Path(output_dir).resolve()
+    pdf_dir = resolved / project / "raw" / "papers_pdf"
+    fulltext_dir = resolved / project / "raw" / "papers" / "fulltext"
 
     if paper_slug:
         pdf_path = pdf_dir / f"{paper_slug}.pdf"

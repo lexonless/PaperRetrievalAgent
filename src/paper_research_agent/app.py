@@ -72,6 +72,7 @@ class RawFeederApplication:
             papers=papers,
             query=ctx["query"] or project_slug,
             project_slug=project_slug,
+            output_root=self._output_root,
             decomposition=ctx["decomposition"],
             review_stats=ctx["review_stats"],
         )

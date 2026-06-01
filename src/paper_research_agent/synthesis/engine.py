@@ -115,11 +115,13 @@ class SynthesisEngine:
         papers: list[PaperDict],
         query: str,
         project_slug: str,
+        output_root: str = "projects",
         decomposition: dict | None = None,
         review_stats: dict | None = None,
         converged: bool | None = None,
     ) -> str:
         self._project_slug = project_slug
+        self._output_root = output_root
         papers_detail = self._build_papers_detail(papers)
         stats = self._compute_stats(papers, review_stats or {})
 
@@ -242,7 +244,7 @@ class SynthesisEngine:
         slug = normalize_text(paper.slug)
         if not slug:
             return None
-        cache_path = Path("projects") / self._project_slug / "raw" / "papers" / "fulltext" / f"{slug}.json"
+        cache_path = Path(self._output_root) / self._project_slug / "raw" / "papers" / "fulltext" / f"{slug}.json"
         if not cache_path.is_file():
             return None
         try:
