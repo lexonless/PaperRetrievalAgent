@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from pathlib import Path
 
 from ..core.config import Settings
@@ -11,6 +12,15 @@ from ..core.models import PaperReading
 logger = logging.getLogger(__name__)
 
 READ_PAPER_SYSTEM_PROMPT = """You are an expert academic paper reader. Your task is to thoroughly understand a research paper and extract structured insights from it.
+
+## Input Format
+
+You are reading a paper converted to Markdown by a high-precision extraction engine.
+- All mathematical formulas are in standard LaTeX ($inline$ or $$block$$).
+  Understand them by their mathematical meaning — do not question the format.
+- [Figure] placeholders represent charts, tables, and figures from the original.
+  When referencing these, say "as shown in the paper's Figure/Table" rather
+  than trying to describe the placeholder.
 
 ## Section Guidance
 
@@ -41,16 +51,36 @@ Where to find each field in the paper:
 Return exactly one valid JSON object matching the schema. Do not use markdown code fences.
 """
 
+_IMAGE_LINK_RE = re.compile(r'!\[.*?\]\(images/.*?\)')
+
 
 def _slug_from_filename(pdf_path: Path) -> str:
     return pdf_path.stem
 
 
-async def _extract_markdown(pdf_path: Path, slug: str, raw_path: Path) -> str:
+def _strip_image_links(markdown: str) -> str:
+    return _IMAGE_LINK_RE.sub("[Figure]", markdown)
+
+
+async def _extract_markdown(pdf_path: Path, slug: str, raw_path: Path, extractor: str = "docling") -> str:
     if raw_path.is_file():
         logger.info("reader: raw markdown cache hit for %s", slug)
         return raw_path.read_text(encoding="utf-8")
 
+    if extractor == "mineru":
+        markdown = await _extract_with_mineru(pdf_path, slug)
+    else:
+        markdown = await _extract_with_docling(pdf_path, slug)
+
+    if markdown and markdown.strip():
+        raw_path.parent.mkdir(parents=True, exist_ok=True)
+        raw_path.write_text(markdown, encoding="utf-8")
+        logger.info("reader: cached raw markdown for %s (%s chars)", slug, len(markdown))
+
+    return markdown
+
+
+async def _extract_with_docling(pdf_path: Path, slug: str) -> str:
     from docling.document_converter import DocumentConverter
 
     logger.info("reader: docling convert start: %s (%s bytes)", slug, pdf_path.stat().st_size)
@@ -59,12 +89,28 @@ async def _extract_markdown(pdf_path: Path, slug: str, raw_path: Path) -> str:
     logger.info("reader: docling convert done: %s", slug)
     markdown = doc_result.document.export_to_markdown()
     logger.info("reader: docling export: %s chars for %s", len(markdown), slug)
+    return markdown
 
-    if markdown and markdown.strip():
-        raw_path.parent.mkdir(parents=True, exist_ok=True)
-        raw_path.write_text(markdown, encoding="utf-8")
-        logger.info("reader: cached raw markdown for %s (%s chars)", slug, len(markdown))
 
+async def _extract_with_mineru(pdf_path: Path, slug: str) -> str:
+    from magic_pdf.pipe.UNIPipe import UNIPipe
+    from magic_pdf.rw.DiskReaderWriter import DiskReaderWriter
+
+    pdf_bytes = pdf_path.read_bytes()
+    images_dir = pdf_path.parent.parent / "papers" / "fulltext" / "images" / slug
+    images_dir.mkdir(parents=True, exist_ok=True)
+    image_writer = DiskReaderWriter(str(images_dir))
+
+    logger.info("reader: mineru convert start: %s (%s bytes)", slug, len(pdf_bytes))
+    pipe = UNIPipe(pdf_bytes, jso_useful_key={}, image_writer=image_writer)
+    pipe.pipe_classify()
+    pipe.pipe_analyze()
+    pipe.pipe_parse()
+    markdown = pipe.get_markdown()
+    logger.info("reader: mineru convert done: %s (%s chars)", slug, len(markdown))
+
+    markdown = _strip_image_links(markdown)
+    logger.info("reader: mineru stripped image links for %s", slug)
     return markdown
 
 
@@ -101,11 +147,6 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False, *, 
         raw: If True, return raw markdown instead of structured JSON.
         output_dir: Root directory for project outputs (required keyword).
     """
-    try:
-        from docling.document_converter import DocumentConverter  # noqa: F401
-    except ImportError:
-        return "docling is not installed. Install it with: pip install docling"
-
     resolved = Path(output_dir).resolve()
     pdf_dir = resolved / project / "raw" / "papers_pdf"
     fulltext_dir = resolved / project / "raw" / "papers" / "fulltext"
@@ -121,6 +162,7 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False, *, 
             return f"No PDFs found in {pdf_dir}"
 
     settings = Settings.from_env()
+    extractor = settings.pdf_extractor
     llm = build_chat_model(settings, temperature=0.1)
     results: list[str] = []
 
@@ -131,7 +173,7 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False, *, 
 
         if raw:
             try:
-                markdown = await _extract_markdown(pdf_path, slug, raw_path)
+                markdown = await _extract_markdown(pdf_path, slug, raw_path, extractor=extractor)
             except Exception as exc:
                 logger.exception("reader: extraction failed for %s", slug)
                 results.append(f"Extraction failed: {exc}")
@@ -145,11 +187,11 @@ async def read_papers(project: str, paper_slug: str = "", raw: bool = False, *, 
             results.append(reading.model_dump_json(indent=2, ensure_ascii=False))
             continue
 
-        logger.info("reader: extracting %s", slug)
+        logger.info("reader: extracting %s with %s", slug, extractor)
         try:
-            markdown = await _extract_markdown(pdf_path, slug, raw_path)
+            markdown = await _extract_markdown(pdf_path, slug, raw_path, extractor=extractor)
         except Exception as exc:
-            logger.exception("reader: docling failed for %s", slug)
+            logger.exception("reader: extraction failed for %s", slug)
             results.append(json.dumps({"error": str(exc), "slug": slug}, ensure_ascii=False))
             continue
 

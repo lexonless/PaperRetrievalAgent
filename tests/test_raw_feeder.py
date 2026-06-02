@@ -184,6 +184,7 @@ def _build_settings():
         request_timeout=30.0, max_output_tokens=4096,
         max_results_per_source=5, http_proxy="", openalex_api_key="",
         unpaywall_email="",
+        pdf_extractor="docling",
     )
 
 

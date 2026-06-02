@@ -40,6 +40,7 @@ class RetrievalSourcesTests(unittest.IsolatedAsyncioTestCase):
             http_proxy="",
             openalex_api_key="",
             unpaywall_email="",
+            pdf_extractor="docling",
         )
 
 

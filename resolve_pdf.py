@@ -81,6 +81,7 @@ def _build_settings(email: str) -> Settings:
         http_proxy="",
         openalex_api_key=os.getenv("OPENALEX_API_KEY", ""),
         unpaywall_email=email,
+        pdf_extractor="docling",
     )
 
 
