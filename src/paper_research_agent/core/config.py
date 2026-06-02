@@ -71,7 +71,6 @@ class Settings:
     http_proxy: str
     openalex_api_key: str
     unpaywall_email: str
-    pdf_extractor: str
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -129,5 +128,4 @@ class Settings:
             http_proxy=os.getenv("HTTP_PROXY", "").strip(),
             openalex_api_key=os.getenv("OPENALEX_API_KEY", "").strip(),
             unpaywall_email=os.getenv("UNPAYWALL_EMAIL", "").strip(),
-            pdf_extractor=os.getenv("PDF_EXTRACTOR", "docling").strip().lower(),
         )
