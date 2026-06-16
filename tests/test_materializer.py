@@ -1,0 +1,49 @@
+from __future__ import annotations
+
+import unittest
+
+from paper_research_agent.core.models import PaperDict
+from paper_research_agent.materializer import build_raw_paper_slug, render_raw_paper_markdown
+
+
+class MaterializerTests(unittest.TestCase):
+    def test_slug_prefers_doi_then_arxiv_then_title(self) -> None:
+        doi_slug = build_raw_paper_slug(PaperDict(title="Paper", doi="10.1145/example.123"))
+        self.assertTrue(doi_slug.startswith("doi-10-1145-example-123"))
+
+        arxiv_slug = build_raw_paper_slug(PaperDict(title="Paper", url="https://arxiv.org/abs/2501.12345"))
+        self.assertEqual(arxiv_slug, "arxiv-2501-12345")
+
+        title_slug = build_raw_paper_slug(PaperDict(title="Direct B-Rep Generation with Diffusion"))
+        self.assertEqual(title_slug, "direct-b-rep-generation-with-diffusion")
+
+    def test_render_marks_file_as_raw_source_material(self) -> None:
+        content = render_raw_paper_markdown(
+            PaperDict(
+                title="BrepGPT",
+                source="arXiv",
+                authors=["A. Author"],
+                year=2025,
+                date="2025-01-01",
+                url="https://arxiv.org/abs/2501.12345",
+                doi="",
+                pdf_url="https://arxiv.org/pdf/2501.12345.pdf",
+                evidence_snippets=[],
+                matched_queries=["brep generation"],
+            ),
+            project_slug="demo",
+            user_query="papers on brep generation",
+            generated_at="2026-04-15T10:00:00",
+            local_pdf_path="projects/demo/raw/papers_pdf/arxiv-2501-12345.pdf",
+            pdf_download_status="downloaded",
+        )
+
+        self.assertIn("type: raw_source", content)
+        self.assertIn("This file is raw source material prepared for downstream wiki ingestion.", content)
+        self.assertIn("_No abstract or summary was available from the discovery sources._", content)
+        self.assertIn("fetched_by: `raw-feeder-v1`", content)
+        self.assertIn("PDF download status: `downloaded`", content)
+
+
+if __name__ == "__main__":
+    unittest.main()

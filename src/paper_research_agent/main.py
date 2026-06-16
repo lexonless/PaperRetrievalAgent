@@ -2,95 +2,225 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import logging
+from collections.abc import Callable
 from pathlib import Path
 
 from .core.config import Settings
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the LangGraph research assistant.")
-    parser.add_argument("--project", type=str, required=True, help="Project slug used for the project library.")
-    parser.add_argument("--query", type=str, help="Run a single research query.")
-    parser.add_argument("--query-file", type=str, help="Path to a text file containing the query prompt.")
-    parser.add_argument("--pdf-dir", type=str, default="", help="Optional directory containing local PDF sources.")
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        default="projects",
-        help="Project library root directory.",
+AppFactory = Callable[[Settings, str], object]
+
+
+def _setup_logging(output_dir: str, project_slug: str) -> None:
+    log_dir = Path(output_dir) / project_slug / ".feeder"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "agent.log"
+
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+
+    for handler in root.handlers:
+        if isinstance(handler, logging.FileHandler) and handler.baseFilename == str(log_path.resolve()):
+            return
+
+    fmt = logging.Formatter("%(asctime)s [%(name)s] %(levelname)s: %(message)s", datefmt="%H:%M:%S")
+    fh = logging.FileHandler(str(log_path), encoding="utf-8")
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(fmt)
+    root.addHandler(fh)
+
+    print(f"[log] Writing to: {log_path.resolve()}")
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Paper discovery agent with LLM tool calling.")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    discover_parser = subparsers.add_parser(
+        "discover",
+        help="Discover papers from a natural-language query and materialize them into raw markdown.",
     )
-    parser.add_argument(
-        "--no-stream",
-        action="store_true",
-        help="Disable progress streaming and only print final artifact paths.",
+    discover_parser.add_argument("--project", type=str, required=True, help="Project slug used for the work directory.")
+    query_group = discover_parser.add_mutually_exclusive_group(required=True)
+    query_group.add_argument("--query", type=str, help="Natural-language query for paper discovery.")
+    query_group.add_argument("--query-txt", type=str, dest="query_txt", help="Path to a .txt file containing the query.")
+    discover_parser.add_argument(
+        "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
     )
-    return parser.parse_args()
+    discover_parser.add_argument("--year-from", type=int, default=None, help="Lower bound of publication year (inclusive).")
+    discover_parser.add_argument("--year-to", type=int, default=None, help="Upper bound of publication year (inclusive).")
+
+    plan_parser = subparsers.add_parser(
+        "plan",
+        help="Agent-driven research: AI autonomously decides to discover papers, synthesize reports, or both.",
+    )
+    plan_parser.add_argument("--project", type=str, required=True, help="Project slug used for the work directory.")
+    plan_query_group = plan_parser.add_mutually_exclusive_group(required=True)
+    plan_query_group.add_argument("--query", type=str, help="Natural-language query for the research task.")
+    plan_query_group.add_argument("--query-txt", type=str, dest="query_txt", help="Path to a .txt file containing the query.")
+    plan_parser.add_argument(
+        "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
+    )
+    plan_parser.add_argument("--year-from", type=int, default=None, help="Lower bound of publication year (inclusive).")
+    plan_parser.add_argument("--year-to", type=int, default=None, help="Upper bound of publication year (inclusive).")
+
+    synthesize_parser = subparsers.add_parser(
+        "synthesize",
+        help="Generate a Chinese research report from existing paper metadata files.",
+    )
+    synthesize_parser.add_argument("--project", type=str, required=True, help="Project slug with existing paper data.")
+    synthesize_parser.add_argument(
+        "--output-dir", type=str, default="projects", help="Root directory for project outputs.",
+    )
+
+    return parser.parse_args(argv)
+
+
+def _resolve_query(args: argparse.Namespace) -> str:
+    if args.query:
+        return args.query.strip()
+    path = Path(args.query_txt)
+    if not path.is_file():
+        raise argparse.ArgumentTypeError(f"query-txt file not found: {args.query_txt}")
+    for enc in ("utf-8", "utf-16", "gbk"):
+        try:
+            return path.read_text(encoding=enc).strip()
+        except (UnicodeDecodeError, UnicodeError):
+            continue
+    raise argparse.ArgumentTypeError(f"Failed to decode query-txt file: {args.query_txt}")
 
 
 async def run_once(
     *,
     project_slug: str,
     query: str,
-    pdf_dir: str,
     output_dir: str,
-    stream: bool,
+    year_from: int | None = None,
+    year_to: int | None = None,
+    app_factory: AppFactory | None = None,
+    settings: Settings | None = None,
 ) -> None:
-    from .app import ResearchAssistantApplication
+    from .app import RawFeederApplication
 
-    settings = Settings.from_env()
-    app = ResearchAssistantApplication(settings, output_root=output_dir)
+    _setup_logging(output_dir, project_slug)
+    resolved_settings = settings or Settings.from_env()
+    factory = app_factory or (lambda configured_settings, configured_output: RawFeederApplication(configured_settings, output_root=configured_output))
+    app = factory(resolved_settings, output_dir)
 
     try:
-        final_state: dict | None = None
-        if stream:
-            async for update in await app.run_stream(project_slug=project_slug, task=query, pdf_dir=pdf_dir):
-                final_state = update
-                stop_reason = update.get("run", {}).get("stop_reason", "")
-                revision_count = update.get("retrieval", {}).get("revision_count", 0)
-                print(f"[graph] stop_reason={stop_reason or 'running'} revision_count={revision_count}")
-        else:
-            final_state = await app.run(project_slug=project_slug, task=query, pdf_dir=pdf_dir)
-
-        if final_state is None:
-            raise RuntimeError("The graph did not produce a final state.")
-        artifacts = final_state.get("run", {}).get("artifacts", {})
+        batch, batch_path = await app.discover(project_slug=project_slug, query=query, year_from=year_from, year_to=year_to)
         print(f"\nProject: {project_slug}")
-        print(f"Note: {artifacts.get('note_path', '')}")
-        print(f"Retrieval JSON: {artifacts.get('retrieval_path', '')}")
-        print(f"Trace JSON: {artifacts.get('trace_path', '')}")
-        stop_reason = final_state.get("run", {}).get("stop_reason", "")
-        if stop_reason:
-            print(f"Stop reason: {stop_reason}")
+        print(f"Query: {query}")
+        print(f"Batch: {batch_path}")
+        selected = batch.get("selected_count", 0) if isinstance(batch, dict) else getattr(batch, "selected_count", 0)
+        written = batch.get("written_files", []) if isinstance(batch, dict) else getattr(batch, "written_files", [])
+        print(f"Selected raw papers: {selected}")
+        for item in written:
+            path = item.get("path", "") if isinstance(item, dict) else getattr(item, "path", "")
+            print(f"- {path}")
+    finally:
+        await app.close()
+
+
+def run_cli(
+    argv: list[str] | None = None,
+    *,
+    app_factory: AppFactory | None = None,
+    settings: Settings | None = None,
+) -> int:
+    args = parse_args(argv)
+    if args.command not in ("discover", "plan", "synthesize"):
+        raise ValueError(f"Unsupported command: {args.command}")
+
+    if args.command == "synthesize":
+        asyncio.run(
+            _run_synthesize(
+                project_slug=args.project.strip(),
+                output_dir=args.output_dir.strip(),
+                app_factory=app_factory,
+                settings=settings,
+            )
+        )
+        return 0
+
+    query = _resolve_query(args)
+    year_from = getattr(args, "year_from", None)
+    year_to = getattr(args, "year_to", None)
+    if args.command == "plan":
+        asyncio.run(
+            _run_plan(
+                project_slug=args.project.strip(),
+                query=query,
+                output_dir=args.output_dir.strip(),
+                app_factory=app_factory,
+                settings=settings,
+            )
+        )
+        return 0
+
+    asyncio.run(
+        run_once(
+            project_slug=args.project.strip(),
+            query=query,
+            output_dir=args.output_dir.strip(),
+            year_from=year_from,
+            year_to=year_to,
+            app_factory=app_factory,
+            settings=settings,
+        )
+    )
+    return 0
+
+
+async def _run_plan(
+    *,
+    project_slug: str,
+    query: str,
+    output_dir: str,
+    app_factory: AppFactory | None = None,
+    settings: Settings | None = None,
+) -> None:
+    from .app import RawFeederApplication
+
+    _setup_logging(output_dir, project_slug)
+    resolved_settings = settings or Settings.from_env()
+    factory = app_factory or (lambda s, o: RawFeederApplication(s, output_root=o))
+    app = factory(resolved_settings, output_dir)
+
+    try:
+        print(f"\n项目: {project_slug}")
+        print(f"需求: {query}\n")
+        result = await app.plan(project_slug=project_slug, query=query)
+        if result:
+            print(f"\n{result}")
+    finally:
+        await app.close()
+
+
+async def _run_synthesize(
+    *,
+    project_slug: str,
+    output_dir: str,
+    app_factory: AppFactory | None = None,
+    settings: Settings | None = None,
+) -> None:
+    from .app import RawFeederApplication
+
+    _setup_logging(output_dir, project_slug)
+    resolved_settings = settings or Settings.from_env()
+    factory = app_factory or (lambda s, o: RawFeederApplication(s, output_root=o))
+    app = factory(resolved_settings, output_dir)
+
+    try:
+        await app.synthesize(project_slug=project_slug)
     finally:
         await app.close()
 
 
 def main() -> None:
-    args = parse_args()
-    query = _resolve_query(args)
-    asyncio.run(
-        run_once(
-            project_slug=args.project.strip(),
-            query=query,
-            pdf_dir=args.pdf_dir.strip(),
-            output_dir=args.output_dir.strip(),
-            stream=not args.no_stream,
-        )
-    )
-
-
-def _resolve_query(args: argparse.Namespace) -> str:
-    if args.query and args.query_file:
-        raise ValueError("Use either --query or --query-file, not both.")
-    if args.query:
-        return args.query.strip()
-    if args.query_file:
-        query_path = Path(args.query_file)
-        content = query_path.read_text(encoding="utf-8").strip()
-        if not content:
-            raise ValueError(f"Query file is empty: {query_path}")
-        return content
-    raise ValueError("Provide either --query or --query-file.")
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s", datefmt="%H:%M:%S")
+    raise SystemExit(run_cli())
 
 
 if __name__ == "__main__":

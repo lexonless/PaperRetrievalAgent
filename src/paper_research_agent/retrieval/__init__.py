@@ -1,5 +1,13 @@
-"""Retrieval sources, ranking, verification, and toolkit."""
+"""Academic source retrieval and ranking helpers for raw paper discovery."""
 
-from .toolkit import PaperSearchToolkit
+from .query_planning import build_query_entries
+from .ranking import PaperRankingEngine
+from .reranker import build_reranker
+from .sources import PaperSourceCollector
 
-__all__ = ["PaperSearchToolkit"]
+__all__ = [
+    "PaperSourceCollector",
+    "PaperRankingEngine",
+    "build_query_entries",
+    "build_reranker",
+]

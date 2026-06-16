@@ -11,29 +11,17 @@ from .config import Settings
 StructuredModelT = TypeVar("StructuredModelT", bound=BaseModel)
 
 
-def build_chat_model(settings: Settings, *, temperature: float = 0.1):
+def build_chat_model(settings: Settings, *, temperature: float = 0.1, rerank: bool = False):
     from langchain_openai import ChatOpenAI
 
     return ChatOpenAI(
-        model=settings.model_name,
-        api_key=settings.model_api_key,
-        base_url=settings.model_base_url,
-        default_headers=settings.default_headers,
+        model=settings.rerank_model_name if rerank else settings.model_name,
+        api_key=settings.rerank_model_api_key if rerank else settings.model_api_key,
+        base_url=settings.rerank_model_base_url if rerank else settings.model_base_url,
+        default_headers=settings.rerank_default_headers if rerank else settings.default_headers,
         timeout=settings.request_timeout,
-        temperature=temperature,
-    )
-
-
-def build_rerank_chat_model(settings: Settings):
-    from langchain_openai import ChatOpenAI
-
-    return ChatOpenAI(
-        model=settings.rerank_model_name,
-        api_key=settings.rerank_model_api_key,
-        base_url=settings.rerank_model_base_url,
-        default_headers=settings.rerank_default_headers,
-        timeout=settings.request_timeout,
-        temperature=0.0,
+        temperature=0.0 if rerank else temperature,
+        max_tokens=settings.max_output_tokens,
     )
 
 
@@ -75,14 +63,20 @@ def coerce_model(schema: type[StructuredModelT], value: StructuredModelT | BaseM
     if isinstance(value, dict):
         return schema.model_validate(value)
     if isinstance(value, str):
-        return schema.model_validate_json(_clean_json_text(value))
+        cleaned = _clean_json_text(value)
+        try:
+            return schema.model_validate_json(cleaned)
+        except Exception:
+            repaired = _repair_truncated_json(cleaned)
+            return schema.model_validate_json(repaired)
     raise TypeError(f"Cannot coerce {type(value)!r} into {schema.__name__}")
 
 
-def dump_json(data: BaseModel | dict) -> str:
-    if isinstance(data, BaseModel):
-        return data.model_dump_json(indent=2)
-    return json.dumps(data, ensure_ascii=False, indent=2)
+def _repair_truncated_json(text: str) -> str:
+    text = text.rstrip(",\n\r ")
+    open_braces = text.count("{") - text.count("}")
+    open_brackets = text.count("[") - text.count("]")
+    return text + "]" * open_brackets + "}" * open_braces
 
 
 def _clean_json_text(value: str) -> str:

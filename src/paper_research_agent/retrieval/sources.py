@@ -1,91 +1,48 @@
 from __future__ import annotations
 
 import asyncio
+import re
+import time
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from typing import Any
 
 from ..core.config import Settings
-from ..core.models import PaperRecord
-from ..core.normalization import normalize_string_list, normalize_text
-from .utils import DEFAULT_SOURCE_ORDER, TOPIC_FALLBACK_STAGE, extract_year, normalize_pdf_url
+from ..core.models import PaperDict
+from ..core.normalization import normalize_text
+from .utils import DEFAULT_SOURCE_ORDER, extract_year, normalize_pdf_url
 
 
 class PaperSourceCollector:
+    _arxiv_lock = asyncio.Lock()
+    _last_arxiv_call: float = 0
+    _arxiv_min_interval: float = 10.0
+
     def __init__(self, settings: Settings, client: Any) -> None:
         self._settings = settings
         self._client = client
-        self._local_pdf_paths: list[str] = []
-
-    def set_local_pdf_paths(self, paths: list[str]) -> None:
-        self._local_pdf_paths = [normalize_text(path) for path in paths if normalize_text(path)]
-
-    def clear_local_pdf_paths(self) -> None:
-        self._local_pdf_paths = []
-
-    def build_retrieval_plan(self, task_interpretation: dict[str, Any]) -> list[tuple[str, list[str]]]:
-        query_plan = task_interpretation.get("query_plan", {}) if isinstance(task_interpretation, dict) else {}
-        primary_queries = normalize_string_list(query_plan.get("primary_queries"))
-        semantic_core_terms = normalize_string_list(query_plan.get("semantic_core_terms"))
-
-        if not primary_queries and semantic_core_terms:
-            primary_queries = [" ".join(semantic_core_terms[:4])]
-
-        primary_query_texts = set(primary_queries)
-        semantic_queries = [
-            term for term in semantic_core_terms
-            if term and term not in primary_query_texts
-        ]
-
-        retrieval_plan: list[tuple[str, list[str]]] = [("primary", primary_queries)]
-        if semantic_queries:
-            retrieval_plan.append((f"{TOPIC_FALLBACK_STAGE}_semantic_core_terms", semantic_queries[:4]))
-        return retrieval_plan
-
-    async def collect_records_for_query_specs(
-        self,
-        query_specs: list[str],
-        stage_name: str,
-        max_results_per_source: int | None,
-        from_year: int | None,
-    ) -> tuple[list[PaperRecord], list[dict[str, str]], list[dict[str, Any]]]:
-        records: list[PaperRecord] = []
-        source_errors: list[dict[str, str]] = []
-        executed_specs: list[dict[str, Any]] = []
-
-        for query_text in query_specs:
-            query = normalize_text(query_text)
-            if not query:
-                continue
-            query_records, query_errors = await self.collect_all_source_records(
-                query=query,
-                stage_name=stage_name,
-                max_results_per_source=max_results_per_source,
-                from_year=from_year,
-            )
-            records.extend(query_records)
-            source_errors.extend(query_errors)
-            executed_specs.append({"query": query, "sources": list(DEFAULT_SOURCE_ORDER), "stage": stage_name})
-        return records, source_errors, executed_specs
 
     async def collect_all_source_records(
         self,
         query: str,
         stage_name: str,
         max_results_per_source: int | None = None,
-        from_year: int | None = None,
-    ) -> tuple[list[PaperRecord], list[dict[str, str]]]:
+        year_from: int | None = None,
+        year_to: int | None = None,
+        target_source: str = "",
+    ) -> tuple[list[PaperDict], list[dict[str, str]]]:
         tasks: list[tuple[str, Any]] = []
         for source_name in DEFAULT_SOURCE_ORDER:
+            if target_source and source_name != target_source:
+                continue
             if source_name == "arXiv":
-                tasks.append(("arXiv", self.search_arxiv_records(query, max_results=max_results_per_source)))
+                tasks.append(("arXiv", self.search_arxiv_records(query, max_results=max_results_per_source, year_from=year_from, year_to=year_to)))
             elif source_name == "Crossref":
-                tasks.append(("Crossref", self.search_crossref_records(query, max_results=max_results_per_source, from_year=from_year)))
+                tasks.append(("Crossref", self.search_crossref_records(query, max_results=max_results_per_source, year_from=year_from, year_to=year_to)))
             elif source_name == "OpenAlex":
-                tasks.append(("OpenAlex", self.search_openalex_records(query, max_results=max_results_per_source, from_year=from_year)))
+                tasks.append(("OpenAlex", self.search_openalex_records(query, max_results=max_results_per_source, year_from=year_from, year_to=year_to)))
 
         rendered_results = await asyncio.gather(*(task for _, task in tasks), return_exceptions=True)
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         source_errors: list[dict[str, str]] = []
         for (source_name, _), rendered in zip(tasks, rendered_results, strict=False):
             if isinstance(rendered, Exception):
@@ -93,157 +50,54 @@ class PaperSourceCollector:
                 continue
             for record in rendered:
                 records.append(
-                    PaperRecord(
+                    PaperDict(
                         title=record.title,
                         source=record.source,
-                        summary=record.summary,
+                        evidence_snippets=record.evidence_snippets,
                         authors=record.authors,
-                        published=record.published,
+                        date=record.date,
                         url=record.url,
                         pdf_url=record.pdf_url,
                         doi=record.doi,
                         source_rank=record.source_rank,
                         matched_query=query,
                         query_stage=stage_name,
+                        openalex_id=record.openalex_id,
+                        cited_by_count=record.cited_by_count,
                     )
                 )
         return records, source_errors
 
-    async def collect_local_pdf_records(
-        self,
-        *,
-        task_interpretation: dict[str, Any],
-        context: dict[str, Any],
-    ) -> tuple[list[PaperRecord], list[dict[str, str]], dict[str, Any]]:
-        if not self._local_pdf_paths:
-            return [], [], {"scanned_count": 0, "missing_count": 0, "read_error_count": 0, "empty_text_count": 0, "token_miss_count": 0, "candidate_count": 0, "retained_count": 0, "entries": []}
-
-        query_tokens = set(context.get("query_tokens", []))
-        records: list[PaperRecord] = []
-        source_errors: list[dict[str, str]] = []
-        debug_entries: list[dict[str, Any]] = []
-        debug_summary = {
-            "scanned_count": 0,
-            "missing_count": 0,
-            "read_error_count": 0,
-            "empty_text_count": 0,
-            "token_miss_count": 0,
-            "candidate_count": 0,
-            "retained_count": 0,
-            "entries": debug_entries,
-        }
-
-        intent = task_interpretation.get("intent", {}) if isinstance(task_interpretation, dict) else {}
-        topic = normalize_text(intent.get("topic", ""))
-        for rank, pdf_path in enumerate(self._local_pdf_paths[:20], start=1):
-            debug_summary["scanned_count"] += 1
-            path = Path(pdf_path)
-            title = normalize_text(path.stem.replace("_", " ").replace("-", " "))
-            if not path.exists():
-                source_errors.append({"source": "LocalLibrary", "error": f"Missing local PDF: {pdf_path}", "query": topic})
-                debug_summary["missing_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path),
-                        "title": title or path.name,
-                        "status": "missing_file",
-                        "error": f"Missing local PDF: {pdf_path}",
-                    }
-                )
-                continue
-            try:
-                snippet = await asyncio.to_thread(self._read_local_pdf_text, path, 2400)
-            except Exception as exc:
-                source_errors.append({"source": "LocalLibrary", "error": str(exc), "query": topic})
-                debug_summary["read_error_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path.resolve()),
-                        "title": title or path.name,
-                        "status": "read_error",
-                        "error": str(exc),
-                    }
-                )
-                continue
-
-            extracted_chars = len(snippet)
-            if extracted_chars == 0:
-                debug_summary["empty_text_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path.resolve()),
-                        "title": title or path.name,
-                        "status": "empty_text",
-                        "extracted_chars": 0,
-                    }
-                )
-                continue
-
-            combined_match = normalize_text(f"{title} {snippet[:1200]}", for_matching=True)
-            matched_tokens = sorted(query_tokens.intersection(set(combined_match.split())))
-            if query_tokens and not matched_tokens:
-                debug_summary["token_miss_count"] += 1
-                debug_entries.append(
-                    {
-                        "path": str(path.resolve()),
-                        "title": title or path.name,
-                        "status": "token_miss",
-                        "extracted_chars": extracted_chars,
-                        "matched_token_count": 0,
-                        "matched_tokens": [],
-                    }
-                )
-                continue
-
-            published = ""
-            year = extract_year(title)
-            if year is not None:
-                published = str(year)
-
-            records.append(
-                PaperRecord(
-                    title=title or path.name,
-                    source="LocalLibrary",
-                    summary=normalize_text(snippet[:900]),
-                    authors=[],
-                    published=published,
-                    url=str(path.resolve()),
-                    pdf_url=str(path.resolve()),
-                    source_rank=rank,
-                    matched_query=topic,
-                    query_stage="local_library",
-                )
+    async def search_arxiv_records(self, query: str, max_results: int | None = None, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
+        async with PaperSourceCollector._arxiv_lock:
+            elapsed = time.monotonic() - PaperSourceCollector._last_arxiv_call
+            if elapsed < PaperSourceCollector._arxiv_min_interval:
+                await asyncio.sleep(PaperSourceCollector._arxiv_min_interval - elapsed)
+            limit = self._resolve_limit(max_results)
+            search_query = self._format_arxiv_search_query(query)
+            response = await self._client.get(
+                "https://export.arxiv.org/api/query",
+                params={"search_query": search_query, "start": 0, "max_results": limit, "sortBy": "relevance", "sortOrder": "descending"},
             )
-            debug_summary["candidate_count"] += 1
-            debug_entries.append(
-                {
-                    "path": str(path.resolve()),
-                    "title": title or path.name,
-                    "status": "candidate_added",
-                    "extracted_chars": extracted_chars,
-                    "matched_token_count": len(matched_tokens),
-                    "matched_tokens": matched_tokens,
-                }
-            )
-        return records, source_errors, debug_summary
-
-    async def search_arxiv_records(self, query: str, max_results: int | None = None) -> list[PaperRecord]:
-        limit = self._resolve_limit(max_results)
-        response = await self._client.get(
-            "http://export.arxiv.org/api/query",
-            params={"search_query": f"all:{query}", "start": 0, "max_results": limit, "sortBy": "relevance", "sortOrder": "descending"},
-        )
+            PaperSourceCollector._last_arxiv_call = time.monotonic()
         response.raise_for_status()
         root = ET.fromstring(response.text)
         namespace = {"atom": "http://www.w3.org/2005/Atom"}
         entries = root.findall("atom:entry", namespace)
 
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         for rank, entry in enumerate(entries, start=1):
             authors = [author.findtext("atom:name", default="", namespaces=namespace).strip() for author in entry.findall("atom:author", namespace)]
             title = entry.findtext("atom:title", default="", namespaces=namespace).strip()
             summary = entry.findtext("atom:summary", default="", namespaces=namespace).strip()
             published = entry.findtext("atom:published", default="", namespaces=namespace).strip()
+            if year_from is not None or year_to is not None:
+                pub_year = extract_year(published)
+                if pub_year is not None:
+                    if year_from is not None and pub_year < year_from:
+                        continue
+                    if year_to is not None and pub_year > year_to:
+                        continue
             url = entry.findtext("atom:id", default="", namespaces=namespace).strip()
             pdf_url = ""
             for link in entry.findall("atom:link", namespace):
@@ -253,19 +107,24 @@ class PaperSourceCollector:
                 if title_attr == "pdf" or type_attr == "application/pdf" or href.lower().endswith(".pdf"):
                     pdf_url = href
                     break
-            records.append(PaperRecord(title=normalize_text(title), source="arXiv", summary=normalize_text(summary), authors=[a for a in authors if a], published=published, url=url, pdf_url=normalize_pdf_url(pdf_url) or normalize_pdf_url(url), source_rank=rank))
+            records.append(PaperDict(title=normalize_text(title), source="arXiv", evidence_snippets=[normalize_text(summary)], authors=[a for a in authors if a], date=published, url=url, pdf_url=normalize_pdf_url(pdf_url) or normalize_pdf_url(url), source_rank=rank))
         return records
 
-    async def search_crossref_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperRecord]:
+    async def search_crossref_records(self, query: str, max_results: int | None = None, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
         limit = self._resolve_limit(max_results)
         params: dict[str, Any] = {"query": query, "rows": limit, "select": "title,author,DOI,URL,published-print,published-online,issued,container-title,abstract,link"}
-        if from_year is not None:
-            params["filter"] = f"from-pub-date:{from_year}-01-01"
+        filters: list[str] = []
+        if year_from is not None:
+            filters.append(f"from-pub-date:{year_from}-01-01")
+        if year_to is not None:
+            filters.append(f"until-pub-date:{year_to}-12-31")
+        if filters:
+            params["filter"] = ",".join(filters)
         response = await self._client.get("https://api.crossref.org/works", params=params)
         response.raise_for_status()
         items = response.json().get("message", {}).get("items", [])
 
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         for rank, item in enumerate(items, start=1):
             title_list = item.get("title") or []
             title = title_list[0].strip() if title_list else "Untitled"
@@ -279,12 +138,12 @@ class PaperSourceCollector:
             venue_list = item.get("container-title") or []
             venue = venue_list[0].strip() if venue_list else "Crossref"
             records.append(
-                PaperRecord(
+                PaperDict(
                     title=normalize_text(title),
                     source=f"Crossref / {venue}",
-                    summary=normalize_text(item.get("abstract", "")),
+                    evidence_snippets=[normalize_text(item.get("abstract", ""))],
                     authors=authors,
-                    published=self._extract_crossref_date(item),
+                    date=self._extract_crossref_date(item),
                     url=(item.get("URL") or "").strip(),
                     pdf_url=self._extract_crossref_pdf_url(item),
                     doi=(item.get("DOI") or "").strip(),
@@ -293,21 +152,26 @@ class PaperSourceCollector:
             )
         return records
 
-    async def search_openalex_records(self, query: str, max_results: int | None = None, from_year: int | None = None) -> list[PaperRecord]:
+    async def search_openalex_records(self, query: str, max_results: int | None = None, year_from: int | None = None, year_to: int | None = None) -> list[PaperDict]:
         limit = self._resolve_limit(max_results)
         params: dict[str, Any] = {
             "search": query,
             "per-page": limit,
             "sort": "relevance_score:desc",
-            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "type"]),
+            "select": ",".join(["display_name", "authorships", "publication_year", "publication_date", "ids", "doi", "primary_location", "abstract_inverted_index", "type", "cited_by_count"]),
         }
-        if from_year is not None:
-            params["filter"] = f"from_publication_date:{from_year}-01-01"
+        filters: list[str] = []
+        if year_from is not None:
+            filters.append(f"from_publication_date:{year_from}-01-01")
+        if year_to is not None:
+            filters.append(f"to_publication_date:{year_to}-12-31")
+        if filters:
+            params["filter"] = ",".join(filters)
         response = await self._client.get("https://api.openalex.org/works", params=params)
         response.raise_for_status()
         items = response.json().get("results", [])
 
-        records: list[PaperRecord] = []
+        records: list[PaperDict] = []
         for rank, item in enumerate(items, start=1):
             title = normalize_text(item.get("display_name", "") or "Untitled")
             authors: list[str] = []
@@ -325,57 +189,122 @@ class PaperSourceCollector:
             primary_location = item.get("primary_location") or {}
             landing_page = ""
             pdf_url = ""
+            openalex_id = ""
             if isinstance(primary_location, dict):
                 landing_page = normalize_text(primary_location.get("landing_page_url", ""))
                 pdf_url = normalize_pdf_url(primary_location.get("pdf_url", "") or "")
             if isinstance(ids, dict):
-                landing_page = landing_page or normalize_text(ids.get("openalex", ""))
+                openalex_url = normalize_text(ids.get("openalex", ""))
+                landing_page = landing_page or openalex_url
+                if "/W" in openalex_url:
+                    openalex_id = openalex_url.rsplit("/", 1)[-1]
+            cited_by = item.get("cited_by_count") or 0
             doi = normalize_text(item.get("doi", ""))
             if doi.startswith("https://doi.org/"):
                 doi = doi.removeprefix("https://doi.org/")
             records.append(
-                PaperRecord(
+                PaperDict(
                     title=title,
                     source="OpenAlex",
-                    summary=self._reconstruct_openalex_abstract(item.get("abstract_inverted_index")),
+                    evidence_snippets=[self._extract_openalex_abstract(item)],
                     authors=authors,
-                    published=published,
+                    date=published,
                     url=landing_page,
                     pdf_url=pdf_url,
                     doi=doi,
                     source_rank=rank,
+                    openalex_id=openalex_id,
+                    cited_by_count=cited_by,
                 )
             )
         return records
 
-    def _read_local_pdf_text(self, path: Path, max_chars: int = 1800) -> str:
-        try:
-            from pypdf import PdfReader
-        except ImportError:
-            return ""
-        if not path.exists():
-            return ""
-        try:
-            reader = PdfReader(str(path))
-        except Exception:
-            return ""
-        chunks: list[str] = []
-        remaining = max_chars
-        for page in reader.pages[:3]:
-            if remaining <= 0:
-                break
-            try:
-                page_text = page.extract_text() or ""
-            except Exception:
+    async def fetch_references(self, openalex_id: str, top_k: int = 5) -> list[PaperDict]:
+        """Fetch papers that this paper references (前向溯源)."""
+        response = await self._client.get(f"https://api.openalex.org/works/{openalex_id}")
+        response.raise_for_status()
+        work = response.json()
+        ref_urls = work.get("referenced_works", []) or []
+        ref_ids = [_extract_openalex_id_from_url(u) for u in ref_urls[:30]]
+        ref_ids = [rid for rid in ref_ids if rid]
+        if not ref_ids:
+            return []
+        filter_param = "|".join(ref_ids[:25])
+        params: dict[str, Any] = {
+            "filter": f"openalex_id:{filter_param}",
+            "per-page": 25,
+            "sort": "cited_by_count:desc",
+            "select": "display_name,authorships,publication_year,publication_date,ids,doi,primary_location,abstract_inverted_index,cited_by_count",
+        }
+        resp = await self._client.get("https://api.openalex.org/works", params=params)
+        resp.raise_for_status()
+        return self._parse_openalex_batch(resp.json().get("results", []))[:top_k]
+
+    async def fetch_citations(self, openalex_id: str, top_k: int = 5) -> list[PaperDict]:
+        """Fetch papers that cite this paper (后向追踪), filtered for recency and impact."""
+        import datetime as dt
+        two_years_ago = (dt.date.today().replace(year=dt.date.today().year - 2)).isoformat()
+        params: dict[str, Any] = {
+            "filter": f"cites:{openalex_id},from_publication_date:{two_years_ago}",
+            "per-page": 20,
+            "sort": "cited_by_count:desc",
+            "select": "display_name,authorships,publication_year,publication_date,ids,doi,primary_location,abstract_inverted_index,cited_by_count",
+        }
+        response = await self._client.get("https://api.openalex.org/works", params=params)
+        response.raise_for_status()
+        items = response.json().get("results", [])
+        records = self._parse_openalex_batch(items)
+        return [r for r in records if r.source_rank > 0][:top_k]
+
+    def _parse_openalex_batch(self, items: list[dict[str, Any]]) -> list[PaperDict]:
+        records: list[PaperDict] = []
+        for rank, item in enumerate(items, start=1):
+            title = normalize_text(item.get("display_name", "") or "Untitled")
+            if not title or title == "Untitled":
                 continue
-            normalized = normalize_text(page_text)
-            if not normalized:
-                continue
-            snippet = normalized[:remaining]
-            if snippet:
-                chunks.append(snippet)
-                remaining -= len(snippet)
-        return normalize_text(" ".join(chunks))[:max_chars]
+            authors: list[str] = []
+            for a in item.get("authorships") or []:
+                if isinstance(a, dict) and isinstance(a.get("author"), dict):
+                    name = normalize_text(a["author"].get("display_name", ""))
+                    if name:
+                        authors.append(name)
+            published = normalize_text(item.get("publication_date") or str(item.get("publication_year") or ""))
+            ids = item.get("ids") or {}
+            loc = item.get("primary_location") or {}
+            landing = normalize_text(loc.get("landing_page_url", "") or ids.get("openalex", ""))
+            pdf = normalize_pdf_url(loc.get("pdf_url", "") or "")
+            doi = normalize_text(item.get("doi", ""))
+            if doi.startswith("https://doi.org/"):
+                doi = doi.removeprefix("https://doi.org/")
+            oa_id = ""
+            oa_url = normalize_text(ids.get("openalex", ""))
+            if "/W" in oa_url:
+                oa_id = oa_url.rsplit("/", 1)[-1]
+            cited_by = item.get("cited_by_count") or 0
+            records.append(
+                PaperDict(
+                    title=title,
+                    source="OpenAlex",
+                    evidence_snippets=[self._extract_openalex_abstract(item)],
+                    authors=authors,
+                    date=published,
+                    url=landing,
+                    pdf_url=pdf,
+                    doi=doi,
+                    source_rank=rank,
+                    openalex_id=oa_id,
+                    cited_by_count=cited_by,
+                )
+            )
+        return records
+
+    def _format_arxiv_search_query(self, query: str) -> str:
+        cleaned = normalize_text(query)
+        if not cleaned:
+            return ""
+        if re.search(r"\b(?:all|ti|abs|au|cat|id|jr|co|rn):", cleaned, flags=re.IGNORECASE):
+            return cleaned
+        return f"all:{cleaned}"
 
     def _resolve_limit(self, max_results: int | None) -> int:
         if max_results is None:
@@ -406,17 +335,24 @@ class PaperSourceCollector:
                 return candidate
         return ""
 
-    def _reconstruct_openalex_abstract(self, abstract_inverted_index: Any) -> str:
-        if not isinstance(abstract_inverted_index, dict):
-            return ""
-        positions: dict[int, str] = {}
-        for token, token_positions in abstract_inverted_index.items():
-            if not isinstance(token, str) or not isinstance(token_positions, list):
-                continue
-            for pos in token_positions:
-                if isinstance(pos, int):
-                    positions[pos] = token
-        if not positions:
-            return ""
-        ordered_tokens = [positions[pos] for pos in sorted(positions)]
-        return normalize_text(" ".join(ordered_tokens))
+    @staticmethod
+    def _extract_openalex_abstract(item: dict[str, Any]) -> str:
+        inv_index = item.get("abstract_inverted_index")
+        if isinstance(inv_index, dict):
+            from pyalex import invert_abstract
+
+            text = invert_abstract(inv_index)
+            if text:
+                return normalize_text(text)
+        plain = item.get("abstract")
+        if isinstance(plain, str):
+            plain = normalize_text(plain)
+            if plain:
+                return plain
+        return ""
+
+
+def _extract_openalex_id_from_url(url: str) -> str:
+    if "/W" in url:
+        return url.rsplit("/", 1)[-1].strip()
+    return ""
